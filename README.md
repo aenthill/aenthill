@@ -7,7 +7,7 @@
 
 `anthill init`
 
-1. If the `anthill.yml` does not exist, creates it.
+1. If the `anthill.yml` fiel does not exist, creates it.
 2. Asks for project name.
 3. Asks for project description.
 4. Asks for project author(s).
@@ -39,3 +39,41 @@ MAINTAINER Julien Neuhart <j.neuhart@thecodingmachine.com>
 LABEL ANT_MANIFEST_PATH="ant-manifest.yml"
 ```
 
+There are two types of manifest:
+
+1. `ant-builder`: container which will handle events for generating files/folders
+2. `ant`: container which will send events to builders and will also handle event from others ant.
+
+## ant-builder
+
+1. When added, asks for an environment
+2. Once the environment is specified by the user, updates the `anthill.yml` file:
+
+```yaml
+project: project name
+description: project description
+authors:
+    - Julien Neuhart <j.neuhart@thecodingmachine.com>
+license: MIT
+environment:
+  ant-builders:
+    - dev:
+      - ant-builder-1
+```
+
+3. Updates the working tree:
+
+```
+.
++-- anthill
+|   +-- ant-builders
+|   |   +-- dev
+|   |   |   +-- ant-builder-1
++-- anthill.yml
+```
+
+## ant
+
+---
+
+`anthill remove ant_name`
