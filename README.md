@@ -71,6 +71,44 @@ ant-builders:
 +-- anthill.yml
 ```
 
+### Example: ant-docker-compose-builder
+
+* `ant-manifest.yml`:
+
+```yaml
+type: ant-builder
+handle:
+    - for: NEW_SERVICE
+      do: 
+        - ant-docker-compose-builder add-service --image-name=imageName # will ask user for service name and on which networks he wants to attach it
+        - send NEW_CONTAINER --optional
+    - for: NEW_CONTAINER
+      do:
+        - ant-docker-compose-builder add-container # will ask user for container name
+  
+    - for: NEW_NETWORK
+      do:
+        - ant-docker-compose-builder add-network [--default-network-name=networkName] # will ask user for network name and which services he want to attach it
+    - for: NEW_ENV
+      do:
+        - ant-docker-compose-builder add-env --env-key-name=envKeyName [--value-pattern=[0-9]* --default-value=defaultValue] # will ask user for env value
+    - for: NEW_LABEL
+      do:
+        - ant-docker-compose-builder add-env --label-key-name=labelKeyName [--value-pattern=[0-9]* --default-value=defaultValue] # will ask user for label value
+    - for: NEW_HTTP_PORT
+      do:
+        - ant-docker-compose-builder add-http-port --container-http-port:80 [--default-host-http-port=80] # will ask user for port from host to map
+    - for: NEW_PORT
+      do:
+        - ant-docker-compose-builder add-port --container-port:3306 [--default-host-port=3306] # will ask user for port from host to map
+    - for: NEW_VOLUME
+      do:
+        - ant-docker-compose-builder add-volume # will ask user for volume name
+    - for: NEW_MAPPED_VOLUME
+      do:
+        - ant-docker-compose-builder add-mapped-volume --container-path=containerPath # will ask user for host path to map 
+```
+
 ## ant
 
 ---
