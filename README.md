@@ -85,7 +85,6 @@ handle:
     - for: NEW_CONTAINER
       do:
         - ant-docker-compose-builder add-container # will ask user for container name
-  
     - for: NEW_NETWORK
       do:
         - ant-docker-compose-builder add-network [--default-network-name=networkName] # will ask user for network name and which services he want to attach it
