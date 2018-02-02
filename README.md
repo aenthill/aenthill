@@ -55,10 +55,9 @@ description: project description
 authors:
     - Julien Neuhart <j.neuhart@thecodingmachine.com>
 license: MIT
-environment:
-  ant-builders:
-    - dev:
-      - ant-builder-1
+ant-builders:
+  - dev:
+    - ant-builder-1
 ```
 
 3. Updates the working tree:
