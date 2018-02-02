@@ -62,7 +62,7 @@ ant-builders:
     - ant-docker-compose-builder-1: anthill-docker/ant-docker-compose-builder:1.0
 ```
 
-3. Updates the working tree:
+5. Updates the working tree:
 
 ```
 .
