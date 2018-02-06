@@ -184,9 +184,6 @@ type: "ant"
 build_directory: "/anthill" # all files/folders created in this directory after all events haven been received will be copied to the host directory of the ant.
 
 events:
-  
-
-events:
   send:
     - name: "ADD_SERVICE"
       then:
@@ -211,7 +208,7 @@ events:
         - name: "REMOVE_HTTP_PORT"
           variables:
             - SERVICE_NAME={{ .Event.SERVICE_NAME }}
-            - CONTAINER_PORT={{ .Event.CONTAINER_PORT }}
+            - CONTAINER_PORT={{ .Event.CONTAINER_PORT }}             
 ```
 
 ## `anthill remove ant_name`
