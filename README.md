@@ -198,9 +198,9 @@ events:
             
   handle:
     - name: "NEW_HTTP_PORT"
-    script:
-      - add-virtual-host.sh
-    then:
+      script:
+       - add-virtual-host.sh
+      then:
         - name: "ADD_LABEL"
           variables:
             - SERVICE_NAME={{ .Event.SERVICE_NAME }}
