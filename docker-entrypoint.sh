@@ -9,7 +9,7 @@ gometalinter.v2 --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goim
 if [[ "$VERSION" == "snapshot" ]]; then
     go test -race --cover --covermode=atomic ./...;
 else
-    echo "" > coverage.txt;
+    echo "" > out/coverage.txt;
     for d in $(go list ./... | grep -v vendor); do
         go test -race -coverprofile=profile.out -covermode=atomic $d;
         if [ -f profile.out ]; then

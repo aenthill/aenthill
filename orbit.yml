@@ -9,4 +9,4 @@ tasks:
     short: Runs CI process inside a container
     run:
       - docker build -t anthill-docker/anthill:ci .
-      - docker run --rm -e "VERSION={{ .Orbit.Version }}" anthill-docker/anthill:ci
+      - docker run --rm -e "VERSION={{ .Orbit.Version }}" -v "$(pwd)/out:/go/src/github.com/anthill-docker/anthill/out" anthill-docker/anthill:ci
