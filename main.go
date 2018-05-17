@@ -1,5 +1,5 @@
 /*
-Package main handles the application startup
+Package main handles the application startup.
 
 TODO
 */

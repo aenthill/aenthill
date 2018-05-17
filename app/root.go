@@ -16,6 +16,7 @@ var (
 		Short:         "TODO",
 		Long:          "TODO.",
 		SilenceErrors: true,
+		SilenceUsage:  true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if logLevel != "" {
 				return log.SetLevel(logLevel)
@@ -27,5 +28,5 @@ var (
 )
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&logLevel, "logLevel", "ll", "", "configure the log level")
+	RootCmd.PersistentFlags().StringVarP(&logLevel, "logLevel", "l", "", "configure the log level")
 }
