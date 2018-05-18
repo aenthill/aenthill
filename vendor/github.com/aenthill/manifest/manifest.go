@@ -25,7 +25,7 @@ type (
 // manifestFilePath as argument.
 const DefaultManifestFileName = "aenthill.json"
 
-// Flush populates the given file path with the given manifest data.
+// Flush populates the given file with manifest data.
 // The data will be written as JSON.
 func Flush(manifestFilePath string, manifest *Manifest) error {
 	out, err := json.Marshal(manifest)
@@ -33,11 +33,7 @@ func Flush(manifestFilePath string, manifest *Manifest) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile(manifestFilePath, out, 0644); err != nil {
-		return err
-	}
-
-	return nil
+	return ioutil.WriteFile(manifestFilePath, out, 0644)
 }
 
 // Parse simply parses the given file path and returns an instance of

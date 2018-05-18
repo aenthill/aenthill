@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/aenthill/manifest"
   packages = ["."]
-  revision = "3ac18d7bbb7290d6d732b87c40ee3bdb1418ce1f"
+  revision = "34d3b96974884cb9ddabf87d3285ca97f3a7c1b3"
 
 [[projects]]
   branch = "master"
