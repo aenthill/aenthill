@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/aenthill/manifest"
+  packages = ["."]
+  revision = "3ac18d7bbb7290d6d732b87c40ee3bdb1418ce1f"
+
+[[projects]]
+  branch = "master"
   name = "github.com/chzyer/readline"
   packages = ["."]
   revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
@@ -83,15 +89,9 @@
   ]
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
-[[projects]]
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5ce8547f874d17191489ca923a6263e9c24dfc47f1188c544424f4bb1675db3c"
+  inputs-digest = "55be3ae0c38aff31cdd0a5e40487b7a53219c3f18e11f56aecad42931678f137"
   solver-name = "gps-cdcl"
   solver-version = 1

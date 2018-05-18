@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aenthill/aenthill/app/manifest"
-
+	"github.com/aenthill/manifest"
 	"github.com/spf13/cobra"
 )
 

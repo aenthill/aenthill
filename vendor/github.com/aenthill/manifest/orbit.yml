@@ -1,0 +1,12 @@
+tasks:
+  
+  - use: fmt
+    short: Runs go fmt ./...
+    run:
+      - go fmt ./...
+
+  - use: ci
+    short: Runs CI process inside a container
+    run:
+      - docker build -t aenthill/manifest:ci .
+      - docker run --rm -e "VERSION={{ .Orbit.Version }}" -v "$(pwd)/out:/go/src/github.com/aenthill/manifest/out" aenthill/manifest:ci

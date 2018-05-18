@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/aenthill/aenthill/app/manifest"
+	"github.com/aenthill/manifest"
 )
 
 // AskManifestValues TODO.

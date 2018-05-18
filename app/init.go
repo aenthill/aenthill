@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aenthill/aenthill/app/manifest"
 	"github.com/aenthill/aenthill/app/prompt"
 
+	"github.com/aenthill/manifest"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +34,7 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		return manifest.Create(m)
+		return manifest.Flush(manifest.DefaultManifestFileName, m)
 	},
 }
 
