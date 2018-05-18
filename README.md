@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/8983173/40242480-15d7f8d0-5abe-11e8-9a52-8e28c95bcb60.png" alt="Logo" width="250" height="250" />
+    <img src="https://user-images.githubusercontent.com/8983173/40242480-15d7f8d0-5abe-11e8-9a52-8e28c95bcb60.png" alt="Logo" width="200" height="200" />
 </p>
 <h3 align="center">Aenthill</h3>
 <p align="center">TODO</p>
