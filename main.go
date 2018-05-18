@@ -8,8 +8,8 @@ package main
 import (
 	"os"
 
-	"github.com/anthill-docker/anthill/app"
-	"github.com/anthill-docker/anthill/app/log"
+	"github.com/aenthill/aenthill/app"
+	"github.com/aenthill/aenthill/app/log"
 )
 
 /*

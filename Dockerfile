@@ -7,7 +7,7 @@ RUN go get -u gopkg.in/alecthomas/gometalinter.v2 &&\
     gometalinter.v2 --install
 
 # Defines our working directory.
-WORKDIR /go/src/github.com/anthill-docker/anthill
+WORKDIR /go/src/github.com/aenthill/aenthill
 
 # Copies our Go source.
 COPY . .

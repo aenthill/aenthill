@@ -23,7 +23,7 @@ type (
 )
 
 // DefaultManifestFileName TODO.
-const DefaultManifestFileName = "anthill.yml"
+const DefaultManifestFileName = "aenthill.yml"
 
 // Create TODO.
 func Create(manifest *Manifest) error {

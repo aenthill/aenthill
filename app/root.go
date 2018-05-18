@@ -2,7 +2,7 @@
 package app
 
 import (
-	"github.com/anthill-docker/anthill/app/log"
+	"github.com/aenthill/aenthill/app/log"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ var (
 
 	// RootCmd is the instance of the root of all commands.
 	RootCmd = &cobra.Command{
-		Use:           "anthill",
+		Use:           "aenthill",
 		Short:         "TODO",
 		Long:          "TODO.",
 		SilenceErrors: true,

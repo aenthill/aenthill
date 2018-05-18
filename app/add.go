@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/anthill-docker/anthill/app/manifest"
+	"github.com/aenthill/aenthill/app/manifest"
 
 	"github.com/spf13/cobra"
 )

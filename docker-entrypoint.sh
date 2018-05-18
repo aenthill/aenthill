@@ -5,7 +5,7 @@ set -xe
 # Statically checking Go source for errors and warnings.
 gometalinter.v2 --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode -E gocyclo --vendor ./...;
 
-# Running tests according to current anthill version.
+# Running tests according to current aenthill version.
 if [[ "$VERSION" == "snapshot" ]]; then
     go test -race --cover --covermode=atomic ./...;
 else
