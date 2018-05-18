@@ -18,7 +18,6 @@ type (
 
 	// Ant TODO.
 	Ant struct {
-		Name  string `yaml:"name"`
 		Image string `yaml:"image"`
 	}
 )

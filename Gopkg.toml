@@ -44,3 +44,7 @@
 [[constraint]]
   name = "github.com/manifoldco/promptui"
   branch = "master"
+
+[[constraint]]
+  name = "github.com/fsouza/go-dockerclient"
+  version = "1.2.0"

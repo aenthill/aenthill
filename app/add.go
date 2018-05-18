@@ -11,10 +11,10 @@ import (
 
 type manifestFileDoestNotExistError struct{}
 
-const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current directory. Did you run anthill init?"
+const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current directory. Did you run %s %s?"
 
 func (e *manifestFileDoestNotExistError) Error() string {
-	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName)
+	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, initCmd.Use)
 }
 
 var addCmd = &cobra.Command{
@@ -26,6 +26,10 @@ var addCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if _, err := os.Stat(manifest.DefaultManifestFileName); err != nil {
 			return &manifestFileDoestNotExistError{}
+		}
+
+		if len(args) == 0 {
+			return nil
 		}
 
 		return nil
