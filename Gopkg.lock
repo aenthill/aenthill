@@ -3,9 +3,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/aenthill/docker"
+  packages = ["."]
+  revision = "7d47a78ce900d292336b1ea808d8adee82f0c967"
+
+[[projects]]
+  branch = "master"
   name = "github.com/aenthill/manifest"
   packages = ["."]
-  revision = "34d3b96974884cb9ddabf87d3285ca97f3a7c1b3"
+  revision = "01fbb18b7a03171e124f6997ace052b7f70f6179"
 
 [[projects]]
   branch = "master"
@@ -92,6 +98,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "55be3ae0c38aff31cdd0a5e40487b7a53219c3f18e11f56aecad42931678f137"
+  inputs-digest = "b98c084a696fcd6ee5026cdb60a06d97ef52fc7073b537fded0d48f994d22a02"
   solver-name = "gps-cdcl"
   solver-version = 1

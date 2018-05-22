@@ -57,7 +57,7 @@ type aentAlreadyInManifestError struct {
 	image string
 }
 
-const aentAlreadyInManifestErrorMessage = "cannot add %s in given manifest as it does already exists"
+const aentAlreadyInManifestErrorMessage = "cannot add %s in given manifest as it does already exist"
 
 func (e *aentAlreadyInManifestError) Error() string {
 	return fmt.Sprintf(aentAlreadyInManifestErrorMessage, e.image)
@@ -96,6 +96,12 @@ func RemoveAent(image string, manifest *Manifest) error {
 	manifest.Aents = append(manifest.Aents[:index], manifest.Aents[index+1:]...)
 
 	return nil
+}
+
+// Exist returns true if the image exists in given manifest,
+// false otherwise.
+func Exist(image string, manifest *Manifest) bool {
+	return getAentIndex(image, manifest) != -1
 }
 
 func getAentIndex(image string, manifest *Manifest) int {
