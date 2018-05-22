@@ -7,7 +7,7 @@ import (
 	"github.com/aenthill/manifest"
 )
 
-// AskManifestValues TODO.
+// AskManifestValues retrieves user inputs in order to initialize a manifest.
 func AskManifestValues() (*manifest.Manifest, error) {
 	// asking for project name.
 	defaultName := ""

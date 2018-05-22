@@ -1,4 +1,4 @@
-// Package prompt TODO.
+// Package prompt provides functions for interacting with a CLI user.
 package prompt
 
 import (
