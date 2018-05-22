@@ -92,7 +92,12 @@ func Send(event string, payload string, context *EventContext) error {
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
 
-	log.Infof("%s is calling %s with event %s and payload %s", context.WhoAmI, context.Image, event, payload)
+	if payload == "" {
+		log.Infof("%s is calling %s with event %s and an empty payload", context.WhoAmI, context.Image, event)
+	} else {
+		log.Infof("%s is calling %s with event %s and payload %s", context.WhoAmI, context.Image, event, payload)
+	}
+
 	log.Debugf("running %s from %s", e.Args, context.WhoAmI)
 
 	return e.Run()

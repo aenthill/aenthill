@@ -28,7 +28,7 @@ const DefaultManifestFileName = "aenthill.json"
 // Flush populates the given file with manifest data.
 // The data will be written as JSON.
 func Flush(manifestFilePath string, manifest *Manifest) error {
-	out, err := json.Marshal(manifest)
+	out, err := json.MarshalIndent(manifest, "", "\t")
 	if err != nil {
 		return err
 	}
