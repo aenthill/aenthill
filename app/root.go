@@ -2,12 +2,22 @@
 package app
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/aenthill/aenthill/app/log"
+	"github.com/aenthill/manifest"
 
 	"github.com/spf13/cobra"
 )
+
+type manifestFileDoestNotExistError struct{}
+
+const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current directory. Did you run %s %s?"
+
+func (e *manifestFileDoestNotExistError) Error() string {
+	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, initCmd.Use)
+}
 
 var (
 	projectDir string

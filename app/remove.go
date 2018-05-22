@@ -9,16 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type noImagesToAddError struct{}
+type noImagesToRemoveError struct{}
 
-const noImagesToAddErrorMessage = "usage: %s %s image [image...]"
+const noImagesToRemoveErrorMessage = "usage: %s %s image [image...]"
 
-func (e *noImagesToAddError) Error() string {
-	return fmt.Sprintf(noImagesToAddErrorMessage, RootCmd.Use, addCmd.Use)
+func (e *noImagesToRemoveError) Error() string {
+	return fmt.Sprintf(noImagesToRemoveErrorMessage, RootCmd.Use, removeCmd.Use)
 }
 
-var addCmd = &cobra.Command{
-	Use:           "add",
+var removeCmd = &cobra.Command{
+	Use:           "rm",
 	Short:         "TODO",
 	Long:          "TODO.",
 	SilenceErrors: true,
@@ -29,7 +29,7 @@ var addCmd = &cobra.Command{
 		}
 
 		if len(args) == 0 {
-			return &noImagesToAddError{}
+			return &noImagesToRemoveError{}
 		}
 
 		m, err := manifest.Parse(manifest.DefaultManifestFileName)
@@ -38,7 +38,7 @@ var addCmd = &cobra.Command{
 		}
 
 		for _, image := range args {
-			if err := manifest.AddAent(image, m); err != nil {
+			if err := manifest.RemoveAent(image, m); err != nil {
 				return err
 			}
 
@@ -48,7 +48,7 @@ var addCmd = &cobra.Command{
 				HostProjectDir: projectDir,
 			}
 
-			if err := docker.Send("ADD", ctx); err != nil {
+			if err := docker.Send("REMOVE", ctx); err != nil {
 				return err
 			}
 
