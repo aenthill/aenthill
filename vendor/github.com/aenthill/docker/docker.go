@@ -28,8 +28,6 @@ const (
 type EventContext struct {
 	// Image is the image which receives the event.
 	Image string
-	// SenderImage is the image which sends the event.
-	SenderImage string
 	// Binary is the command which handles the event in the targeted image.
 	Binary string
 	// HostProjectDir is the project directory on the host.
@@ -65,7 +63,7 @@ func Send(event string, context *EventContext) error {
 	var args []string
 	args = append(args, []string{"docker", "run"}...)
 	args = append(args, dockerOpts...)
-	args = append(args, []string{context.Image, context.Binary, event, context.Payload, context.SenderImage}...)
+	args = append(args, []string{context.Image, context.Binary, event, context.Payload}...)
 
 	var e *exec.Cmd
 	if runtime.GOOS == "windows" {

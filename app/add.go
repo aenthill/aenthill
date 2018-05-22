@@ -38,10 +38,6 @@ var addCmd = &cobra.Command{
 		}
 
 		for _, image := range args {
-			if err := manifest.AddAent(image, m); err != nil {
-				return err
-			}
-
 			ctx := &docker.EventContext{
 				Image:          image,
 				Binary:         docker.DefaultBinary,
@@ -52,8 +48,10 @@ var addCmd = &cobra.Command{
 				return err
 			}
 
-			if err := manifest.Flush(manifest.DefaultManifestFileName, m); err != nil {
-				return err
+			if err := manifest.AddAent(image, m); err == nil {
+				if err := manifest.Flush(manifest.DefaultManifestFileName, m); err != nil {
+					return err
+				}
 			}
 		}
 
