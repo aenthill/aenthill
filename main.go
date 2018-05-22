@@ -9,7 +9,8 @@ import (
 	"os"
 
 	"github.com/aenthill/aenthill/app"
-	"github.com/aenthill/aenthill/app/log"
+
+	"github.com/aenthill/log"
 )
 
 /*

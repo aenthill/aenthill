@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/aenthill/log"
+  packages = ["."]
+  revision = "66b98187231fafa8828170ce9cbe1b35891aaa6d"
+
+[[projects]]
+  branch = "master"
   name = "github.com/aenthill/manifest"
   packages = ["."]
   revision = "01fbb18b7a03171e124f6997ace052b7f70f6179"
@@ -98,6 +104,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b98c084a696fcd6ee5026cdb60a06d97ef52fc7073b537fded0d48f994d22a02"
+  inputs-digest = "ea61854b6ee00124027e93be6ecd3d6e9792dfd6cdfb91503da3734679fcdf5f"
   solver-name = "gps-cdcl"
   solver-version = 1

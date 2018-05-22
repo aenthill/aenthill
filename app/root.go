@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aenthill/aenthill/app/log"
+	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
 
 	"github.com/spf13/cobra"
