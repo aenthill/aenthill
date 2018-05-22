@@ -43,6 +43,8 @@ var (
 				return log.SetLevel(logLevel)
 			}
 
+			logLevel = "INFO"
+
 			return nil
 		},
 	}

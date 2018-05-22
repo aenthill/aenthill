@@ -39,12 +39,14 @@ var addCmd = &cobra.Command{
 
 		for _, image := range args {
 			ctx := &docker.EventContext{
+				WhoAmI:         RootCmd.Use,
 				Image:          image,
 				Binary:         docker.DefaultBinary,
 				HostProjectDir: projectDir,
+				LogLevel:       logLevel,
 			}
 
-			if err := docker.Send("ADD", ctx); err != nil {
+			if err := docker.Send("ADD", "", ctx); err != nil {
 				return err
 			}
 

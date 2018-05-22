@@ -32,7 +32,7 @@ var levels = map[string]logrus.Level{
 
 type wrongLogsLevelError struct{}
 
-const wrongLogsLevelErrorMessage = "accepted values for logs level: DEBUG, INFO, WARN, ERROR, FATAL, PANIC"
+const wrongLogsLevelErrorMessage = "accepted values for log level: DEBUG, INFO, WARN, ERROR, FATAL, PANIC"
 
 func (e *wrongLogsLevelError) Error() string {
 	return wrongLogsLevelErrorMessage

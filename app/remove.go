@@ -43,12 +43,14 @@ var removeCmd = &cobra.Command{
 			}
 
 			ctx := &docker.EventContext{
+				WhoAmI:         RootCmd.Use,
 				Image:          image,
 				Binary:         docker.DefaultBinary,
 				HostProjectDir: projectDir,
+				LogLevel:       logLevel,
 			}
 
-			if err := docker.Send("REMOVE", ctx); err != nil {
+			if err := docker.Send("REMOVE", "", ctx); err != nil {
 				return err
 			}
 

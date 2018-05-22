@@ -2,20 +2,41 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/aenthill/log"
+  packages = ["."]
+  revision = "ae233f3e3628e253b8f17cbf23c764d2f1aee113"
+
+[[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "98a42cbeccdaac4dc253c0f5b0d6548bac346617cdaa2ad7d2f8323e59117966"
+  inputs-digest = "8a36a488ad7d9d4bf6160bdb69c0224e5f561e69fad690a92deb78fdc489d338"
   solver-name = "gps-cdcl"
   solver-version = 1
