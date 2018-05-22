@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	isatty "github.com/mattn/go-isatty"
 )
@@ -68,11 +69,9 @@ func Send(event string, context *EventContext) error {
 
 	var e *exec.Cmd
 	if runtime.GOOS == "windows" {
-		args = append([]string{"/c"}, args...)
-		e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), args...)
+		e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", strings.Join(args, " "))
 	} else {
-		args = append([]string{"-c"}, args...)
-		e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), args...)
+		e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", strings.Join(args, " "))
 	}
 
 	e.Stdout = os.Stdout
