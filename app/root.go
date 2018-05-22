@@ -27,8 +27,8 @@ var (
 	// RootCmd is the instance of the root of all commands.
 	RootCmd = &cobra.Command{
 		Use:           "aenthill",
-		Short:         "TODO",
-		Long:          "TODO.",
+		Short:         "aenthill is a CLI tool for managing aents",
+		Long:          "aenthill is a CLI tool for managing aents",
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {

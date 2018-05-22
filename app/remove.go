@@ -19,8 +19,8 @@ func (e *noImagesToRemoveError) Error() string {
 
 var removeCmd = &cobra.Command{
 	Use:           "rm",
-	Short:         "TODO",
-	Long:          "TODO.",
+	Short:         "remove one or more aents",
+	Long:          "remove one or more aents",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, args []string) error {

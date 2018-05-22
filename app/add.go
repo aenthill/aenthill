@@ -19,8 +19,8 @@ func (e *noImagesToAddError) Error() string {
 
 var addCmd = &cobra.Command{
 	Use:           "add",
-	Short:         "TODO",
-	Long:          "TODO.",
+	Short:         "add one or more aents",
+	Long:          "add one or more aents",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, args []string) error {
