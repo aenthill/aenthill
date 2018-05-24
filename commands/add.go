@@ -15,10 +15,20 @@ type noImagesToAddError struct{}
 const noImagesToAddErrorMessage = "usage: %s %s image [image...]"
 
 func (e *noImagesToAddError) Error() string {
-	return fmt.Sprintf(noImagesToAddErrorMessage, RootCmd.Use, addCmd.Use)
+	return fmt.Sprintf(noImagesToAddErrorMessage, RootCmd.Use, AddCmd.Use)
 }
 
-var addCmd = &cobra.Command{
+/*
+AddCmd adds one or more aents.
+
+It adds the given aents in manifest (if they does not exist already)
+and sends an "ADD" event to them.
+
+Usage:
+
+ aenthill add image [image...] [flags]
+*/
+var AddCmd = &cobra.Command{
 	Use:           "add",
 	Short:         "Add one or more aents",
 	Long:          "Add one or more aents",
@@ -66,5 +76,5 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(addCmd)
+	RootCmd.AddCommand(AddCmd)
 }

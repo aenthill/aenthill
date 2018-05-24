@@ -15,7 +15,7 @@ type manifestFileDoestNotExistError struct{}
 const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current directory. Did you run %s %s?"
 
 func (e *manifestFileDoestNotExistError) Error() string {
-	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, initCmd.Use)
+	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, InitCmd.Use)
 }
 
 // levels associates log levels as used with the --logLevel -l flag

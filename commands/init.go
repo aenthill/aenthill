@@ -33,7 +33,14 @@ func (e *manifestFileAlreadyExistingError) Error() string {
 	return fmt.Sprintf(manifestFileAlreadyExistingErrorMessage, manifest.DefaultManifestFileName)
 }
 
-var initCmd = &cobra.Command{
+/*
+InitCmd creates the manifest in current directory.
+
+Usage:
+
+ aenthill init [flags]
+*/
+var InitCmd = &cobra.Command{
 	Use:           "init",
 	Short:         fmt.Sprintf("Create the manifest %s in current directory", manifest.DefaultManifestFileName),
 	Long:          fmt.Sprintf("Create the manifest %s in current directory", manifest.DefaultManifestFileName),
@@ -67,5 +74,5 @@ var initCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(initCmd)
+	RootCmd.AddCommand(InitCmd)
 }

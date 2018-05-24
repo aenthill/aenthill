@@ -15,10 +15,19 @@ type noImagesToRemoveError struct{}
 const noImagesToRemoveErrorMessage = "usage: %s %s image [image...]"
 
 func (e *noImagesToRemoveError) Error() string {
-	return fmt.Sprintf(noImagesToRemoveErrorMessage, RootCmd.Use, removeCmd.Use)
+	return fmt.Sprintf(noImagesToRemoveErrorMessage, RootCmd.Use, RemoveCmd.Use)
 }
 
-var removeCmd = &cobra.Command{
+/*
+RemoveCmd removes one or more aents.
+
+It removes the given aents from manifest and sends a "REMOVE" event to them.
+
+Usage:
+
+ aenthill rm image [image...] [flags]
+*/
+var RemoveCmd = &cobra.Command{
 	Use:           "rm",
 	Short:         "Remove one or more aents",
 	Long:          "Remove one or more aents",
@@ -66,5 +75,5 @@ var removeCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(removeCmd)
+	RootCmd.AddCommand(RemoveCmd)
 }
