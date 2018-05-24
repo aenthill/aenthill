@@ -21,7 +21,7 @@ func (e *noImagesToAddError) Error() string {
 /*
 AddCmd adds one or more aents.
 
-It adds the given aents in manifest (if they does not exist already)
+It adds the given aents in manifest (if they do not already exist)
 and sends an "ADD" event to them.
 
 Usage:
