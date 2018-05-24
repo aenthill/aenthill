@@ -38,7 +38,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(os.Args) > 1 && shouldDisplayTime() {
+	if shouldDisplayTime() {
 		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
 	}
 	fmt.Println()
@@ -47,7 +47,8 @@ func main() {
 func shouldDisplayTime() bool {
 	hasCommand, hasHelpFlag := false, false
 	for _, arg := range os.Args {
-		if arg == commands.InitCmd.Use || arg == commands.AddCmd.Use || arg == commands.RemoveCmd.Use {
+		// we ignore init command as it no relevant.
+		if arg == commands.AddCmd.Use || arg == commands.RemoveCmd.Use {
 			hasCommand = true
 		}
 
