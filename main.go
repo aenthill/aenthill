@@ -38,22 +38,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	hasCommand := false
+	if len(os.Args) > 1 && shouldDisplayTime() {
+		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
+	}
+	fmt.Println()
+}
+
+func shouldDisplayTime() bool {
+	hasCommand, hasHelpFlag := false, false
 	for _, arg := range os.Args {
 		if arg == commands.InitCmd.Use || arg == commands.AddCmd.Use || arg == commands.RemoveCmd.Use {
 			hasCommand = true
 		}
-	}
 
-	hasHelpFlag := false
-	for _, arg := range os.Args {
 		if arg == "-h" || arg == "--help" {
 			hasHelpFlag = true
 		}
 	}
 
-	if len(os.Args) > 1 && !hasHelpFlag && hasCommand {
-		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
-	}
-	fmt.Println()
+	return hasCommand && !hasHelpFlag
 }
