@@ -47,7 +47,7 @@ func main() {
 func shouldDisplayTime() bool {
 	hasCommand, hasHelpFlag := false, false
 	for _, arg := range os.Args {
-		// we ignore init command as it no relevant.
+		// we ignore init command as it is no relevant.
 		if arg == commands.AddCmd.Use || arg == commands.RemoveCmd.Use {
 			hasCommand = true
 		}
