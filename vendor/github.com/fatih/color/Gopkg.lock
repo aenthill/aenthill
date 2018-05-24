@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/apex/log"
+  name = "github.com/mattn/go-colorable"
   packages = ["."]
-  revision = "ff0f66940b829dc66c81dad34746d4349b83eb9e"
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
@@ -14,20 +14,14 @@
   version = "v0.0.3"
 
 [[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "e2c7578ad1a9fc1a9166e96605d4790a88030ece"
+  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e3411a3580786847b3a1d5aa37f3e37ba289be53c680d5902beb91f4c5fe24b7"
+  inputs-digest = "e8a50671c3cb93ea935bf210b1cd20702876b9d9226129be581ef646d1565cdc"
   solver-name = "gps-cdcl"
   solver-version = 1

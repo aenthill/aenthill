@@ -8,27 +8,23 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/aenthill/log"
+	"github.com/apex/log"
 	isatty "github.com/mattn/go-isatty"
 )
 
 const (
 	// HostProjectDirEnvVariable is the name of the environment variable which contains the host project directory.
-	// You may use this constant with os.Getenv to retrieve the current project directory in your image.
 	HostProjectDirEnvVariable = "AENTHILL_HOST_PROJECT_DIR"
-	// SenderEnvVariable is the name of the environment variable which contains the image/binary which sent the event.
-	// You may use this constant with os.Getenv to retrieve the current project directory.
+	// SenderEnvVariable is the name of the environment variable which contains the image name of the sender.
 	SenderEnvVariable = "AENTHILL_SENDER"
-	// LogLevelEnvVariable sis the name of the environment variable which contains the log level.
-	// You may use this constant with os.Getenv to retrieve the current log level.
+	// LogLevelEnvVariable is the name of the environment variable which contains the log level.
 	LogLevelEnvVariable = "AENTHILL_LOG_LEVEL"
+	// WhoAmIEnvVariable is the name of the environment variable which contains the image name.
+	WhoAmIEnvVariable = "AENTHILL_WHO_AM_I"
 	// InsideContainerProjectDir is the location the the container where the host project directory is mounted.
 	InsideContainerProjectDir = "/aenthill"
 	// DefaultBinary is the default binary to call in an image.
-	DefaultBinary                  = "aent"
-	dockerSocket                   = "/var/run/docker.sock"
-	defaultWindowsShellEnvVariable = "COMSPEC"
-	defaultPosixShellEnvVariable   = "SHELL"
+	DefaultBinary = "aent"
 )
 
 // EventContext gathers all required data of an event.
@@ -58,9 +54,12 @@ on posix system to know which interpreter to use for calling the docker client
 binary.
 */
 func Send(event string, payload string, context *EventContext) error {
-	if err := log.SetLevel(context.LogLevel); err != nil {
-		return err
-	}
+	log.WithFields(log.Fields{
+		"from":     context.WhoAmI,
+		"to":       context.Image,
+		"event":    event,
+		"paypload": payload,
+	}).Info("sending event")
 
 	var dockerOpts []string
 
@@ -70,7 +69,7 @@ func Send(event string, payload string, context *EventContext) error {
 	}
 
 	dockerOpts = append(dockerOpts, "--rm")
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", dockerSocket, dockerSocket))
+	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", "/var/run/docker.sock", "/var/run/docker.sock"))
 	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", context.HostProjectDir, InsideContainerProjectDir))
 	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", SenderEnvVariable, context.WhoAmI))
 	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, context.HostProjectDir))
@@ -83,22 +82,15 @@ func Send(event string, payload string, context *EventContext) error {
 
 	var e *exec.Cmd
 	if runtime.GOOS == "windows" {
-		e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", strings.Join(args, " "))
+		e = exec.Command(os.Getenv("COMSPEC"), "/c", strings.Join(args, " "))
 	} else {
-		e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", strings.Join(args, " "))
+		e = exec.Command(os.Getenv("SHELL"), "-c", strings.Join(args, " "))
 	}
 
 	e.Stdout = os.Stdout
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
 
-	if payload == "" {
-		log.Infof("%s is calling %s with event %s and an empty payload", context.WhoAmI, context.Image, event)
-	} else {
-		log.Infof("%s is calling %s with event %s and payload %s", context.WhoAmI, context.Image, event, payload)
-	}
-
-	log.Debugf("running %s from %s", e.Args, context.WhoAmI)
-
+	log.WithField("from", context.WhoAmI).Debugf("executing command %s", e.Args)
 	return e.Run()
 }

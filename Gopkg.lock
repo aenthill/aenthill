@@ -5,13 +5,7 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "f2d1a412f97d6255e5ceee8f47f0845a039798bd"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/aenthill/log"
-  packages = ["."]
-  revision = "ae233f3e3628e253b8f17cbf23c764d2f1aee113"
+  revision = "a8a8ccf1100a4b7a6b9d9ed8fd6b8cb5593cd5e9"
 
 [[projects]]
   branch = "master"
@@ -21,9 +15,24 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/apex/log"
+  packages = [
+    ".",
+    "handlers/cli"
+  ]
+  revision = "ff0f66940b829dc66c81dad34746d4349b83eb9e"
+
+[[projects]]
+  branch = "master"
   name = "github.com/chzyer/readline"
   packages = ["."]
   revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
+
+[[projects]]
+  name = "github.com/fatih/color"
+  packages = ["."]
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -47,14 +56,14 @@
   revision = "d14193dfc626125c831501c1c42340b4248e1f5a"
 
 [[projects]]
-  branch = "master"
   name = "github.com/manifoldco/promptui"
   packages = [
     ".",
     "list",
     "screenbuf"
   ]
-  revision = "c0c0d3afc6a03bcb5c1df10b70b862a650db9f9b"
+  revision = "3dd80c00b7cb0bc779d1c204da6f3ae0fa6a4eee"
+  version = "v0.3.0"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -69,10 +78,10 @@
   version = "v0.0.3"
 
 [[projects]]
-  name = "github.com/sirupsen/logrus"
+  name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -88,22 +97,13 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
-  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
+  packages = ["unix"]
+  revision = "e2c7578ad1a9fc1a9166e96605d4790a88030ece"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ea61854b6ee00124027e93be6ecd3d6e9792dfd6cdfb91503da3734679fcdf5f"
+  inputs-digest = "59fd0dc3832d337a029c497ef21bdd937c7a0d6f0edf8a59af66786f7b3a7d0a"
   solver-name = "gps-cdcl"
   solver-version = 1

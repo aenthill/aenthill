@@ -35,4 +35,4 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/aenthill/log"
+  name = "github.com/apex/log"

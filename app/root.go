@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
 
+	"github.com/apex/log"
 	"github.com/spf13/cobra"
 )
 
@@ -17,6 +17,24 @@ const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current 
 
 func (e *manifestFileDoestNotExistError) Error() string {
 	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, initCmd.Use)
+}
+
+// levels associates log levels as used with the --logLevel -l flag
+// with its counterpart from the github.com/apex/log library.
+var levels = map[string]log.Level{
+	"DEBUG": log.DebugLevel,
+	"INFO":  log.InfoLevel,
+	"WARN":  log.WarnLevel,
+	"ERROR": log.ErrorLevel,
+	"FATAL": log.FatalLevel,
+}
+
+type wrongLogLevelError struct{}
+
+const wrongLogLevelErrorMessage = "accepted values for log level: DEBUG, INFO, WARN, ERROR, FATAL"
+
+func (e *wrongLogLevelError) Error() string {
+	return wrongLogLevelErrorMessage
 }
 
 var (
@@ -36,14 +54,16 @@ var (
 			if err != nil {
 				return err
 			}
-
 			projectDir = wd
 
 			if logLevel != "" {
-				return log.SetLevel(logLevel)
-			}
+				l, ok := levels[logLevel]
+				if !ok {
+					return &wrongLogLevelError{}
+				}
 
-			logLevel = "INFO"
+				log.SetLevel(l)
+			}
 
 			return nil
 		},
