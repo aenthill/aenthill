@@ -1,9 +1,0 @@
-{
-	"name": "aenthill",
-	"description": "",
-	"aents": [
-		{
-			"image": "aenthill/cassandra"
-		}
-	]
-}
