@@ -1,15 +1,16 @@
 /*
-Package main handles the application startup.
+Package main is the entry point of the application.
 
 TODO
 */
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
-	"github.com/aenthill/aenthill/app"
+	"github.com/aenthill/aenthill/commands"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
@@ -20,20 +21,32 @@ version will be set by GoReleaser.
 It will be the current Git tag (with v prefix stripped) or
 the name of the snapshot if you're using the --snapshot flag.
 */
-//var version = "master"
+var version = "master"
 
 func init() {
 	log.SetHandler(cli.Default)
+	commands.RootCmd.Version = version
 }
 
 func main() {
-	start := time.Now()
+	fmt.Println()
 
-	if err := app.RootCmd.Execute(); err != nil {
-		log.WithError(err).Errorf("aenthill job failed after %0.2fs", time.Since(start).Seconds())
+	start := time.Now()
+	if err := commands.RootCmd.Execute(); err != nil {
+		log.WithError(err).Errorf("aenthill command failed after %0.2fs", time.Since(start).Seconds())
+		fmt.Println()
 		os.Exit(1)
-		return
 	}
 
-	log.Infof("aenthill job finished after %0.2fs", time.Since(start).Seconds())
+	shouldDisplayTime := true
+	for _, arg := range os.Args {
+		if arg == "-h" || arg == "--help" {
+			shouldDisplayTime = false
+		}
+	}
+
+	if len(os.Args) > 1 && shouldDisplayTime {
+		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
+	}
+	fmt.Println()
 }
