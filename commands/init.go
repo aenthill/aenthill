@@ -51,6 +51,9 @@ var InitCmd = &cobra.Command{
 			return &manifestFileAlreadyExistingError{}
 		}
 
+		fmt.Println()
+		defer fmt.Println()
+
 		// asking for project name.
 		defaultName := ""
 		wd, err := os.Getwd()
