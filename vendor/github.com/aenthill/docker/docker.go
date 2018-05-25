@@ -92,5 +92,8 @@ func Send(event string, payload string, context *EventContext) error {
 	e.Stdin = os.Stdin
 
 	log.WithField("from", context.WhoAmI).Debugf("executing command %s", e.Args)
+	fmt.Println()
+	defer fmt.Println()
+
 	return e.Run()
 }

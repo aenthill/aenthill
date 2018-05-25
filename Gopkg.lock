@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "a8a8ccf1100a4b7a6b9d9ed8fd6b8cb5593cd5e9"
+  revision = "308d0b58250e491122544cf677c98e6ddd5e42b8"
 
 [[projects]]
   branch = "master"
