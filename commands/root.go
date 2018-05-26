@@ -10,12 +10,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type manifestFileDoestNotExistError struct{}
+type manifestFileDoesNotExistError struct{}
 
-const manifestFileDoestNotExistErrorMessage = "manifest %s not found in current directory. Did you run %s %s?"
+const manifestFileDoesNotExistErrorMessage = "manifest %s not found in current directory. Did you run %s %s?"
 
-func (e *manifestFileDoestNotExistError) Error() string {
-	return fmt.Sprintf(manifestFileDoestNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, InitCmd.Use)
+func (e *manifestFileDoesNotExistError) Error() string {
+	return fmt.Sprintf(manifestFileDoesNotExistErrorMessage, manifest.DefaultManifestFileName, RootCmd.Use, InitCmd.Use)
 }
 
 // levels associates log levels as used with the --logLevel -l flag

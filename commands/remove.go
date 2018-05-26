@@ -35,7 +35,7 @@ var RemoveCmd = &cobra.Command{
 	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if _, err := os.Stat(manifest.DefaultManifestFileName); err != nil {
-			return &manifestFileDoestNotExistError{}
+			return &manifestFileDoesNotExistError{}
 		}
 
 		if len(args) == 0 {

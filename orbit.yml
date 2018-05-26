@@ -9,4 +9,4 @@ tasks:
     short: Runs CI process inside a container
     run:
       - docker build -t aenthill/aenthill:ci .
-      - docker run --rm -e "VERSION={{ .Orbit.Version }}" -v "$(pwd)/out:/go/src/github.com/aenthill/aenthill/out" aenthill/aenthill:ci
+      - docker run --rm -e "VERSION={{ .Orbit.Version }}" -e "HOST_PROJECT_DIR=$(pwd)" -v "/var/run/docker.sock:/var/run/docker.sock" -v "$(pwd)/out:/go/src/github.com/aenthill/aenthill/out" aenthill/aenthill:ci

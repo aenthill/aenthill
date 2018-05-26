@@ -15,4 +15,13 @@ COPY . .
 # Installs project dependencies.
 RUN go get -d -v ./...
 
+# Installs Docker client.
+ENV DOCKER_VERSION "18.03.1-ce"
+RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-$DOCKER_VERSION.tgz | tar xvz -C . &&\
+    mv ./docker/docker /usr/bin &&\
+    rm -rf ./docker    
+
+# Defines SHELL.
+ENV SHELL "/bin/sh"
+
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
