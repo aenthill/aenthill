@@ -1,18 +1,39 @@
-// Package manifest contains functions for manipulating an aenthill manifest.
+// Package manifest is a library easing the manipulation of an aenthill manifest.
 package manifest
 
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+
+	"github.com/spf13/afero"
 )
 
+// DefaultManifestFileName may be used as path argument for
+// NewManifest function.
+const DefaultManifestFileName = "aenthill.json"
+
+// Manifest is our working struct for manipulating an aenthill manifest.
+type Manifest struct {
+	path string
+	fs   afero.Fs
+	data *data
+}
+
+// New creates a Manifest instance with
+// the given file path (may not exist) and file system.
+func New(path string, fs afero.Fs) *Manifest {
+	return &Manifest{
+		path: path,
+		fs:   fs,
+		data: &data{
+			Aents: make([]*Aent, 0),
+		},
+	}
+}
+
 type (
-	// Manifest gathers all data from an aenthill manifest.
-	Manifest struct {
-		Name        string  `json:"name"`
-		Description string  `json:"description"`
-		Aents       []*Aent `json:"aents,omitempty"`
+	data struct {
+		Aents []*Aent `json:"aents,omitempty"`
 	}
 
 	// Aent represents an entry from aents list.
@@ -21,36 +42,42 @@ type (
 	}
 )
 
-// DefaultManifestFileName may be used in all functions with
-// manifestFilePath as argument.
-const DefaultManifestFileName = "aenthill.json"
+// GetPath returns the path of the manifest file.
+func (m *Manifest) GetPath() string {
+	return m.path
+}
 
-// Flush populates the given file with manifest data.
+// Exist returns true if the manifest file exists.
+func (m *Manifest) Exist() bool {
+	_, err := m.fs.Stat(m.path)
+	return err == nil
+}
+
+// Flush writes the manifest file and populates it with the manifest data.
 // The data will be written as JSON.
-func Flush(manifestFilePath string, manifest *Manifest) error {
-	out, err := json.MarshalIndent(manifest, "", "\t")
+func (m *Manifest) Flush() error {
+	out, err := json.MarshalIndent(m.data, "", "\t")
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(manifestFilePath, out, 0644)
+	return afero.WriteFile(m.fs, m.path, out, 0644)
 }
 
-// Parse simply parses the given file path and returns an instance of
-// Manifest.
-func Parse(manifestFilePath string) (*Manifest, error) {
-	m := &Manifest{}
-
-	data, err := ioutil.ReadFile(manifestFilePath)
+// Parse simply parses the manifest file and populates the manifest data.
+// Make sure your Manifest instance has a path to an existing file before
+// using this function.
+func (m *Manifest) Parse() error {
+	data, err := afero.ReadFile(m.fs, m.path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
+	if err := json.Unmarshal(data, &m.data); err != nil {
+		return err
 	}
 
-	return m, nil
+	return nil
 }
 
 type aentAlreadyInManifestError struct {
@@ -63,14 +90,13 @@ func (e *aentAlreadyInManifestError) Error() string {
 	return fmt.Sprintf(aentAlreadyInManifestErrorMessage, e.image)
 }
 
-// AddAent adds an image in given manifest.
+// AddAent adds an image in the manifest.
 // If the image does already exist, throws an error.
-func AddAent(image string, manifest *Manifest) error {
-	if getAentIndex(image, manifest) != -1 {
+func (m *Manifest) AddAent(image string) error {
+	if m.getAentIndex(image) != -1 {
 		return &aentAlreadyInManifestError{image}
 	}
-
-	manifest.Aents = append(manifest.Aents, &Aent{image})
+	m.data.Aents = append(m.data.Aents, &Aent{image})
 
 	return nil
 }
@@ -85,27 +111,31 @@ func (e *aentNotInManifestError) Error() string {
 	return fmt.Sprintf(aentNotInManifestErrorMessage, e.image)
 }
 
-// RemoveAent removes an image in given manifest.
+// RemoveAent removes an image from the manifest.
 // If the image does not exist, throws an error.
-func RemoveAent(image string, manifest *Manifest) error {
-	index := getAentIndex(image, manifest)
+func (m *Manifest) RemoveAent(image string) error {
+	index := m.getAentIndex(image)
 	if index == -1 {
 		return &aentNotInManifestError{image}
 	}
-
-	manifest.Aents = append(manifest.Aents[:index], manifest.Aents[index+1:]...)
+	m.data.Aents = append(m.data.Aents[:index], m.data.Aents[index+1:]...)
 
 	return nil
 }
 
-// Exist returns true if the image exists in given manifest,
+// HasAent returns true if the image exists in the manifest,
 // false otherwise.
-func Exist(image string, manifest *Manifest) bool {
-	return getAentIndex(image, manifest) != -1
+func (m *Manifest) HasAent(image string) bool {
+	return m.getAentIndex(image) != -1
 }
 
-func getAentIndex(image string, manifest *Manifest) int {
-	for i, aent := range manifest.Aents {
+// GetAents returns the array of aents of the manifest.
+func (m *Manifest) GetAents() []*Aent {
+	return m.data.Aents
+}
+
+func (m *Manifest) getAentIndex(image string) int {
+	for i, aent := range m.data.Aents {
 		if aent.Image == image {
 			return i
 		}

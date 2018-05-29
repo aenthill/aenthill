@@ -6,14 +6,15 @@ TODO
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
-	"github.com/aenthill/aenthill/commands"
+	"github.com/aenthill/aenthill/app"
 
+	"github.com/aenthill/manifest"
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	"github.com/spf13/afero"
 )
 
 /*
@@ -25,30 +26,28 @@ var version = "master"
 
 func init() {
 	log.SetHandler(cli.Default)
-	commands.RootCmd.Version = version
 }
 
 func main() {
-	fmt.Println()
-
+	m := manifest.New(manifest.DefaultManifestFileName, afero.NewOsFs())
+	a := app.New(m, version)
 	start := time.Now()
-	if err := commands.RootCmd.Execute(); err != nil {
+
+	if err := a.Execute(); err != nil {
 		log.WithError(err).Errorf("aenthill command failed after %0.2fs", time.Since(start).Seconds())
-		fmt.Println()
 		os.Exit(1)
 	}
 
 	if shouldDisplayTime() {
 		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
 	}
-	fmt.Println()
 }
 
 func shouldDisplayTime() bool {
 	hasCommand, hasHelpFlag := false, false
 	for _, arg := range os.Args {
 		// we ignore init command as it is no relevant.
-		if arg == commands.AddCmd.Use || arg == commands.RemoveCmd.Use {
+		if arg == "add" || arg == "rm" {
 			hasCommand = true
 		}
 

@@ -30,17 +30,5 @@
   unused-packages = true
 
 [[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.3"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/manifest"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/docker"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/apex/log"
+  name = "github.com/spf13/afero"
+  version = "1.1.0"
