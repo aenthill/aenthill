@@ -18,6 +18,8 @@ func (e *manifestFileAlreadyExistingError) Error() string {
 	return fmt.Sprintf(manifestFileAlreadyExistingErrorMessage, manifest.DefaultManifestFileName)
 }
 
+// NewInitCmd creates a cobra.Command instance which will use the given
+// Manifest and AppContext instances.
 func NewInitCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "init",

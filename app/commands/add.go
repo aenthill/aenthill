@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/aenthill/aenthill/app/context"
 
 	"github.com/aenthill/docker"
@@ -19,6 +17,8 @@ func (e *noImagesToAddError) Error() string {
 	return noImagesToAddErrorMessage
 }
 
+// NewAddCmd creates a cobra.Command instance which will use the given
+// Manifest and AppContext instances.
 func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "add",
@@ -56,9 +56,9 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 					if err := m.Flush(); err != nil {
 						return err
 					}
-					log.WithField("aent", fmt.Sprintf("%s", image)).Info("added new aent in manifest")
+					log.WithField("aent", image).Info("added new aent in manifest")
 				} else {
-					log.WithField("aent", fmt.Sprintf("%s", image)).Info("aent already in manifest")
+					log.WithField("aent", image).Info("aent already in manifest")
 				}
 			}
 

@@ -1,3 +1,8 @@
+/*
+Package app is a wrapper around cobra library.
+
+Its main goal is to initialize the application context and validate it.
+*/
 package app
 
 import (

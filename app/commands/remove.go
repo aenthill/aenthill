@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/aenthill/aenthill/app/context"
 
 	"github.com/aenthill/docker"
@@ -19,6 +17,8 @@ func (e *noImagesToRemoveError) Error() string {
 	return noImagesToRemoveErrorMessage
 }
 
+// NewRemoveCmd creates a cobra.Command instance which will use the given
+// Manifest and AppContext instances.
 func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "rm",
@@ -43,7 +43,7 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 				if err := m.RemoveAent(image); err != nil {
 					return err
 				}
-				log.WithField("aent", fmt.Sprintf("%s", image)).Info("removed aent from manifest")
+				log.WithField("aent", image).Info("removed aent from manifest")
 
 				ctx := &docker.EventContext{
 					WhoAmI:         "aenthill",

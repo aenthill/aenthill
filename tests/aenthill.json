@@ -1,6 +1,4 @@
 {
-    "name": "foo",
-    "description": "bar",
     "aents": [
         {
             "image": "aenthill/cassandra"
