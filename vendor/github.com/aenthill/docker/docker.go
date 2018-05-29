@@ -42,12 +42,12 @@ type EventContext struct {
 	// HostProjectDir is the project directory on the host.
 	HostProjectDir string
 	// LogLevel is the log level which should be used by the targeted image.
-	// Accepted values for log level: DEBUG, INFO, WARN, ERROR, FATAL.
+	// Accepted values for log level: DEBUG, INFO, WARN, ERROR.
 	LogLevel string
 }
 
 /*
-Send use the docker client binary to send an event.
+Send uses the docker client binary to send an event.
 
 It will in fact run a command in the targeted image, using the following template:
 
@@ -63,38 +63,119 @@ Important: it relies on COMSPEC environment variable on Windows and SHELL
 on posix system to know which interpreter to use for calling the docker client
 binary.
 */
-func Send(event string, payload string, context *EventContext) error {
+func Send(event string, payload string, ctx *EventContext) error {
+	if err := validate(event, payload, ctx); err != nil {
+		return err
+	}
+
 	log.WithFields(log.Fields{
-		"from":     context.WhoAmI,
-		"to":       context.Image,
+		"from":     ctx.WhoAmI,
+		"to":       ctx.Image,
 		"event":    event,
 		"paypload": payload,
 	}).Info("sending event")
 
-	var args []string
-	args = append(args, []string{"docker", "run"}...)
-	args = append(args, buildDockerOpts(context)...)
-	args = append(args, []string{context.Image, context.Binary, event, payload}...)
-
 	var e *exec.Cmd
 	if runtime.GOOS == "windows" {
-		e = exec.Command(os.Getenv("COMSPEC"), "/c", strings.Join(args, " "))
+		e = exec.Command(os.Getenv("COMSPEC"), "/c", buildArgs(event, payload, ctx))
 	} else {
-		e = exec.Command(os.Getenv("SHELL"), "-c", strings.Join(args, " "))
+		e = exec.Command(os.Getenv("SHELL"), "-c", buildArgs(event, payload, ctx))
 	}
 
 	e.Stdout = os.Stdout
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
 
-	log.WithField("from", context.WhoAmI).Debugf("executing command %s", e.Args)
+	log.WithField("from", ctx.WhoAmI).Debugf("executing command %s", e.Args)
 	fmt.Println()
 	defer fmt.Println()
 
 	return e.Run()
 }
 
-func buildDockerOpts(context *EventContext) []string {
+type parameterIsEmptyError struct {
+	parameterName string
+}
+
+const parameterIsEmptyErrorMessage = "parameter %s is empty"
+
+func (e *parameterIsEmptyError) Error() string {
+	return fmt.Sprintf(parameterIsEmptyErrorMessage, e.parameterName)
+}
+
+func validate(event string, payload string, ctx *EventContext) error {
+	if event == "" {
+		return &parameterIsEmptyError{"event"}
+	}
+
+	if err := validateEventContext(ctx); err != nil {
+		return err
+	}
+
+	return validateLogLevel(ctx.LogLevel)
+}
+
+type attributeValueIsEmptyError struct {
+	attributeName string
+	reason        string
+}
+
+const attributeValueIsEmptyErrorMessage = "attribute %s is required: %s"
+
+func (e *attributeValueIsEmptyError) Error() string {
+	return fmt.Sprintf(attributeValueIsEmptyErrorMessage, e.attributeName, e.reason)
+}
+
+func validateEventContext(ctx *EventContext) error {
+	if ctx.WhoAmI == "" {
+		return &attributeValueIsEmptyError{"WhoAmI", "it is the image which is sending the event"}
+	}
+
+	if ctx.Image == "" {
+		return &attributeValueIsEmptyError{"Image", "it is the image which receives the event"}
+	}
+
+	if ctx.Binary == "" {
+		return &attributeValueIsEmptyError{"Binary", "it is the command which handles the event in the targeted image"}
+	}
+
+	if ctx.HostProjectDir == "" {
+		return &attributeValueIsEmptyError{"HostProjectDir", "it is the project directory on the host"}
+	}
+
+	if ctx.LogLevel == "" {
+		return &attributeValueIsEmptyError{"LogLevel", "it is the log level which should be used by the targeted image"}
+	}
+
+	return nil
+}
+
+// levels associates log levels as used with the --logLevel -l flag from aenthill
+// with its counterpart from the github.com/apex/log library.
+var levels = map[string]log.Level{
+	"DEBUG": log.DebugLevel,
+	"INFO":  log.InfoLevel,
+	"WARN":  log.WarnLevel,
+	"ERROR": log.ErrorLevel,
+}
+
+type wrongLogLevelError struct{}
+
+const wrongLogLevelErrorMessage = "accepted values for log level: DEBUG, INFO, WARN, ERROR"
+
+func (e *wrongLogLevelError) Error() string {
+	return wrongLogLevelErrorMessage
+}
+
+func validateLogLevel(logLevel string) error {
+	if _, ok := levels[logLevel]; !ok {
+		return &wrongLogLevelError{}
+	}
+
+	return nil
+}
+
+func buildArgs(event string, payload string, ctx *EventContext) string {
 	var dockerOpts []string
 
 	// attaches Stdin if TTY.
@@ -104,10 +185,15 @@ func buildDockerOpts(context *EventContext) []string {
 
 	dockerOpts = append(dockerOpts, "--rm")
 	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", "/var/run/docker.sock", "/var/run/docker.sock"))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", context.HostProjectDir, InsideContainerProjectDir))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", SenderEnvVariable, context.WhoAmI))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, context.HostProjectDir))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", LogLevelEnvVariable, context.LogLevel))
+	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", ctx.HostProjectDir, InsideContainerProjectDir))
+	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", SenderEnvVariable, ctx.WhoAmI))
+	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, ctx.HostProjectDir))
+	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", LogLevelEnvVariable, ctx.LogLevel))
 
-	return dockerOpts
+	var args []string
+	args = append(args, []string{"docker", "run"}...)
+	args = append(args, dockerOpts...)
+	args = append(args, []string{ctx.Image, ctx.Binary, event, payload}...)
+
+	return strings.Join(args, " ")
 }
