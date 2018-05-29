@@ -43,10 +43,19 @@ func TestInitialize(t *testing.T) {
 		}
 	})
 
-	t.Run("calling initialize with all parameters OK", func(t *testing.T) {
+	t.Run("calling initialize with a valid log level", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		app := New(m, "snapshot")
 		app.ctx = &context.AppContext{LogLevel: "DEBUG"}
+		if err := app.initialize(); err != nil {
+			t.Errorf("initialize should not have thrown an error as log level %s does exist", app.ctx.LogLevel)
+		}
+	})
+
+	t.Run("calling initialize with all parameters OK", func(t *testing.T) {
+		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
+		app := New(m, "snapshot")
+		app.ctx = &context.AppContext{}
 		if err := app.initialize(); err != nil {
 			t.Error("initialize should not have thrown an error as all parameters are OK")
 		}

@@ -33,7 +33,7 @@ func NewInitCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command
 			}
 
 			err := m.Flush()
-			if err != nil {
+			if err == nil {
 				log.Infof("%s created! May the swarm be with you", manifest.DefaultManifestFileName)
 			}
 
