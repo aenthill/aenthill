@@ -40,11 +40,6 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 			}
 
 			for _, image := range args {
-				if err := m.RemoveAent(image); err != nil {
-					return err
-				}
-				log.WithField("aent", image).Info("removed aent from manifest")
-
 				ctx := &docker.EventContext{
 					From:           "aenthill",
 					To:             image,
@@ -55,6 +50,11 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 				if err := docker.Execute("REMOVE", "", ctx); err != nil {
 					return err
 				}
+
+				if err := m.RemoveAent(image); err != nil {
+					return err
+				}
+				log.WithField("aent", image).Info("removed aent from manifest")
 
 				if err := m.Flush(); err != nil {
 					return err

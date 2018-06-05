@@ -51,7 +51,7 @@ func TestAddCmd(t *testing.T) {
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while trying to flush the given manifest: %s", err.Error())
 		}
-		ctx := &context.AppContext{LogLevel: "DEBUG", ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG"}
 		cmd := NewAddCmd(m, ctx)
 		if err := cmd.RunE(nil, []string{image}); err != nil {
 			t.Errorf("RunE should not have thrown an error as the image %s should not exist in given manifest", image)
@@ -61,7 +61,7 @@ func TestAddCmd(t *testing.T) {
 	t.Run("calling RunE with an existing image as argument", func(t *testing.T) {
 		image := "aenthill/cassandra"
 		m := manifest.New("../../tests/aenthill.json", afero.NewOsFs())
-		ctx := &context.AppContext{LogLevel: "DEBUG", ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG"}
 		cmd := NewAddCmd(m, ctx)
 		if err := cmd.RunE(nil, []string{image}); err != nil {
 			t.Errorf("RunE should not have thrown an error as the image %s should exist in given manifest", image)

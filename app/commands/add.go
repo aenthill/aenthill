@@ -40,6 +40,15 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 			}
 
 			for _, image := range args {
+				if err := m.AddAent(image); err == nil {
+					if err := m.Flush(); err != nil {
+						return err
+					}
+					log.WithField("aent", image).Info("added new aent in manifest")
+				} else {
+					log.WithField("aent", image).Info("aent already in manifest")
+				}
+
 				ctx := &docker.EventContext{
 					From:           "aenthill",
 					To:             image,
@@ -49,15 +58,6 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 
 				if err := docker.Execute("ADD", "", ctx); err != nil {
 					return err
-				}
-
-				if err := m.AddAent(image); err == nil {
-					if err := m.Flush(); err != nil {
-						return err
-					}
-					log.WithField("aent", image).Info("added new aent in manifest")
-				} else {
-					log.WithField("aent", image).Info("aent already in manifest")
 				}
 			}
 

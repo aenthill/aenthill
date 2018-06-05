@@ -67,7 +67,7 @@ func TestRemoveCmd(t *testing.T) {
 		if err := m.AddAent(image); err != nil {
 			t.Errorf("an unexpected error occurred while adding an aent: %s", err.Error())
 		}
-		ctx := &context.AppContext{LogLevel: "DEBUG", ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG"}
 		cmd := NewRemoveCmd(m, ctx)
 		if err := cmd.RunE(nil, []string{image}); err != nil {
 			t.Error("RunE should not have thrown an error as all parameters are OK")
