@@ -5,13 +5,13 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "ccf127bbaa1585faf2ca18a01bf896c14fc27d9f"
+  revision = "4878a6e9d13b865c6f7438822652da00064b4758"
 
 [[projects]]
   branch = "master"
   name = "github.com/aenthill/manifest"
   packages = ["."]
-  revision = "237a0b32c5bdebb8c705a9cbb7c0f07abc44e774"
+  revision = "e49fe2fe88e200c8399c0f880d5503e48e5cae22"
 
 [[projects]]
   branch = "master"

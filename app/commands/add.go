@@ -41,14 +41,13 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 
 			for _, image := range args {
 				ctx := &docker.EventContext{
-					WhoAmI:         "aenthill",
-					Image:          image,
-					Binary:         docker.DefaultBinary,
+					From:           "aenthill",
+					To:             image,
 					HostProjectDir: appCtx.ProjectDir,
 					LogLevel:       appCtx.LogLevel,
 				}
 
-				if err := docker.Send("ADD", "", ctx); err != nil {
+				if err := docker.Execute("ADD", "", ctx); err != nil {
 					return err
 				}
 

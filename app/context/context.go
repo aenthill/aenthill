@@ -6,6 +6,6 @@ package context
 
 // AppContext is our working struct.
 type AppContext struct {
-	LogLevel   string
 	ProjectDir string
+	LogLevel   string
 }

@@ -46,14 +46,13 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 				log.WithField("aent", image).Info("removed aent from manifest")
 
 				ctx := &docker.EventContext{
-					WhoAmI:         "aenthill",
-					Image:          image,
-					Binary:         docker.DefaultBinary,
+					From:           "aenthill",
+					To:             image,
 					HostProjectDir: appCtx.ProjectDir,
 					LogLevel:       appCtx.LogLevel,
 				}
 
-				if err := docker.Send("REMOVE", "", ctx); err != nil {
+				if err := docker.Execute("REMOVE", "", ctx); err != nil {
 					return err
 				}
 

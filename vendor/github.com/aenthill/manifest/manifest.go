@@ -1,4 +1,4 @@
-// Package manifest is a library easing the manipulation of an aenthill manifest.
+// Package manifest is a library easing the manipulation of an Aenthill manifest.
 package manifest
 
 import (
@@ -12,7 +12,7 @@ import (
 // NewManifest function.
 const DefaultManifestFileName = "aenthill.json"
 
-// Manifest is our working struct for manipulating an aenthill manifest.
+// Manifest is our working struct for manipulating an Aenthill manifest.
 type Manifest struct {
 	path string
 	fs   afero.Fs
@@ -38,7 +38,8 @@ type (
 
 	// Aent represents an entry from aents list.
 	Aent struct {
-		Image string `json:"image"`
+		Image         string   `json:"image"`
+		HandledEvents []string `json:"handled_events,omitempty"`
 	}
 )
 
@@ -80,35 +81,57 @@ func (m *Manifest) Parse() error {
 	return nil
 }
 
-type aentAlreadyInManifestError struct {
+type addExistingAentError struct {
 	image string
 }
 
-const aentAlreadyInManifestErrorMessage = "cannot add %s in given manifest as it does already exist"
+const addExistingAentErrorMessage = "cannot add %s in given manifest as it does already exist"
 
-func (e *aentAlreadyInManifestError) Error() string {
-	return fmt.Sprintf(aentAlreadyInManifestErrorMessage, e.image)
+func (e *addExistingAentError) Error() string {
+	return fmt.Sprintf(addExistingAentErrorMessage, e.image)
 }
 
 // AddAent adds an image in the manifest.
 // If the image does already exist, throws an error.
 func (m *Manifest) AddAent(image string) error {
 	if m.getAentIndex(image) != -1 {
-		return &aentAlreadyInManifestError{image}
+		return &addExistingAentError{image}
 	}
-	m.data.Aents = append(m.data.Aents, &Aent{image})
+	m.data.Aents = append(m.data.Aents, &Aent{Image: image})
 
 	return nil
 }
 
-type aentNotInManifestError struct {
+type setHandledEventsToNonExistingAentError struct {
 	image string
 }
 
-const aentNotInManifestErrorMessage = "cannot remove %s in given manifest as it does not exist"
+const setHandledEventsToNonExistingAentErrorMessage = "cannot set handled events to %s in given manifest as it does not exist"
 
-func (e *aentNotInManifestError) Error() string {
-	return fmt.Sprintf(aentNotInManifestErrorMessage, e.image)
+func (e *setHandledEventsToNonExistingAentError) Error() string {
+	return fmt.Sprintf(setHandledEventsToNonExistingAentErrorMessage, e.image)
+}
+
+// SetHandledEvents sets the handled events of an image (previous handled events will be deleted).
+// If the image does not exist, throws an error.
+func (m *Manifest) SetHandledEvents(image string, events ...string) error {
+	index := m.getAentIndex(image)
+	if index == -1 {
+		return &setHandledEventsToNonExistingAentError{image}
+	}
+	m.data.Aents[index].HandledEvents = append([]string{}, events...)
+
+	return nil
+}
+
+type removeNonExistingAentError struct {
+	image string
+}
+
+const removeNonExistingAentErrorMessage = "cannot remove %s in given manifest as it does not exist"
+
+func (e *removeNonExistingAentError) Error() string {
+	return fmt.Sprintf(removeNonExistingAentErrorMessage, e.image)
 }
 
 // RemoveAent removes an image from the manifest.
@@ -116,7 +139,7 @@ func (e *aentNotInManifestError) Error() string {
 func (m *Manifest) RemoveAent(image string) error {
 	index := m.getAentIndex(image)
 	if index == -1 {
-		return &aentNotInManifestError{image}
+		return &removeNonExistingAentError{image}
 	}
 	m.data.Aents = append(m.data.Aents[:index], m.data.Aents[index+1:]...)
 
@@ -129,9 +152,31 @@ func (m *Manifest) HasAent(image string) bool {
 	return m.getAentIndex(image) != -1
 }
 
-// GetAents returns the array of aents of the manifest.
-func (m *Manifest) GetAents() []*Aent {
-	return m.data.Aents
+// GetAents returns the array of aents of the manifest which handle the event.
+// If no event, returns all aents.
+func (m *Manifest) GetAents(event string) []*Aent {
+	if event == "" {
+		return m.data.Aents
+	}
+
+	var aents []*Aent
+	for _, aent := range m.data.Aents {
+		if len(aent.HandledEvents) == 0 || m.isAentHandlingEvent(aent, event) {
+			aents = append(aents, aent)
+		}
+	}
+
+	return aents
+}
+
+func (m *Manifest) isAentHandlingEvent(aent *Aent, event string) bool {
+	for _, handledEvent := range aent.HandledEvents {
+		if handledEvent == event {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (m *Manifest) getAentIndex(image string) int {

@@ -70,6 +70,12 @@ func (e *wrongLogLevelError) Error() string {
 }
 
 func (app *App) initialize() error {
+	projectDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	app.ctx.ProjectDir = projectDir
+
 	if app.ctx.LogLevel != "" {
 		l, ok := levels[app.ctx.LogLevel]
 		if !ok {
@@ -79,12 +85,6 @@ func (app *App) initialize() error {
 	} else {
 		app.ctx.LogLevel = "INFO"
 	}
-
-	projectDir, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	app.ctx.ProjectDir = projectDir
 
 	return nil
 }

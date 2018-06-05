@@ -45,15 +45,6 @@ func TestAddCmd(t *testing.T) {
 		}
 	})
 
-	t.Run("calling RunE with a wrong application context", func(t *testing.T) {
-		m := manifest.New("../../tests/aenthill.json", afero.NewOsFs())
-		ctx := &context.AppContext{}
-		cmd := NewAddCmd(m, ctx)
-		if err := cmd.RunE(nil, []string{"aenthill/cassandra"}); err == nil {
-			t.Error("RunE should have thrown an error as the application context is invalid")
-		}
-	})
-
 	t.Run("calling RunE with a non-existing image as argument", func(t *testing.T) {
 		image := "aenthill/cassandra"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())

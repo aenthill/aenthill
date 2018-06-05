@@ -1,4 +1,4 @@
-// Package docker helps sending Aenthill events with the docker client binary.
+// Package docker is a library for sending Aenthill events using the docker client binary.
 package docker
 
 import (
@@ -13,32 +13,29 @@ import (
 )
 
 const (
-	// HostProjectDirEnvVariable is the name of the environment variable which contains the host project directory.
-	// The recipient image will have this variable populated with the HostProjectDir attribute of the EventContext.
-	HostProjectDirEnvVariable = "AENTHILL_HOST_PROJECT_DIR"
-	// SenderEnvVariable is the name of the environment variable which contains the image name of the sender.
+	// FromEnvVariable is the name of the environment variable which contains the sender image name.
 	// The recipient image will have this variable populated with the WhoAmI attribute of the EventContext.
-	SenderEnvVariable = "AENTHILL_SENDER"
+	FromEnvVariable = "PHEROMONE_FROM"
+	// WhoAmIEnvVariable is the name of the environment variable which contains the recipient image name.
+	// The recipient image will have this variable populated with the To attribute of the EventContext.
+	WhoAmIEnvVariable = "PHEROMONE_WHOAMI"
+	// HostProjectDirEnvVariable is the name of the environment variable which contains the host project directory path.
+	// The recipient image will have this variable populated with the HostProjectDir attribute of the EventContext.
+	HostProjectDirEnvVariable = "PHEROMONE_HOST_PROJECT_DIR"
+	// ContainerProjectDirEnvVariable is the name of the environment variable which contains the mounted path of the host project directory.
+	// The recipient image will have this variable populated with "/aenthill".
+	ContainerProjectDirEnvVariable = "PHEROMONE_CONTAINER_PROJECT_DIR"
 	// LogLevelEnvVariable is the name of the environment variable which contains the log level.
 	// The recipient image will have this variable populated with the LogLevel attribute of the EventContext.
-	LogLevelEnvVariable = "AENTHILL_LOG_LEVEL"
-	// WhoAmIEnvVariable is the name of the environment variable which contains the image name.
-	// The recipient and sender images should both have this environment variable populated with their respective image name.
-	WhoAmIEnvVariable = "AENTHILL_WHOAMI"
-	// InsideContainerProjectDir is the location in the container where the host project directory is mounted.
-	InsideContainerProjectDir = "/aenthill"
-	// DefaultBinary is the default binary to call in an image.
-	DefaultBinary = "aent"
+	LogLevelEnvVariable = "PHEROMONE_LOG_LEVEL"
 )
 
 // EventContext gathers all required data of an event.
 type EventContext struct {
-	// WhoAmI is the image which is sending the event.
-	WhoAmI string
-	// Image is the image which receives the event.
-	Image string
-	// Binary is the command which handles the event in the targeted image.
-	Binary string
+	// From is the image which is sending the event.
+	From string
+	// To is the image which receives the event.
+	To string
 	// HostProjectDir is the project directory on the host.
 	HostProjectDir string
 	// LogLevel is the log level which should be used by the targeted image.
@@ -46,154 +43,115 @@ type EventContext struct {
 	LogLevel string
 }
 
+type dockerBinaryNotFoundError struct{}
+
+const dockerBinaryNotFoundErrorMessage = "docker binary was not found"
+
+func (e *dockerBinaryNotFoundError) Error() string {
+	return dockerBinaryNotFoundErrorMessage
+}
+
 /*
-Send uses the docker client binary to send an event.
+Execute uses the docker client binary to send an event.
 
 It will in fact run a command in the targeted image, using the following template:
 
  docker run [-ti] --rm
  -v "/var/run/docker.sock:/var/run/docker.sock"
  -v "HostProjectDir:/aenthill"
- -e "AENTHILL_SENDER=WhoAmI"
- -e "AENTHILL_HOST_PROJECT_DIR=HostProjectDir"
- -e "AENTHILL_LOG_LEVEL=LogLevel"
- Image Binary even payload
-
-Important: it relies on COMSPEC environment variable on Windows and SHELL
-on posix system to know which interpreter to use for calling the docker client
-binary.
+ -e "PHEROMONE_FROM=EventContext.WhoAmI"
+ -e "PHEROMONE_WHOAMI=EventContext.To"
+ -e "PHEROMONE_HOST_PROJECT_DIR=EventContext.HostProjectDir"
+ -e "PHEROMONE_CONTAINER_PROJECT_DIR=/aenthill"
+ -e "PHEROMONE_LOG_LEVEL=EventContextLogLevel"
+ EventContext.To aent event payload
 */
-func Send(event string, payload string, ctx *EventContext) error {
-	if err := validate(event, payload, ctx); err != nil {
+func Execute(event string, payload string, ctx *EventContext) error {
+	if _, err := exec.LookPath("docker"); err != nil {
+		return &dockerBinaryNotFoundError{}
+	}
+
+	cmd := buildDockerCommand(event, payload, ctx)
+	e, err := newExecCmd(cmd)
+	if err != nil {
 		return err
 	}
 
 	log.WithFields(log.Fields{
-		"from":     ctx.WhoAmI,
-		"to":       ctx.Image,
+		"from":     ctx.From,
+		"to":       ctx.To,
 		"event":    event,
 		"paypload": payload,
 	}).Info("sending event")
 
-	var e *exec.Cmd
-	if runtime.GOOS == "windows" {
-		e = exec.Command(os.Getenv("COMSPEC"), "/c", buildArgs(event, payload, ctx))
-	} else {
-		e = exec.Command(os.Getenv("SHELL"), "-c", buildArgs(event, payload, ctx))
-	}
-
-	e.Stdout = os.Stdout
-	e.Stderr = os.Stderr
-	e.Stdin = os.Stdin
-
-	log.WithField("from", ctx.WhoAmI).Debugf("executing command %s", e.Args)
-	fmt.Println()
-	defer fmt.Println()
+	log.WithField("from", ctx.From).Debugf("executing command %s", e.Args)
 
 	return e.Run()
 }
 
-type parameterIsEmptyError struct {
-	parameterName string
+type interpreterNotFoundError struct {
+	envVar string
 }
 
-const parameterIsEmptyErrorMessage = "parameter %s is empty"
+const interpreterNotFoundErrorMessage = "%s is a required environment variable: it allows to know which interpreter to use for executing the docker command"
 
-func (e *parameterIsEmptyError) Error() string {
-	return fmt.Sprintf(parameterIsEmptyErrorMessage, e.parameterName)
+func (e *interpreterNotFoundError) Error() string {
+	return fmt.Sprintf(interpreterNotFoundErrorMessage, e.envVar)
 }
 
-func validate(event string, payload string, ctx *EventContext) error {
-	if event == "" {
-		return &parameterIsEmptyError{"event"}
+func newExecCmd(command string) (*exec.Cmd, error) {
+	var (
+		envVar string
+		flag   string
+	)
+
+	if runtime.GOOS == "windows" {
+		envVar = "COMSPEC"
+		flag = "/c"
+	} else {
+		envVar = "SHELL"
+		flag = "-c"
 	}
 
-	if err := validateEventContext(ctx); err != nil {
-		return err
+	interpreter := os.Getenv(envVar)
+	if interpreter == "" {
+		return nil, &interpreterNotFoundError{envVar}
 	}
 
-	return validateLogLevel(ctx.LogLevel)
+	e := exec.Command(interpreter, flag, command)
+	e.Stdout = os.Stdout
+	e.Stderr = os.Stderr
+	e.Stdin = os.Stdin
+
+	return e, nil
 }
 
-type attributeValueIsEmptyError struct {
-	attributeName string
-	reason        string
-}
-
-const attributeValueIsEmptyErrorMessage = "attribute %s is required: %s"
-
-func (e *attributeValueIsEmptyError) Error() string {
-	return fmt.Sprintf(attributeValueIsEmptyErrorMessage, e.attributeName, e.reason)
-}
-
-func validateEventContext(ctx *EventContext) error {
-	if ctx.WhoAmI == "" {
-		return &attributeValueIsEmptyError{"WhoAmI", "it is the image which is sending the event"}
-	}
-
-	if ctx.Image == "" {
-		return &attributeValueIsEmptyError{"Image", "it is the image which receives the event"}
-	}
-
-	if ctx.Binary == "" {
-		return &attributeValueIsEmptyError{"Binary", "it is the command which handles the event in the targeted image"}
-	}
-
-	if ctx.HostProjectDir == "" {
-		return &attributeValueIsEmptyError{"HostProjectDir", "it is the project directory on the host"}
-	}
-
-	if ctx.LogLevel == "" {
-		return &attributeValueIsEmptyError{"LogLevel", "it is the log level which should be used by the targeted image"}
-	}
-
-	return nil
-}
-
-// levels associates log levels as used with the --logLevel -l flag from aenthill
-// with its counterpart from the github.com/apex/log library.
-var levels = map[string]log.Level{
-	"DEBUG": log.DebugLevel,
-	"INFO":  log.InfoLevel,
-	"WARN":  log.WarnLevel,
-	"ERROR": log.ErrorLevel,
-}
-
-type wrongLogLevelError struct{}
-
-const wrongLogLevelErrorMessage = "accepted values for log level: DEBUG, INFO, WARN, ERROR"
-
-func (e *wrongLogLevelError) Error() string {
-	return wrongLogLevelErrorMessage
-}
-
-func validateLogLevel(logLevel string) error {
-	if _, ok := levels[logLevel]; !ok {
-		return &wrongLogLevelError{}
-	}
-
-	return nil
-}
-
-func buildArgs(event string, payload string, ctx *EventContext) string {
-	var dockerOpts []string
+func buildDockerCommand(event string, payload string, ctx *EventContext) string {
+	var flags []string
 
 	// attaches Stdin if TTY.
 	if isatty.IsTerminal(os.Stdin.Fd()) {
-		dockerOpts = append(dockerOpts, "-ti")
+		flags = append(flags, "-ti")
 	}
 
-	dockerOpts = append(dockerOpts, "--rm")
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", "/var/run/docker.sock", "/var/run/docker.sock"))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-v \"%s:%s\"", ctx.HostProjectDir, InsideContainerProjectDir))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", SenderEnvVariable, ctx.WhoAmI))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, ctx.HostProjectDir))
-	dockerOpts = append(dockerOpts, fmt.Sprintf("-e \"%s=%s\"", LogLevelEnvVariable, ctx.LogLevel))
+	const (
+		dockerSocket        = "/var/run/docker.sock"
+		containerProjectDir = "/aenthill"
+	)
 
-	var args []string
-	args = append(args, []string{"docker", "run"}...)
-	args = append(args, dockerOpts...)
-	args = append(args, []string{ctx.Image, ctx.Binary, event, payload}...)
+	flags = append(flags, "--rm")
+	flags = append(flags, fmt.Sprintf("-v \"%s:%s\"", dockerSocket, dockerSocket))
+	flags = append(flags, fmt.Sprintf("-v \"%s:%s\"", ctx.HostProjectDir, containerProjectDir))
+	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", FromEnvVariable, ctx.From))
+	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", WhoAmIEnvVariable, ctx.To))
+	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, ctx.HostProjectDir))
+	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", ContainerProjectDirEnvVariable, containerProjectDir))
+	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", LogLevelEnvVariable, ctx.LogLevel))
 
-	return strings.Join(args, " ")
+	var command []string
+	command = append(command, []string{"docker", "run"}...)
+	command = append(command, flags...)
+	command = append(command, []string{ctx.To, "aent", event, payload}...)
+
+	return strings.Join(command, " ")
 }
