@@ -2,7 +2,7 @@
 project_name: Aenthill
 builds:
   - main: ./main.go
-    binary: orbit
+    binary: aenthill
     env:
      - CGO_ENABLED=0
     goos:
