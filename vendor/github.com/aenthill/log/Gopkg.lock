@@ -3,12 +3,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/aenthill/log"
-  packages = ["."]
-  revision = "c9af7dad9d513097a41385db5d7a9c382d379095"
-
-[[projects]]
-  branch = "master"
   name = "github.com/apex/log"
   packages = [
     ".",
@@ -49,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8a36a488ad7d9d4bf6160bdb69c0224e5f561e69fad690a92deb78fdc489d338"
+  inputs-digest = "7c30423f0a1d74ac6e1a46b5b9ef9fa79d9282d0e1ddce66a477ae4ea21622db"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,4 +1,4 @@
-package commands
+package jobs
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func TestManifestFileDoesNotExistError(t *testing.T) {
-	err := &manifestFileDoesNotExistError{}
+	err := manifestFileDoesNotExistError{}
 	expected := fmt.Sprintf(manifestFileDoesNotExistErrorMessage, manifest.DefaultManifestFileName)
 	if err.Error() != expected {
 		t.Errorf("error returned a wrong message: got %s want %s", err.Error(), expected)

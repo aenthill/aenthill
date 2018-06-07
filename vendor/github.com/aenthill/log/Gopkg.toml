@@ -26,13 +26,13 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/apex/log"
+
+[[constraint]]
   name = "github.com/mattn/go-isatty"
   version = "0.0.3"
 
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/log"

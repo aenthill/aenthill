@@ -5,7 +5,13 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "4878a6e9d13b865c6f7438822652da00064b4758"
+  revision = "d02126cae3915bc67f6ea1996fb38d9b014c06f4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/aenthill/log"
+  packages = ["."]
+  revision = "07e6c5b23d609d7b70fb3f34227409b2cd657699"
 
 [[projects]]
   branch = "master"
@@ -77,7 +83,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "538ab54ba952cc4c7c705fa213fbf7993c97c175"
+  revision = "9527bec2660bd847c050fda93a0f0c6dee0800bb"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -95,6 +101,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ebeb9a4a53da0fdb6119246c8458226f8d6376ebc42b7fed9ecc81b2141cd7ab"
+  inputs-digest = "94e3fc873e7d2cfe75b2e7ae647f8d66fa9dea55ab286bc1ad08b4d99f06fa3e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -26,13 +26,6 @@ func TestExecute(t *testing.T) {
 	}
 }
 
-func TestWrongLogLevelError(t *testing.T) {
-	err := &wrongLogLevelError{}
-	if err.Error() != wrongLogLevelErrorMessage {
-		t.Errorf("error returned a wrong message: got %s want %s", err.Error(), wrongLogLevelErrorMessage)
-	}
-}
-
 func TestInitialize(t *testing.T) {
 	t.Run("calling initialize with a wrong log level", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())

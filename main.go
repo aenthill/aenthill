@@ -11,9 +11,8 @@ import (
 
 	"github.com/aenthill/aenthill/app"
 
+	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
-	"github.com/apex/log"
-	"github.com/apex/log/handlers/cli"
 	"github.com/spf13/afero"
 )
 
@@ -24,22 +23,19 @@ the name of the snapshot if you're using the --snapshot flag.
 */
 var version = "master"
 
-func init() {
-	log.SetHandler(cli.Default)
-}
-
 func main() {
 	m := manifest.New(manifest.DefaultManifestFileName, afero.NewOsFs())
 	a := app.New(m, version)
+	entryCtx := &log.EntryContext{Source: "aenthill"}
 	start := time.Now()
 
 	if err := a.Execute(); err != nil {
-		log.WithError(err).Errorf("aenthill command failed after %0.2fs", time.Since(start).Seconds())
+		log.Errorf(entryCtx, err, "job has failed after %0.2fs", time.Since(start).Seconds())
 		os.Exit(1)
 	}
 
 	if shouldDisplayTime() {
-		log.Infof("aenthill command finished after %0.2fs", time.Since(start).Seconds())
+		log.Infof(entryCtx, "job has successfully finished after %0.2fs", time.Since(start).Seconds())
 	}
 }
 

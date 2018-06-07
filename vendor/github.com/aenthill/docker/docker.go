@@ -1,4 +1,4 @@
-// Package docker is a library for sending Aenthill events using the docker client binary.
+// Package docker is a simple wrapper around the Docker client binary for sending Aenthill events.
 package docker
 
 import (
@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/apex/log"
+	"github.com/aenthill/log"
 	isatty "github.com/mattn/go-isatty"
 )
 
@@ -32,6 +32,8 @@ const (
 
 // EventContext gathers all required data of an event.
 type EventContext struct {
+	// Source is the binary which is sending the event.
+	Source string
 	// From is the image which is sending the event.
 	From string
 	// To is the image which receives the event.
@@ -39,31 +41,32 @@ type EventContext struct {
 	// HostProjectDir is the project directory on the host.
 	HostProjectDir string
 	// LogLevel is the log level which should be used by the targeted image.
-	// Accepted values for log level: DEBUG, INFO, WARN, ERROR.
+	// Use one of the log level provided by the https://github.com/aenthill/log
+	// library.
 	LogLevel string
 }
 
 type dockerBinaryNotFoundError struct{}
 
-const dockerBinaryNotFoundErrorMessage = "docker binary was not found"
+const dockerBinaryNotFoundErrorMessage = "Docker client binary was not found"
 
 func (e *dockerBinaryNotFoundError) Error() string {
 	return dockerBinaryNotFoundErrorMessage
 }
 
 /*
-Execute uses the docker client binary to send an event.
+Execute uses the Docker client binary to send an Aenthill event.
 
 It will in fact run a command in the targeted image, using the following template:
 
  docker run [-ti] --rm
  -v "/var/run/docker.sock:/var/run/docker.sock"
  -v "HostProjectDir:/aenthill"
- -e "PHEROMONE_FROM=EventContext.WhoAmI"
+ -e "PHEROMONE_FROM=EventContext.From"
  -e "PHEROMONE_WHOAMI=EventContext.To"
  -e "PHEROMONE_HOST_PROJECT_DIR=EventContext.HostProjectDir"
  -e "PHEROMONE_CONTAINER_PROJECT_DIR=/aenthill"
- -e "PHEROMONE_LOG_LEVEL=EventContextLogLevel"
+ -e "PHEROMONE_LOG_LEVEL=EventContext.LogLevel"
  EventContext.To aent event payload
 */
 func Execute(event string, payload string, ctx *EventContext) error {
@@ -77,14 +80,15 @@ func Execute(event string, payload string, ctx *EventContext) error {
 		return err
 	}
 
-	log.WithFields(log.Fields{
-		"from":     ctx.From,
-		"to":       ctx.To,
-		"event":    event,
-		"paypload": payload,
-	}).Info("sending event")
-
-	log.WithField("from", ctx.From).Debugf("executing command %s", e.Args)
+	entryCtx := &log.EntryContext{
+		Source:    ctx.Source,
+		Event:     event,
+		Payload:   payload,
+		Image:     ctx.From,
+		Recipient: ctx.To,
+	}
+	log.Info(entryCtx, "new event")
+	log.Debugf(entryCtx, "executing command %s", e.Args)
 
 	return e.Run()
 }
@@ -93,7 +97,7 @@ type interpreterNotFoundError struct {
 	envVar string
 }
 
-const interpreterNotFoundErrorMessage = "%s is a required environment variable: it allows to know which interpreter to use for executing the docker command"
+const interpreterNotFoundErrorMessage = "%s is a required environment variable: it allows to know which interpreter to use for executing the Docker command"
 
 func (e *interpreterNotFoundError) Error() string {
 	return fmt.Sprintf(interpreterNotFoundErrorMessage, e.envVar)
