@@ -22,8 +22,8 @@ func (e *noImagesToAddError) Error() string {
 func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "add",
-		Short:         "Add one or more aents",
-		Long:          "Add one or more aents",
+		Short:         "Adds one or more aents",
+		Long:          "Adds one or more aents",
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		RunE: func(cmd *cobra.Command, args []string) error {

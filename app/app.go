@@ -44,7 +44,7 @@ func (app *App) Execute() error {
 			return app.initialize()
 		},
 	}
-	rootCmd.PersistentFlags().StringVarP(&app.ctx.LogLevel, "logLevel", "l", "", "configure the log level: DEBUG, INFO, WARN, ERROR. Default is INFO")
+	rootCmd.PersistentFlags().StringVarP(&app.ctx.LogLevel, "logLevel", "l", "", "configures the log level: DEBUG, INFO, WARN, ERROR. Default is INFO")
 	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))

@@ -23,8 +23,8 @@ func (e *manifestFileAlreadyExistingError) Error() string {
 func NewInitCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "init",
-		Short:         fmt.Sprintf("Create the manifest %s in current directory", manifest.DefaultManifestFileName),
-		Long:          fmt.Sprintf("Create the manifest %s in current directory", manifest.DefaultManifestFileName),
+		Short:         fmt.Sprintf("Creates the manifest %s in current directory", manifest.DefaultManifestFileName),
+		Long:          fmt.Sprintf("Creates the manifest %s in current directory", manifest.DefaultManifestFileName),
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		RunE: func(cmd *cobra.Command, args []string) error {

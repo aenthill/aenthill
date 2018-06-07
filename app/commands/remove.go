@@ -22,8 +22,8 @@ func (e *noImagesToRemoveError) Error() string {
 func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
 	return &cobra.Command{
 		Use:           "rm",
-		Short:         "Remove one or more aents",
-		Long:          "Remove one or more aents",
+		Short:         "Removes one or more aents",
+		Long:          "Removes one or more aents",
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		RunE: func(cmd *cobra.Command, args []string) error {
