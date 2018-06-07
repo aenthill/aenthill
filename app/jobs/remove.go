@@ -42,7 +42,7 @@ func NewRemoveJob(images []string, m *manifest.Manifest, appCtx *context.AppCont
 	return &removeJob{images, m, appCtx}, nil
 }
 
-// Run sends REMOVE event to all its images.
+// Run implements Job.
 func (job *removeJob) Run() error {
 	for _, image := range job.images {
 		if err := job.handle(image); err != nil {

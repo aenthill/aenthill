@@ -42,7 +42,7 @@ func NewAddJob(images []string, m *manifest.Manifest, appCtx *context.AppContext
 	return &addJob{images, m, appCtx}, nil
 }
 
-// Run sends ADD event to all its images.
+// Run implements Job.
 func (job *addJob) Run() error {
 	for _, image := range job.images {
 		if err := job.handle(image); err != nil {

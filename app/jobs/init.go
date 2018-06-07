@@ -34,7 +34,7 @@ func NewInitJob(m *manifest.Manifest, appCtx *context.AppContext) (Job, error) {
 	return &initJob{m, appCtx}, nil
 }
 
-// Run creates the manifest file if it does not exist.
+// Run implements Job.
 func (job *initJob) Run() error {
 	err := job.manifest.Flush()
 	if err == nil {
