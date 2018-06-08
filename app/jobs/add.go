@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/aenthill/aenthill/app/context"
 
@@ -44,6 +45,19 @@ func NewAddJob(images []string, m *manifest.Manifest, appCtx *context.AppContext
 
 // Run implements Job.
 func (job *addJob) Run() error {
+	start := time.Now()
+
+	err := job.run()
+	if err != nil {
+		log.Errorf(job.appCtx.EntryContext, err, "job has failed after %0.2fs", time.Since(start).Seconds())
+	} else {
+		log.Infof(job.appCtx.EntryContext, "job has successfully finished after %0.2fs", time.Since(start).Seconds())
+	}
+
+	return err
+}
+
+func (job *addJob) run() error {
 	for _, image := range job.images {
 		if err := job.handle(image); err != nil {
 			return err
@@ -60,15 +74,13 @@ func (job *addJob) handle(image string) error {
 	}
 
 	if eventFailedErr := job.sendEvent(image); eventFailedErr != nil {
-		entryCtx := &log.EntryContext{Source: job.appCtx.Source}
-
 		if aentExist {
-			log.Warnf(entryCtx, "aent %s has not been removed from manifest %s as it was existing previously", image, job.manifest.GetPath())
+			log.Warnf(job.appCtx.EntryContext, "aent %s has not been removed from manifest %s as it was existing previously", image, job.manifest.GetPath())
 			return eventFailedErr
 		}
 
 		if err := job.removeAent(image); err != nil {
-			log.Errorf(entryCtx, err, "an unexpected error happened while removing aent %s from manifest %s", image, job.manifest.GetPath())
+			log.Errorf(job.appCtx.EntryContext, err, "an unexpected error happened while removing aent %s from manifest %s", image, job.manifest.GetPath())
 		}
 
 		return eventFailedErr
@@ -78,10 +90,8 @@ func (job *addJob) handle(image string) error {
 }
 
 func (job *addJob) addAent(image string) (bool, error) {
-	entryCtx := &log.EntryContext{Source: job.appCtx.Source}
-
 	if err := job.manifest.AddAent(image); err != nil {
-		log.Warnf(entryCtx, "aent %s does already exist in manifest %s", image, job.manifest.GetPath())
+		log.Warnf(job.appCtx.EntryContext, "aent %s does already exist in manifest %s", image, job.manifest.GetPath())
 		return true, nil
 	}
 
@@ -89,7 +99,7 @@ func (job *addJob) addAent(image string) (bool, error) {
 		return false, err
 	}
 
-	log.Infof(entryCtx, "aent %s has been added to manifest %s", image, job.manifest.GetPath())
+	log.Infof(job.appCtx.EntryContext, "aent %s has been added to manifest %s", image, job.manifest.GetPath())
 
 	return false, nil
 }
@@ -107,7 +117,7 @@ func (e *eventAddFailedError) Error() string {
 
 func (job *addJob) sendEvent(image string) error {
 	ctx := &docker.EventContext{
-		Source:         job.appCtx.Source,
+		Source:         job.appCtx.EntryContext.Source,
 		To:             image,
 		HostProjectDir: job.appCtx.ProjectDir,
 		LogLevel:       job.appCtx.LogLevel,
@@ -129,8 +139,7 @@ func (job *addJob) removeAent(image string) error {
 		return err
 	}
 
-	entryCtx := &log.EntryContext{Source: job.appCtx.Source}
-	log.Warnf(entryCtx, "aent %s has been removed from manifest %s", image, job.manifest.GetPath())
+	log.Warnf(job.appCtx.EntryContext, "aent %s has been removed from manifest %s", image, job.manifest.GetPath())
 
 	return nil
 }

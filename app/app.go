@@ -26,7 +26,7 @@ type App struct {
 }
 
 // New creates an App instance with the given Manifest instance.
-func New(m *manifest.Manifest, version string) *App {
+func New(version string, m *manifest.Manifest) *App {
 	return &App{
 		name:     "aenthill",
 		version:  version,
@@ -44,9 +44,10 @@ func (app *App) Execute() error {
 		SilenceUsage:       true,
 		DisableSuggestions: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			return app.initialize()
+			return app.entrypoint(cmd, args)
 		},
 	}
+
 	rootCmd.PersistentFlags().StringVarP(
 		&app.ctx.LogLevel, "logLevel", "l", "",
 		fmt.Sprintf(
@@ -54,6 +55,7 @@ func (app *App) Execute() error {
 			log.DebugLevel, log.InfoLevel, log.WarnLevel, log.ErrorLevel, log.InfoLevel,
 		),
 	)
+
 	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))
@@ -61,9 +63,22 @@ func (app *App) Execute() error {
 	return rootCmd.Execute()
 }
 
-func (app *App) initialize() error {
-	app.ctx.Source = app.name
+func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
+	if cmd == nil {
+		return nil
+	}
 
+	app.ctx.EntryContext = &log.EntryContext{Source: app.name}
+
+	err := app.initialize()
+	if err != nil {
+		log.Error(app.ctx.EntryContext, err, "initialisation failed")
+	}
+
+	return err
+}
+
+func (app *App) initialize() error {
 	projectDir, err := os.Getwd()
 	if err != nil {
 		return err

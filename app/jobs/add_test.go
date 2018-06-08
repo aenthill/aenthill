@@ -8,6 +8,7 @@ import (
 
 	"github.com/aenthill/aenthill/app/context"
 
+	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
 	"github.com/spf13/afero"
 )
@@ -22,7 +23,7 @@ func TestNoImageToAddError(t *testing.T) {
 func TestNewAddJob(t *testing.T) {
 	t.Run("calling NewAddJob without images", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if _, err := NewAddJob(nil, m, ctx); err == nil {
 			t.Error("NewAddJob should have thrown an error as there are no images in arguments")
 		}
@@ -30,7 +31,7 @@ func TestNewAddJob(t *testing.T) {
 
 	t.Run("calling NewAddJob with a non-existing manifest", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if _, err := NewAddJob([]string{"aent/foo"}, m, ctx); err == nil {
 			t.Error("NewAddJob should have thrown an error as the given manifest should not exist")
 		}
@@ -38,7 +39,7 @@ func TestNewAddJob(t *testing.T) {
 
 	t.Run("calling NewAddJob with a broken manifest", func(t *testing.T) {
 		m := manifest.New("../../tests/aenthill-broken.json", afero.NewOsFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if _, err := NewAddJob([]string{"aent/foo"}, m, ctx); err == nil {
 			t.Error("NewAddJob should have thrown an error as the given manifest should be broken")
 		}
@@ -46,7 +47,7 @@ func TestNewAddJob(t *testing.T) {
 
 	t.Run("calling NewAddJob with a valid manifest", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -60,7 +61,7 @@ func TestAddJobRun(t *testing.T) {
 	t.Run("calling Run with a fake image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -73,7 +74,7 @@ func TestAddJobRun(t *testing.T) {
 	t.Run("calling Run with a valid image", func(t *testing.T) {
 		image := "aenthill/cassandra"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -88,7 +89,7 @@ func TestAddJobHandle(t *testing.T) {
 	t.Run("calling handle with a fake image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -101,7 +102,7 @@ func TestAddJobHandle(t *testing.T) {
 	t.Run("calling handle with a fake image which does exist in the manifest", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.AddAent(image); err != nil {
 			t.Errorf("an unexpected error occurred while adding aent %s in the given manifest: %s", image, err.Error())
 		}
@@ -117,7 +118,7 @@ func TestAddJobHandle(t *testing.T) {
 	t.Run("calling handle with a valid image", func(t *testing.T) {
 		image := "aenthill/cassandra"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -132,7 +133,7 @@ func TestAddJobAddAent(t *testing.T) {
 	t.Run("calling addAent with a non-existing image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -145,7 +146,7 @@ func TestAddJobAddAent(t *testing.T) {
 	t.Run("calling addAent with an existing image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.AddAent(image); err != nil {
 			t.Errorf("an unexpected error occurred while adding aent %s in the given manifest: %s", image, err.Error())
 		}
@@ -173,7 +174,7 @@ func TestAddJobSendEvent(t *testing.T) {
 	t.Run("calling sendEvent with a fake image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.sendEvent(image); err == nil {
 			t.Errorf("sendEvent should have thrown an error as the image %s is invalid", image)
@@ -183,7 +184,7 @@ func TestAddJobSendEvent(t *testing.T) {
 	t.Run("calling sendEvent with a valid image", func(t *testing.T) {
 		image := "aenthill/cassandra"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.sendEvent(image); err != nil {
 			t.Errorf("sendEvent should not have thrown an error as the image %s is valid", image)
@@ -195,7 +196,7 @@ func TestAddJobRemoveAent(t *testing.T) {
 	t.Run("calling removeAent with a non-existing image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
@@ -208,7 +209,7 @@ func TestAddJobRemoveAent(t *testing.T) {
 	t.Run("calling removeAent with an existing image", func(t *testing.T) {
 		image := "aent/foo"
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR")}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		if err := m.AddAent(image); err != nil {
 			t.Errorf("an unexpected error occurred while adding aent %s in the given manifest: %s", image, err.Error())
 		}

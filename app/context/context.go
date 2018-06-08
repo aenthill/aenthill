@@ -4,9 +4,11 @@ used by our commands.
 */
 package context
 
+import "github.com/aenthill/log"
+
 // AppContext is our working struct.
 type AppContext struct {
-	Source     string
-	ProjectDir string
-	LogLevel   string
+	ProjectDir   string
+	LogLevel     string
+	EntryContext *log.EntryContext
 }

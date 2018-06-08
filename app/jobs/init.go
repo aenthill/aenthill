@@ -38,8 +38,7 @@ func NewInitJob(m *manifest.Manifest, appCtx *context.AppContext) (Job, error) {
 func (job *initJob) Run() error {
 	err := job.manifest.Flush()
 	if err == nil {
-		entryCtx := &log.EntryContext{Source: job.appCtx.Source}
-		log.Infof(entryCtx, "%s created! May the swarm be with you", job.manifest.GetPath())
+		log.Infof(job.appCtx.EntryContext, "%s created! May the swarm be with you", job.manifest.GetPath())
 	}
 
 	return err
