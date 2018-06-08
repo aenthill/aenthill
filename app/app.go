@@ -47,7 +47,6 @@ func (app *App) Execute() error {
 			return app.entrypoint(cmd, args)
 		},
 	}
-
 	rootCmd.PersistentFlags().StringVarP(
 		&app.ctx.LogLevel, "logLevel", "l", "",
 		fmt.Sprintf(
@@ -55,7 +54,6 @@ func (app *App) Execute() error {
 			log.DebugLevel, log.InfoLevel, log.WarnLevel, log.ErrorLevel, log.InfoLevel,
 		),
 	)
-
 	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))
@@ -68,8 +66,6 @@ func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	app.ctx.EntryContext = &log.EntryContext{Source: app.name}
-
 	err := app.initialize()
 	if err != nil {
 		log.Error(app.ctx.EntryContext, err, "initialisation failed")
@@ -79,6 +75,8 @@ func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
 }
 
 func (app *App) initialize() error {
+	app.ctx.EntryContext = &log.EntryContext{Source: app.name}
+
 	projectDir, err := os.Getwd()
 	if err != nil {
 		return err
