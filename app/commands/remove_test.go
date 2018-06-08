@@ -12,12 +12,12 @@ import (
 )
 
 func TestRemoveCmd(t *testing.T) {
-	t.Run("calling RunE without arguments", func(t *testing.T) {
+	t.Run("calling RunE without images as argument", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := &context.AppContext{}
+		ctx := &context.AppContext{ProjectDir: os.Getenv("HOST_PROJECT_DIR"), LogLevel: "DEBUG", EntryContext: &log.EntryContext{Source: "test"}}
 		cmd := NewRemoveCmd(m, ctx)
 		if err := cmd.RunE(nil, nil); err == nil {
-			t.Error("RunE should have thrown an error as there are no arguments")
+			t.Error("RunE should have thrown an error as no image has been given")
 		}
 	})
 
