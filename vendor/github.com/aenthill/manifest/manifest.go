@@ -43,6 +43,11 @@ type (
 	}
 )
 
+// SetPath sets the path of the manifest file.
+func (m *Manifest) SetPath(path string) {
+	m.path = path
+}
+
 // GetPath returns the path of the manifest file.
 func (m *Manifest) GetPath() string {
 	return m.path

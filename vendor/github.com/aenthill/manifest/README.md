@@ -1,4 +1,7 @@
-<h3 align="center">Manifest manipulation library</h3>
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/8983173/41112060-324182b4-6a7e-11e8-8aca-324eae87ce34.png" alt="Logo" width="200" height="200" />
+</p>
+<h3 align="center">A library easing the manipulation of an Aenthill manifest</h3>
 <p align="center">
     <a href="https://travis-ci.org/aenthill/manifest">
         <img src="https://travis-ci.org/aenthill/manifest.svg?branch=master" alt="Travis CI">

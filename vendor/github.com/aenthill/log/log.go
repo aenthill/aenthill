@@ -73,6 +73,10 @@ func (ctx *EntryContext) Fields() log.Fields {
 	fields := make(log.Fields)
 	fields["src"] = ctx.Source
 
+	if ctx.Image != "" {
+		fields["aent"] = ctx.Image
+	}
+
 	if ctx.Event != "" {
 		fields["event"] = ctx.Event
 
@@ -80,10 +84,6 @@ func (ctx *EntryContext) Fields() log.Fields {
 			fields["with_payload"] = "yes"
 		} else {
 			fields["with_payload"] = "no"
-		}
-
-		if ctx.Image != "" {
-			fields["aent"] = ctx.Image
 		}
 
 		if ctx.Recipient != "" {
