@@ -21,7 +21,7 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			job, err := jobs.NewAddJob(args, m, appCtx)
 			if err != nil {
-				log.Error(appCtx.EntryContext, err, "job ininitializationitialization failed")
+				log.Error(appCtx.EntryContext, err, "job initialization failed")
 				return err
 			}
 

@@ -21,7 +21,7 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 		RunE: func(cmd *cobra.Command, args []string) error {
 			job, err := jobs.NewRemoveJob(args, m, appCtx)
 			if err != nil {
-				log.Error(appCtx.EntryContext, err, "job ininitializationitialization failed")
+				log.Error(appCtx.EntryContext, err, "job initialization failed")
 				return err
 			}
 
