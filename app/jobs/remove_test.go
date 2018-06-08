@@ -50,7 +50,7 @@ func TestNewRemoveJob(t *testing.T) {
 		if err := m.Flush(); err != nil {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
-		if _, err := NewAddJob([]string{"aent/foo"}, m, ctx); err != nil {
+		if _, err := NewRemoveJob([]string{"aent/foo"}, m, ctx); err != nil {
 			t.Error("NewRemoveJob should not have thrown an error as the given manifest should be valid")
 		}
 	})
