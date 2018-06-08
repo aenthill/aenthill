@@ -62,13 +62,13 @@ func (app *App) Execute() error {
 }
 
 func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
-	if cmd == nil {
+	if cmd == nil || cmd.Use == "help [command]" {
 		return nil
 	}
 
 	err := app.initialize()
 	if err != nil {
-		log.Error(app.ctx.EntryContext, err, "initialisation failed")
+		log.Error(app.ctx.EntryContext, err, "initialization failed")
 	}
 
 	return err

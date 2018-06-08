@@ -4,6 +4,7 @@ import (
 	"github.com/aenthill/aenthill/app/context"
 	"github.com/aenthill/aenthill/app/jobs"
 
+	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,7 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 		RunE: func(cmd *cobra.Command, args []string) error {
 			job, err := jobs.NewRemoveJob(args, m, appCtx)
 			if err != nil {
+				log.Error(appCtx.EntryContext, err, "job ininitializationitialization failed")
 				return err
 			}
 
