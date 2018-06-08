@@ -54,13 +54,20 @@ func (job *addJob) Run() error {
 }
 
 func (job *addJob) handle(image string) error {
-	if err := job.addAent(image); err != nil {
+	aentExist, err := job.addAent(image)
+	if err != nil {
 		return err
 	}
 
 	if eventFailedErr := job.sendEvent(image); eventFailedErr != nil {
+		entryCtx := &log.EntryContext{Source: job.appCtx.Source}
+
+		if aentExist {
+			log.Warnf(entryCtx, "aent %s has not been removed from manifest %s as it was existing previously", image, job.manifest.GetPath())
+			return eventFailedErr
+		}
+
 		if err := job.removeAent(image); err != nil {
-			entryCtx := &log.EntryContext{Source: job.appCtx.Source}
 			log.Errorf(entryCtx, err, "an unexpected error happened while removing aent %s from manifest %s", image, job.manifest.GetPath())
 		}
 
@@ -70,21 +77,21 @@ func (job *addJob) handle(image string) error {
 	return nil
 }
 
-func (job *addJob) addAent(image string) error {
+func (job *addJob) addAent(image string) (bool, error) {
 	entryCtx := &log.EntryContext{Source: job.appCtx.Source}
 
 	if err := job.manifest.AddAent(image); err != nil {
 		log.Warnf(entryCtx, "aent %s does already exist in manifest %s", image, job.manifest.GetPath())
-		return nil
+		return true, nil
 	}
 
 	if err := job.manifest.Flush(); err != nil {
-		return err
+		return false, err
 	}
 
 	log.Infof(entryCtx, "aent %s has been added to manifest %s", image, job.manifest.GetPath())
 
-	return nil
+	return false, nil
 }
 
 type eventAddFailedError struct {

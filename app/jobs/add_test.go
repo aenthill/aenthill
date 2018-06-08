@@ -137,7 +137,7 @@ func TestAddJobAddAent(t *testing.T) {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
 		job := &addJob{[]string{image}, m, ctx}
-		if err := job.addAent(image); err != nil {
+		if _, err := job.addAent(image); err != nil {
 			t.Error("addAent should not have thrown an error")
 		}
 	})
@@ -153,7 +153,7 @@ func TestAddJobAddAent(t *testing.T) {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
 		job := &addJob{[]string{image}, m, ctx}
-		if err := job.addAent(image); err != nil {
+		if _, err := job.addAent(image); err != nil {
 			t.Error("addAent should not have thrown an error")
 		}
 	})
