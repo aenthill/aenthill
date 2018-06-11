@@ -6,6 +6,7 @@ import (
 	"github.com/aenthill/aenthill/app/context"
 	"github.com/aenthill/aenthill/app/jobs"
 
+	"github.com/aenthill/log"
 	"github.com/aenthill/manifest"
 	"github.com/spf13/cobra"
 )
@@ -22,6 +23,7 @@ func NewInitCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command
 		RunE: func(cmd *cobra.Command, args []string) error {
 			job, err := jobs.NewInitJob(m, appCtx)
 			if err != nil {
+				log.Error(appCtx.EntryContext, err, "job initialization failed")
 				return err
 			}
 
