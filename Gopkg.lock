@@ -5,19 +5,19 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "ed386285e7b24c0246afb8f40ea8c2b93e8240b5"
+  revision = "4a38425c6a246192daf347b145cc616dd619b575"
 
 [[projects]]
   branch = "master"
   name = "github.com/aenthill/log"
   packages = ["."]
-  revision = "808d686f7a453d7dd38ddb034902f4a95d91c740"
+  revision = "0dee77f12668fb03c76017a7d25ff003d8ef2104"
 
 [[projects]]
   branch = "master"
   name = "github.com/aenthill/manifest"
   packages = ["."]
-  revision = "3f2a37f979d46298773818e1c4f3c8e515733a29"
+  revision = "cd257cfc53972a577e01575ea4951e4c2d6c8cd0"
 
 [[projects]]
   branch = "master"
@@ -64,8 +64,8 @@
     ".",
     "mem"
   ]
-  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
-  version = "v1.1.0"
+  revision = "787d034dfe70e44075ccc060d346146ef53270ad"
+  version = "v1.1.1"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -83,7 +83,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "9527bec2660bd847c050fda93a0f0c6dee0800bb"
+  revision = "bff228c7b664c5fce602223a05fb708fd8654986"
 
 [[projects]]
   name = "golang.org/x/text"
