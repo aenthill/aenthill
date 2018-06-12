@@ -67,7 +67,7 @@ It will in fact run a command in the targeted image, using the following templat
  -e "PHEROMONE_HOST_PROJECT_DIR=EventContext.HostProjectDir"
  -e "PHEROMONE_CONTAINER_PROJECT_DIR=/aenthill"
  -e "PHEROMONE_LOG_LEVEL=EventContext.LogLevel"
- EventContext.To aent event payload
+ EventContext.To aent "event" "payload"
 */
 func Execute(event string, payload string, ctx *EventContext) error {
 	if _, err := exec.LookPath("docker"); err != nil {
@@ -144,18 +144,22 @@ func buildDockerCommand(event string, payload string, ctx *EventContext) string 
 	)
 
 	flags = append(flags, "--rm")
-	flags = append(flags, fmt.Sprintf("-v \"%s:%s\"", dockerSocket, dockerSocket))
-	flags = append(flags, fmt.Sprintf("-v \"%s:%s\"", ctx.HostProjectDir, containerProjectDir))
-	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", FromEnvVariable, ctx.From))
-	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", WhoAmIEnvVariable, ctx.To))
-	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", HostProjectDirEnvVariable, ctx.HostProjectDir))
-	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", ContainerProjectDirEnvVariable, containerProjectDir))
-	flags = append(flags, fmt.Sprintf("-e \"%s=%s\"", LogLevelEnvVariable, ctx.LogLevel))
+	flags = append(flags, fmt.Sprintf(`-v "%s:%s"`, dockerSocket, dockerSocket))
+	flags = append(flags, fmt.Sprintf(`-v "%s:%s"`, ctx.HostProjectDir, containerProjectDir))
+	flags = append(flags, fmt.Sprintf(`-e "%s=%s"`, FromEnvVariable, ctx.From))
+	flags = append(flags, fmt.Sprintf(`-e "%s=%s"`, WhoAmIEnvVariable, ctx.To))
+	flags = append(flags, fmt.Sprintf(`-e "%s=%s"`, HostProjectDirEnvVariable, ctx.HostProjectDir))
+	flags = append(flags, fmt.Sprintf(`-e "%s=%s"`, ContainerProjectDirEnvVariable, containerProjectDir))
+	flags = append(flags, fmt.Sprintf(`-e "%s=%s"`, LogLevelEnvVariable, ctx.LogLevel))
 
 	var command []string
 	command = append(command, []string{"docker", "run"}...)
 	command = append(command, flags...)
-	command = append(command, []string{ctx.To, "aent", event, payload}...)
+	command = append(command, []string{ctx.To, "aent", sanitize(event), sanitize(payload)}...)
 
 	return strings.Join(command, " ")
+}
+
+func sanitize(str string) string {
+	return fmt.Sprintf(`"%s"`, strings.Replace(str, `"`, `\"`, -1))
 }
