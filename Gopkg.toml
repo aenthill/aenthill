@@ -44,3 +44,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/aenthill/log"
+
+[[constraint]]
+  name = "github.com/tj/go-update"
+  version = "2.2.1"

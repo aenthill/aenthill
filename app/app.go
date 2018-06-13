@@ -57,6 +57,7 @@ func (app *App) Execute() error {
 	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))
+	rootCmd.AddCommand(commands.NewSelfUpdateCmd(app.version, app.ctx))
 
 	return rootCmd.Execute()
 }
