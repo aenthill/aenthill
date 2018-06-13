@@ -12,7 +12,7 @@ import (
 // NewRemoveCmd creates a cobra.Command instance which will use the given
 // Manifest and AppContext instances.
 func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:           "rm",
 		Short:         "Removes one or more aents",
 		Long:          "Removes one or more aents",
@@ -28,4 +28,7 @@ func NewRemoveCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Comma
 			return job.Run()
 		},
 	}
+	cmd.SetUsageTemplate(getUsageTemplate("aenthill rm image [images...] [flags]"))
+
+	return cmd
 }

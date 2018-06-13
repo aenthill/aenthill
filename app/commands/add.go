@@ -12,7 +12,7 @@ import (
 // NewAddCmd creates a cobra.Command instance which will use the given
 // Manifest and AppContext instances.
 func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:           "add",
 		Short:         "Adds one or more aents",
 		Long:          "Adds one or more aents",
@@ -28,4 +28,7 @@ func NewAddCmd(m *manifest.Manifest, appCtx *context.AppContext) *cobra.Command 
 			return job.Run()
 		},
 	}
+	cmd.SetUsageTemplate(getUsageTemplate("aenthill add image [images...] [flags]"))
+
+	return cmd
 }
