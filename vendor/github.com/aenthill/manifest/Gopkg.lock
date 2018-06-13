@@ -7,8 +7,8 @@
     ".",
     "mem"
   ]
-  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
-  version = "v1.1.0"
+  revision = "787d034dfe70e44075ccc060d346146ef53270ad"
+  version = "v1.1.1"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -26,6 +26,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8aa7a8ad682330522804044c1f0478fc73128c97a6ab4e69882bba9694bb35b3"
+  inputs-digest = "6c7a3b781cbe3da9dbe81efb5d2c9292047e93aa4f652629ba10636c6d91e87b"
   solver-name = "gps-cdcl"
   solver-version = 1
