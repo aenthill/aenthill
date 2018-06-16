@@ -94,7 +94,7 @@ func TestRemoveJobHandle(t *testing.T) {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
 		job := &removeJob{[]string{image}, m, ctx}
-		if err := job.Run(); err == nil {
+		if err := job.handle(image); err == nil {
 			t.Errorf("handle should have thrown an error as the image %s is invalid", image)
 		}
 	})
@@ -110,7 +110,7 @@ func TestRemoveJobHandle(t *testing.T) {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
 		job := &removeJob{[]string{image}, m, ctx}
-		if err := job.Run(); err == nil {
+		if err := job.handle(image); err == nil {
 			t.Errorf("handle should have thrown an error as the image %s is invalid", image)
 		}
 	})
@@ -123,7 +123,7 @@ func TestRemoveJobHandle(t *testing.T) {
 			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
 		}
 		job := &removeJob{[]string{image}, m, ctx}
-		if err := job.Run(); err != nil {
+		if err := job.handle(image); err != nil {
 			t.Errorf("handle should not have thrown an error as the image %s is valid", image)
 		}
 	})
