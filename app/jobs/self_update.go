@@ -42,6 +42,8 @@ func NewSelfUpdateJob(target string, version string, appCtx *context.AppContext)
 func (job *selfUpdateJob) Run() error {
 	start := time.Now()
 
+	// set the log level to INFO to display the following messages to user.
+	log.SetLevel(log.InfoLevel)
 	r, err := job.run()
 	if err != nil {
 		log.Errorf(job.appCtx.EntryContext, err, "job has failed after %0.2fs", time.Since(start).Seconds())
@@ -50,6 +52,8 @@ func (job *selfUpdateJob) Run() error {
 	} else {
 		log.Info(job.appCtx.EntryContext, "no updates available")
 	}
+	// reset the log level to the level defined by the user.
+	log.SetLevel(job.appCtx.LogLevel)
 
 	return err
 }
