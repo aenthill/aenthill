@@ -57,8 +57,21 @@ func TestNewRemoveJob(t *testing.T) {
 
 func TestRemoveJobRun(t *testing.T) {
 	t.Run("calling Run with a fake image", func(t *testing.T) {
-		image := "aent/foo"
+		image := "aent/bar"
 		m, err := tests.NewEmptyInMemoryManifest()
+		if err != nil {
+			t.Error(err)
+		}
+		ctx := tests.NewAppContext()
+		job := &removeJob{[]string{image}, m, ctx}
+		if err := job.Run(); err == nil {
+			t.Errorf("Run should have thrown an error as the image %s is invalid", image)
+		}
+	})
+
+	t.Run("calling run with a fake image which does exist in the manifest", func(t *testing.T) {
+		image := "aent/bar"
+		m, err := tests.NewInMemoryManifestWithFakeImage()
 		if err != nil {
 			t.Error(err)
 		}
@@ -79,21 +92,6 @@ func TestRemoveJobRun(t *testing.T) {
 		job := &removeJob{[]string{image}, m, ctx}
 		if err := job.Run(); err != nil {
 			t.Errorf("Run should not have thrown an error as the image %s is valid", image)
-		}
-	})
-}
-
-func TestRemoveJobHandle(t *testing.T) {
-	t.Run("calling handle with a fake image which does exist in the manifest", func(t *testing.T) {
-		image := "aent/foo"
-		m, err := tests.NewInMemoryManifestWithFakeImage()
-		if err != nil {
-			t.Error(err)
-		}
-		ctx := tests.NewAppContext()
-		job := &removeJob{[]string{image}, m, ctx}
-		if err := job.handle(image); err == nil {
-			t.Errorf("handle should have thrown an error as the image %s is invalid", image)
 		}
 	})
 }

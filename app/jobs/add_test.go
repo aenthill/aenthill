@@ -63,12 +63,22 @@ func TestAddJobRun(t *testing.T) {
 			t.Error(err)
 		}
 		ctx := tests.NewAppContext()
-		if err := m.Flush(); err != nil {
-			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
-		}
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.Run(); err == nil {
 			t.Errorf("Run should have thrown an error as the image %s is invalid", image)
+		}
+	})
+
+	t.Run("calling Run with a fake image which does exist in the manifest", func(t *testing.T) {
+		image := "aent/bar"
+		m, err := tests.NewInMemoryManifestWithFakeImage()
+		if err != nil {
+			t.Error(err)
+		}
+		ctx := tests.NewAppContext()
+		job := &addJob{[]string{image}, m, ctx}
+		if err := job.Run(); err == nil {
+			t.Errorf("Run should not have thrown an error as the image %s is valid", image)
 		}
 	})
 
@@ -85,24 +95,6 @@ func TestAddJobRun(t *testing.T) {
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.Run(); err != nil {
 			t.Errorf("Run should not have thrown an error as the image %s is valid", image)
-		}
-	})
-}
-
-func TestAddJobHandle(t *testing.T) {
-	t.Run("calling handle with a fake image which does exist in the manifest", func(t *testing.T) {
-		image := "aent/foo"
-		m, err := tests.NewInMemoryManifestWithFakeImage()
-		if err != nil {
-			t.Error(err)
-		}
-		ctx := tests.NewAppContext()
-		if err := m.Flush(); err != nil {
-			t.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
-		}
-		job := &addJob{[]string{image}, m, ctx}
-		if err := job.handle(image); err == nil {
-			t.Errorf("handle should have thrown an error as the image %s is invalid", image)
 		}
 	})
 }
