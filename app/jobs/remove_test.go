@@ -105,3 +105,18 @@ func TestEventRemoveFailedError(t *testing.T) {
 		t.Errorf("error returned a wrong message: got %s want %s", eventFailedErr.Error(), expected)
 	}
 }
+
+func TestReAddAent(t *testing.T) {
+	t.Run("calling reAddAent with an image which does exist in the manifest", func(t *testing.T) {
+		image := "aent/bar"
+		m, err := tests.NewInMemoryManifestWithFakeImage()
+		if err != nil {
+			t.Error(err)
+		}
+		ctx := tests.NewAppContext()
+		job := &removeJob{[]string{image}, m, ctx}
+		if err := job.reAddAent(image); err == nil {
+			t.Errorf("reAddAent should have thrown an error as the image %s should exist in given manifest", image)
+		}
+	})
+}

@@ -78,7 +78,7 @@ func TestAddJobRun(t *testing.T) {
 		ctx := tests.NewAppContext()
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.Run(); err == nil {
-			t.Errorf("Run should not have thrown an error as the image %s is valid", image)
+			t.Errorf("Run should have thrown an error as the image %s is invalid", image)
 		}
 	})
 
@@ -95,6 +95,21 @@ func TestAddJobRun(t *testing.T) {
 		job := &addJob{[]string{image}, m, ctx}
 		if err := job.Run(); err != nil {
 			t.Errorf("Run should not have thrown an error as the image %s is valid", image)
+		}
+	})
+}
+
+func TestRemoveAent(t *testing.T) {
+	t.Run("calling removeAent with an image which does not exist in the manifest", func(t *testing.T) {
+		image := "aent/bar"
+		m, err := tests.NewEmptyInMemoryManifest()
+		if err != nil {
+			t.Error(err)
+		}
+		ctx := tests.NewAppContext()
+		job := &addJob{[]string{image}, m, ctx}
+		if err := job.removeAent(image); err == nil {
+			t.Errorf("removeAent should have thrown an error as the image %s should not exist in given manifest", image)
 		}
 	})
 }

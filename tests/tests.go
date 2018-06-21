@@ -44,16 +44,3 @@ func NewInMemoryManifestWithFakeImage() (*manifest.Manifest, error) {
 	}
 	return m, nil
 }
-
-// NewInMemoryManifestWithValidImage creates a in memory Manifest with a valid image.
-func NewInMemoryManifestWithValidImage() (*manifest.Manifest, error) {
-	image := "aenthill/cassandra"
-	m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-	if err := m.AddAent(image); err != nil {
-		return nil, fmt.Errorf("an unexpected error occurred while adding aent %s in the given manifest: %s", image, err.Error())
-	}
-	if err := m.Flush(); err != nil {
-		return nil, fmt.Errorf("an unexpected error occurred while flushing the given manifest: %s", err.Error())
-	}
-	return m, nil
-}
