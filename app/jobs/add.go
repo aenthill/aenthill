@@ -116,14 +116,8 @@ func (e *eventAddFailedError) Error() string {
 }
 
 func (job *addJob) sendEvent(image string) error {
-	ctx := &docker.EventContext{
-		Source:         job.appCtx.EntryContext.Source,
-		To:             image,
-		HostProjectDir: job.appCtx.ProjectDir,
-		LogLevel:       job.appCtx.LogLevel,
-	}
-
-	if err := docker.Execute("ADD", "", ctx); err != nil {
+	ctx := docker.NewRunEventContext("", "", image, job.appCtx.ProjectDir, job.appCtx.LogLevel)
+	if err := docker.Run("ADD", "", ctx); err != nil {
 		return &eventAddFailedError{image, err}
 	}
 

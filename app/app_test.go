@@ -37,50 +37,30 @@ func TestEntrypoint(t *testing.T) {
 		}
 	})
 
-	t.Run("calling entrypoint with a wrong log level", func(t *testing.T) {
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		app := New("snapshot", m)
-		app.ctx = &context.AppContext{LogLevel: "FOO"}
-		if err := app.entrypoint(&cobra.Command{}, nil); err == nil {
-			t.Errorf("entrypoint should have thrown an error as log level %s does not exist", app.ctx.LogLevel)
-		}
-	})
-
-	t.Run("calling entrypoint with a valid log level", func(t *testing.T) {
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		app := New("snapshot", m)
-		app.ctx = &context.AppContext{LogLevel: "DEBUG"}
-		if err := app.entrypoint(&cobra.Command{}, nil); err != nil {
-			t.Errorf("entrypoint should not have thrown an error as log level %s does exist", app.ctx.LogLevel)
-		}
-	})
-}
-
-func TestInitialize(t *testing.T) {
-	t.Run("calling initialize with a wrong log level", func(t *testing.T) {
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		app := New("snapshot", m)
-		app.ctx = &context.AppContext{LogLevel: "FOO"}
-		if err := app.initialize(); err == nil {
-			t.Errorf("initialize should have thrown an error as log level %s does not exist", app.ctx.LogLevel)
-		}
-	})
-
-	t.Run("calling initialize with a valid log level", func(t *testing.T) {
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		app := New("snapshot", m)
-		app.ctx = &context.AppContext{LogLevel: "DEBUG"}
-		if err := app.initialize(); err != nil {
-			t.Errorf("initialize should not have thrown an error as log level %s does exist", app.ctx.LogLevel)
-		}
-	})
-
-	t.Run("calling initialize with all parameters OK", func(t *testing.T) {
+	t.Run("calling entrypoint with no verbosity", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		app := New("snapshot", m)
 		app.ctx = &context.AppContext{}
-		if err := app.initialize(); err != nil {
-			t.Error("initialize should not have thrown an error as all parameters are OK")
+		if err := app.entrypoint(&cobra.Command{}, nil); err != nil {
+			t.Error("entrypoint should not have thrown an error with default verbosity")
+		}
+	})
+
+	t.Run("calling entrypoint with info verbosity", func(t *testing.T) {
+		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
+		app := New("snapshot", m)
+		app.ctx = &context.AppContext{IsVerbose: true}
+		if err := app.entrypoint(&cobra.Command{}, nil); err != nil {
+			t.Error("entrypoint should not have thrown an error with info verbosity")
+		}
+	})
+
+	t.Run("calling entrypoint with debug verbosity", func(t *testing.T) {
+		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
+		app := New("snapshot", m)
+		app.ctx = &context.AppContext{IsVeryVerbose: true}
+		if err := app.entrypoint(&cobra.Command{}, nil); err != nil {
+			t.Error("entrypoint should not have thrown an error with debug verbosity")
 		}
 	})
 }

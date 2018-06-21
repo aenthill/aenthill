@@ -5,13 +5,13 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "452aeafd1dc673f452a8774c9258a40f9868c0f6"
+  revision = "0b86b5b4d5f4556570c7d5d91e7314fae18aed2b"
 
 [[projects]]
   branch = "master"
   name = "github.com/aenthill/log"
   packages = ["."]
-  revision = "83617afc5f61be38ff1361d1337dbe990124a81f"
+  revision = "4633d599450f4dc17142c5dca48c764dab17db5e"
 
 [[projects]]
   branch = "master"
@@ -155,7 +155,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "a9e25c09b96b8870693763211309e213c6ef299d"
+  revision = "ad87a3a340fa7f3bed189293fbfa7a9b7e021ae1"
 
 [[projects]]
   name = "golang.org/x/text"

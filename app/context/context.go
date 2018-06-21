@@ -8,7 +8,9 @@ import "github.com/aenthill/log"
 
 // AppContext is our working struct.
 type AppContext struct {
-	ProjectDir   string
-	LogLevel     string
-	EntryContext *log.EntryContext
+	ProjectDir    string
+	IsVerbose     bool
+	IsVeryVerbose bool
+	LogLevel      string
+	EntryContext  *log.EntryContext
 }

@@ -38,7 +38,11 @@ func NewInitJob(m *manifest.Manifest, appCtx *context.AppContext) (Job, error) {
 func (job *initJob) Run() error {
 	err := job.manifest.Flush()
 	if err == nil {
+		// set the log level to INFO to display the following message to user.
+		log.SetLevel(log.InfoLevel)
 		log.Infof(job.appCtx.EntryContext, "%s created! May the swarm be with you", job.manifest.GetPath())
+		// reset the log level to the level defined by the user.
+		log.SetLevel(job.appCtx.LogLevel)
 	}
 
 	return err

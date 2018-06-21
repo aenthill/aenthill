@@ -116,14 +116,8 @@ func (e *eventRemoveFailedError) Error() string {
 }
 
 func (job *removeJob) sendEvent(image string) error {
-	ctx := &docker.EventContext{
-		Source:         job.appCtx.EntryContext.Source,
-		To:             image,
-		HostProjectDir: job.appCtx.ProjectDir,
-		LogLevel:       job.appCtx.LogLevel,
-	}
-
-	if err := docker.Execute("REMOVE", "", ctx); err != nil {
+	ctx := docker.NewRunEventContext("", "", image, job.appCtx.ProjectDir, job.appCtx.LogLevel)
+	if err := docker.Run("REMOVE", "", ctx); err != nil {
 		return &eventRemoveFailedError{image, err}
 	}
 

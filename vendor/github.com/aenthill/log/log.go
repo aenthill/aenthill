@@ -61,33 +61,32 @@ func SetLevel(logLevel string) error {
 
 // EntryContext is an implementation of log.Fielder.
 type EntryContext struct {
-	Source    string
-	Event     string
-	Payload   string
-	Image     string
-	Recipient string
+	Event         string
+	Payload       string
+	FromImageName string
+	ToImageName   string
 }
 
 // Fields implements log.Fielder.
 func (ctx *EntryContext) Fields() log.Fields {
 	fields := make(log.Fields)
-	fields["src"] = ctx.Source
+	fields["src"] = os.Args[0]
 
-	if ctx.Image != "" {
-		fields["aent"] = ctx.Image
+	if ctx.FromImageName != "" {
+		fields["aent"] = ctx.FromImageName
 	}
 
 	if ctx.Event != "" {
 		fields["event"] = ctx.Event
 
+		if ctx.ToImageName != "" {
+			fields["recipient_aent"] = ctx.ToImageName
+		}
+
 		if len(ctx.Payload) > 0 {
 			fields["with_payload"] = "yes"
 		} else {
 			fields["with_payload"] = "no"
-		}
-
-		if ctx.Recipient != "" {
-			fields["recipient_aent"] = ctx.Recipient
 		}
 	}
 

@@ -6,7 +6,6 @@ Its main goal is to initialize the application context and validate it.
 package app
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/aenthill/aenthill/app/commands"
@@ -38,22 +37,14 @@ func New(version string, m *manifest.Manifest) *App {
 // Execute executes a command from CLI.
 func (app *App) Execute() error {
 	rootCmd := &cobra.Command{
-		Use:                app.name,
-		Version:            app.version,
-		SilenceErrors:      true,
-		SilenceUsage:       true,
-		DisableSuggestions: true,
+		Use:     app.name,
+		Version: app.version,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return app.entrypoint(cmd, args)
 		},
 	}
-	rootCmd.PersistentFlags().StringVarP(
-		&app.ctx.LogLevel, "logLevel", "l", "",
-		fmt.Sprintf(
-			"configures the log level: %s, %s, %s, %s. Default is %s",
-			log.DebugLevel, log.InfoLevel, log.WarnLevel, log.ErrorLevel, log.InfoLevel,
-		),
-	)
+	rootCmd.PersistentFlags().BoolVarP(&app.ctx.IsVerbose, "verbose", "v", false, "configures the log level to INFO")
+	rootCmd.PersistentFlags().BoolVarP(&app.ctx.IsVeryVerbose, "debug", "d", false, "configures the log level to DEBUG")
 	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
 	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))
@@ -76,7 +67,7 @@ func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
 }
 
 func (app *App) initialize() error {
-	app.ctx.EntryContext = &log.EntryContext{Source: app.name}
+	app.ctx.EntryContext = &log.EntryContext{}
 
 	projectDir, err := os.Getwd()
 	if err != nil {
@@ -84,8 +75,16 @@ func (app *App) initialize() error {
 	}
 	app.ctx.ProjectDir = projectDir
 
-	if app.ctx.LogLevel == "" {
+	if app.ctx.IsVerbose {
 		app.ctx.LogLevel = log.InfoLevel
+	}
+
+	if app.ctx.IsVeryVerbose {
+		app.ctx.LogLevel = log.DebugLevel
+	}
+
+	if app.ctx.LogLevel == "" {
+		app.ctx.LogLevel = log.ErrorLevel
 	}
 
 	return log.SetLevel(app.ctx.LogLevel)
