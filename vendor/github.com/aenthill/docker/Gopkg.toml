@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/aenthill/log"
+
+[[constraint]]
+  name = "github.com/thegomachine/go-unexec"
+  version = "0.1.0"

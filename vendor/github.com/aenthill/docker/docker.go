@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"runtime"
 	"strings"
 
 	"github.com/aenthill/log"
 	isatty "github.com/mattn/go-isatty"
+	unexec "github.com/thegomachine/go-unexec"
 )
 
 const (
@@ -140,40 +140,15 @@ func (e *dockerBinaryNotFoundError) Error() string {
 	return dockerBinaryNotFoundErrorMessage
 }
 
-type interpreterNotFoundError struct {
-	envVar string
-}
-
-const interpreterNotFoundErrorMessage = "%s is a required environment variable: it allows to know which interpreter to use for executing the Docker command"
-
-func (e *interpreterNotFoundError) Error() string {
-	return fmt.Sprintf(interpreterNotFoundErrorMessage, e.envVar)
-}
-
-func newExecCmd(command string) (*exec.Cmd, error) {
+func newExecCmd(command []string) (*exec.Cmd, error) {
 	if _, err := exec.LookPath("docker"); err != nil {
 		return nil, &dockerBinaryNotFoundError{}
 	}
 
-	var (
-		envVar string
-		flag   string
-	)
-
-	if runtime.GOOS == "windows" {
-		envVar = "COMSPEC"
-		flag = "/c"
-	} else {
-		envVar = "SHELL"
-		flag = "-c"
+	e, err := unexec.Command("docker", command...)
+	if err != nil {
+		return nil, err
 	}
-
-	interpreter := os.Getenv(envVar)
-	if interpreter == "" {
-		return nil, &interpreterNotFoundError{envVar}
-	}
-
-	e := exec.Command(interpreter, flag, command)
 	e.Stdout = os.Stdout
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
@@ -181,7 +156,7 @@ func newExecCmd(command string) (*exec.Cmd, error) {
 	return e, nil
 }
 
-func makeDockerRunCommand(event string, payload string, ctx *EventContext) string {
+func makeDockerRunCommand(event string, payload string, ctx *EventContext) []string {
 	var flags []string
 	flags = append(flags, makeTTYFlag())
 	flags = append(flags, "--rm")
@@ -189,23 +164,23 @@ func makeDockerRunCommand(event string, payload string, ctx *EventContext) strin
 	flags = append(flags, makeEnvFlags(ctx)...)
 
 	var command []string
-	command = append(command, []string{"docker", "run"}...)
+	command = append(command, []string{"run"}...)
 	command = append(command, flags...)
 	command = append(command, []string{ctx.toImageName, imageOrContainerBinary, sanitize(event), sanitize(payload)}...)
 
-	return strings.Join(command, " ")
+	return command
 }
 
-func makeDockerExecCommand(event string, payload string, ctx *EventContext) string {
+func makeDockerExecCommand(event string, payload string, ctx *EventContext) []string {
 	var flags []string
 	flags = append(flags, makeTTYFlag())
 
 	var command []string
-	command = append(command, []string{"docker", "exec"}...)
+	command = append(command, []string{"exec"}...)
 	command = append(command, flags...)
 	command = append(command, []string{ctx.toContainerID, imageOrContainerBinary, sanitize(event), sanitize(payload)}...)
 
-	return strings.Join(command, " ")
+	return command
 }
 
 const (

@@ -5,13 +5,13 @@
   branch = "master"
   name = "github.com/aenthill/docker"
   packages = ["."]
-  revision = "0b86b5b4d5f4556570c7d5d91e7314fae18aed2b"
+  revision = "5f4d0d868a3977a24ad7f124a8ef475031e20dee"
 
 [[projects]]
   branch = "master"
   name = "github.com/aenthill/log"
   packages = ["."]
-  revision = "4633d599450f4dc17142c5dca48c764dab17db5e"
+  revision = "f1988fbae7bb0faa3f9041e221da8ec8d149f20e"
 
 [[projects]]
   branch = "master"
@@ -74,8 +74,8 @@
 [[projects]]
   name = "github.com/klauspost/compress"
   packages = ["flate"]
-  revision = "6c8db69c4b49dd4df1fff66996cf556176d0b9bf"
-  version = "v1.2.1"
+  revision = "5fb1f31b0a61e9858f12f39266e059848a5f1cea"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/klauspost/cpuid"
@@ -135,6 +135,12 @@
   version = "v1.0.1"
 
 [[projects]]
+  name = "github.com/thegomachine/go-unexec"
+  packages = ["."]
+  revision = "1966a6ac19ffe511e79d434bfebbeb96bc1f626b"
+  version = "0.1.0"
+
+[[projects]]
   name = "github.com/tj/go-update"
   packages = ["."]
   revision = "a963589e45a4db03407f81ef8ae6ec1995a08f62"
@@ -155,7 +161,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "ad87a3a340fa7f3bed189293fbfa7a9b7e021ae1"
+  revision = "c4afb3effaa53fd9a06ca61262dc7ce8df4c081b"
 
 [[projects]]
   name = "golang.org/x/text"

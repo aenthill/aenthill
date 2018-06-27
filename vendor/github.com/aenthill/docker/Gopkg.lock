@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/aenthill/log"
   packages = ["."]
-  revision = "4633d599450f4dc17142c5dca48c764dab17db5e"
+  revision = "f1988fbae7bb0faa3f9041e221da8ec8d149f20e"
 
 [[projects]]
   branch = "master"
@@ -41,14 +41,20 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/thegomachine/go-unexec"
+  packages = ["."]
+  revision = "1966a6ac19ffe511e79d434bfebbeb96bc1f626b"
+  version = "0.1.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "ad87a3a340fa7f3bed189293fbfa7a9b7e021ae1"
+  revision = "c4afb3effaa53fd9a06ca61262dc7ce8df4c081b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8a36a488ad7d9d4bf6160bdb69c0224e5f561e69fad690a92deb78fdc489d338"
+  inputs-digest = "f174cd9bf31c2a8dd2e1e9d80d75238fdd6cca09ea80b73914b56a36422856fd"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -29,7 +29,7 @@ const (
 	ErrorLevel string = "ERROR"
 )
 
-// levels associates log levels as used with the --logLevel -l flag from Aenthill
+// levels associates log levels as used within Aenthill ecosystem
 // with its counterpart from the https://github.com/apex/log library.
 var levels = map[string]log.Level{
 	DebugLevel: log.DebugLevel,
