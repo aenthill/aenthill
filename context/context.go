@@ -69,10 +69,12 @@ func makeFromEnv() (*Context, error) {
 	if err != nil {
 		return nil, err
 	}
+	ctx.Key = v
 	v, err = lookupEnv(ImageEnvVar)
 	if err != nil {
 		return nil, err
 	}
+	ctx.Image = v
 	v, err = lookupEnv(FromContainerIDEnvVar)
 	if err != nil {
 		return nil, err
@@ -82,6 +84,7 @@ func makeFromEnv() (*Context, error) {
 	if err != nil {
 		return nil, err
 	}
+	ctx.Hostname = v
 	v, err = lookupEnv(HostProjectDirEnvVar)
 	if err != nil {
 		return nil, err
