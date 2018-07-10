@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
 	"github.com/aenthill/aenthill/manifest"
 )
@@ -14,11 +15,12 @@ type registerJob struct {
 	envVar   string
 	metadata []string
 	events   []string
+	ctx      *context.Context
 	manifest *manifest.Manifest
 }
 
-func NewRegisterJob(image, envVar string, metadata, events []string, m *manifest.Manifest) Job {
-	return &registerJob{image, envVar, metadata, events, m}
+func NewRegisterJob(image, envVar string, metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
+	return &registerJob{image, envVar, metadata, events, ctx, m}
 }
 
 func (j *registerJob) Execute() error {
@@ -30,6 +32,11 @@ func (j *registerJob) Execute() error {
 		return err
 	}
 	if j.envVar != "" {
+		metadata := make(map[string]string)
+		metadata[j.envVar] = key
+		if err := j.manifest.AddMetadata(j.ctx.Key, metadata); err != nil {
+			return errors.Wrap("register job", err)
+		}
 		if err := os.Setenv(fmt.Sprintf("PHEROMONE_METADATA_%s", strings.ToUpper(j.envVar)), key); err != nil {
 			return errors.Wrap("register job", err)
 		}
