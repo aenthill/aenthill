@@ -25,26 +25,18 @@
 #   unused-packages = true
 
 
-[prune]
-  go-tests = true
-  unused-packages = true
-
 [[constraint]]
-  name = "github.com/spf13/cobra"
+  name = "github.com/mattn/go-isatty"
   version = "0.0.3"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/manifest"
+  name = "github.com/spf13/afero"
+  version = "1.1.1"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/docker"
+  name = "github.com/urfave/cli"
+  version = "1.20.0"
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/aenthill/log"
-
-[[constraint]]
-  name = "github.com/tj/go-update"
-  version = "2.2.1"
+[prune]
+  go-tests = true
+  unused-packages = true

@@ -1,5 +1,5 @@
 /*
-Package app is a wrapper around cobra library.
+Package app is a wrapper around urfave/cli package.
 
 Its main goal is to initialize the application context and validate it.
 */
@@ -9,83 +9,42 @@ import (
 	"os"
 
 	"github.com/aenthill/aenthill/app/commands"
-	"github.com/aenthill/aenthill/app/context"
+	"github.com/aenthill/aenthill/context"
+	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/manifest"
 
-	"github.com/aenthill/log"
-	"github.com/aenthill/manifest"
-	"github.com/spf13/cobra"
+	"github.com/urfave/cli"
 )
 
 // App is our working struct.
 type App struct {
-	name     string
-	version  string
+	cli      *cli.App
+	ctx      *context.Context
 	manifest *manifest.Manifest
-	ctx      *context.AppContext
 }
 
 // New creates an App instance with the given Manifest instance.
-func New(version string, m *manifest.Manifest) *App {
-	return &App{
-		name:     "aenthill",
-		version:  version,
-		manifest: m,
-		ctx:      &context.AppContext{},
-	}
-}
-
-// Execute executes a command from CLI.
-func (app *App) Execute() error {
-	rootCmd := &cobra.Command{
-		Use:     app.name,
-		Version: app.version,
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			return app.entrypoint(cmd, args)
-		},
-	}
-	rootCmd.PersistentFlags().BoolVarP(&app.ctx.IsVerbose, "verbose", "v", false, "configures the log level to INFO")
-	rootCmd.PersistentFlags().BoolVarP(&app.ctx.IsVeryVerbose, "debug", "d", false, "configures the log level to DEBUG")
-	rootCmd.AddCommand(commands.NewInitCmd(app.manifest, app.ctx))
-	rootCmd.AddCommand(commands.NewAddCmd(app.manifest, app.ctx))
-	rootCmd.AddCommand(commands.NewRemoveCmd(app.manifest, app.ctx))
-	rootCmd.AddCommand(commands.NewSelfUpdateCmd(app.version, app.ctx))
-
-	return rootCmd.Execute()
-}
-
-func (app *App) entrypoint(cmd *cobra.Command, args []string) error {
-	if cmd == nil || cmd.Use == "help [command]" {
-		return nil
-	}
-
-	err := app.initialize()
+func New(version string, m *manifest.Manifest) (*App, error) {
+	ctx, err := context.New()
 	if err != nil {
-		log.Error(app.ctx.EntryContext, err, "initialization failed")
+		return nil, errors.Wrap("app", err)
 	}
-
-	return err
+	app := &App{cli: cli.NewApp(), ctx: ctx, manifest: m}
+	app.cli.Name, app.cli.Usage, app.cli.Version = "aenthill", "May the swarm be with you!", version
+	app.registerCommands()
+	return app, nil
 }
 
-func (app *App) initialize() error {
-	app.ctx.EntryContext = &log.EntryContext{}
-
-	projectDir, err := os.Getwd()
-	if err != nil {
-		return err
+func (app *App) registerCommands() {
+	app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
+	if app.ctx.IsContainer() {
+		app.cli.Commands = append(app.cli.Commands, commands.NewInstallCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewRegisterCommand(app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx))
 	}
-	app.ctx.ProjectDir = projectDir
+}
 
-	if app.ctx.IsVerbose {
-		app.ctx.LogLevel = log.InfoLevel
-	}
-
-	if app.ctx.IsVeryVerbose {
-		app.ctx.LogLevel = log.DebugLevel
-	}
-
-	if app.ctx.LogLevel == "" {
-		app.ctx.LogLevel = log.ErrorLevel
-	}
-
-	return log.SetLevel(app.ctx.LogLevel)
+func (app *App) Run() error {
+	return errors.Wrap("app", app.cli.Run(os.Args))
 }

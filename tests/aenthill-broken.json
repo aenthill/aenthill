@@ -1,11 +1,11 @@
 {
-    "aents": [
-        {
+    "aents": {
+        "foo": {
             "image": "aent/foo"
         },
-        {
+        "bar": {
             "image": "aent/bar"
             ...
-        }
-    ]
+        }   
+    } 
 }

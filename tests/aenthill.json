@@ -1,0 +1,17 @@
+{
+    "aents": {
+        "foo": {
+            "image": "aent/foo"
+        },
+        "bar": {
+            "image": "aent/bar"
+        },
+        "baz": {
+            "image": "aent/baz",
+            "events": [
+                "FOO",
+                "BAR"
+            ]
+        }   
+    } 
+}
