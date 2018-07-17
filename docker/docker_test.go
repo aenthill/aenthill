@@ -16,8 +16,8 @@ func TestNew(t *testing.T) {
 func TestRun(t *testing.T) {
 	aent := &manifest.Aent{
 		Image:        "aenthill/cassandra",
-		Metadata:     make(map[string]string),
-		Dependencies: make(map[string]string),
+		Metadata:     map[string]string{"FOO": "BAR"},
+		Dependencies: map[string]string{"FOO": "BAR"},
 	}
 	d, err := New(tests.MakeTestContext(t))
 	if err != nil {

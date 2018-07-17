@@ -15,7 +15,7 @@ type Docker struct {
 	ctx *context.Context
 }
 
-// New creates a *Docker instance.
+// New creates a Docker instance.
 func New(ctx *context.Context) (*Docker, error) {
 	if _, err := exec.LookPath("docker"); err != nil {
 		return nil, errors.Wrap("docker", err)

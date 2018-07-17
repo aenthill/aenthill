@@ -1,12 +1,12 @@
+// Package context is a solution for gathering all required data of the application.
 package context
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/aenthill/aenthill/manifest"
-
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/manifest"
 )
 
 const (
@@ -26,6 +26,7 @@ const (
 	LogLevelEnvVar = "PHEROMONE_LOG_LEVEL"
 )
 
+// Context is our working struct.
 type Context struct {
 	isContainer     bool
 	Key             string
@@ -37,6 +38,8 @@ type Context struct {
 	LogLevel        string
 }
 
+// New creates a Context instance according to where is launched the application
+// (form a container or from the host).
 func New() (*Context, error) {
 	if _, err := lookupEnv(ImageEnvVar); err != nil {
 		return makeFromHost()
@@ -44,10 +47,13 @@ func New() (*Context, error) {
 	return makeFromEnv()
 }
 
+// IsContainer returns true if the application is launched from a container, false otherwise.
 func (ctx *Context) IsContainer() bool {
 	return ctx.isContainer
 }
 
+// PopulateEnv tries to populate the PHEROMONE_KEY, PHEROMONE_METADATA_* and PHEROMONE_DEPENDENCY_*
+// environment variables.
 func (ctx *Context) PopulateEnv(m *manifest.Manifest) error {
 	if ctx.Key == "" {
 		return nil
