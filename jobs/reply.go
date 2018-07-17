@@ -1,6 +1,8 @@
 package jobs
 
 import (
+	"strings"
+
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/docker"
 	"github.com/aenthill/aenthill/errors"
@@ -17,7 +19,7 @@ func NewReplyJob(event, payload string, ctx *context.Context) (Job, error) {
 	if err != nil {
 		return nil, errors.Wrap("reply job", err)
 	}
-	return &replyJob{event, payload, d}, nil
+	return &replyJob{strings.ToUpper(event), payload, d}, nil
 }
 
 func (j *replyJob) Execute() error {

@@ -1,6 +1,8 @@
 package jobs
 
 import (
+	"strings"
+
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/docker"
 	"github.com/aenthill/aenthill/errors"
@@ -20,18 +22,17 @@ func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.
 	if err != nil {
 		return nil, errors.Wrap("run job", err)
 	}
-	j := &runJob{event: event, payload: payload, docker: d}
-	j.aent = &manifest.Aent{}
-	for key, aent := range m.Aents("") {
-		if key == target {
-			j.aent = aent
-			j.key = key
-			break
-		}
+	j := &runJob{event: strings.ToUpper(event), payload: payload, docker: d}
+	aent, err := m.Aent(target)
+	if err == nil {
+		j.aent = aent
+		j.key = target
+		return j, nil
 	}
+	j.aent = &manifest.Aent{Image: target}
 	return j, nil
 }
 
 func (j *runJob) Execute() error {
-	return errors.Wrap("run job", j.docker.Run(j.key, j.aent.Image, j.event, j.payload, j.aent.Metadata))
+	return errors.Wrap("run job", j.docker.Run(j.key, j.aent.Image, j.event, j.payload, j.aent.Metadata, j.aent.Dependencies))
 }

@@ -20,7 +20,7 @@ func New(ctx *context.Context) (*Docker, error) {
 	return &Docker{ctx}, nil
 }
 
-func (d *Docker) Run(key, image, event, payload string, metadata map[string]string) error {
+func (d *Docker) Run(key, image, event, payload string, metadata map[string]string, dependencies map[string]string) error {
 	b := &builder{}
 	b.run(image, event, payload)
 	b.withEnv(context.KeyEnvVar, key)
@@ -32,6 +32,11 @@ func (d *Docker) Run(key, image, event, payload string, metadata map[string]stri
 	if metadata != nil {
 		for key, value := range metadata {
 			b.withEnv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value)
+		}
+	}
+	if dependencies != nil {
+		for key, value := range dependencies {
+			b.withEnv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", key), value)
 		}
 	}
 	b.withMount("/var/run/docker.sock", "/var/run/docker.sock")

@@ -133,7 +133,7 @@ func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
 	return nil
 }
 
-// Metadata returns the metadata of an image.
+// Metadata returns the metadata of an aent.
 // If the key does not exist, throws an error.
 func (m *Manifest) Metadata(key string) (map[string]string, error) {
 	aent, ok := m.data.Aents[key]
@@ -164,6 +164,16 @@ func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, erro
 	k := m.AddAent(image)
 	aent.Dependencies[dependencyKey] = k
 	return k, nil
+}
+
+// Dependencies returns the dependencies of an aent.
+// If the key does not exist, throws an error.
+func (m *Manifest) Dependencies(key string) (map[string]string, error) {
+	aent, ok := m.data.Aents[key]
+	if !ok {
+		return nil, errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	}
+	return aent.Dependencies, nil
 }
 
 // Aent returns an aent by its key.
