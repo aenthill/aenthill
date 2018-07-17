@@ -29,8 +29,8 @@ const (
 // Context is our working struct.
 type Context struct {
 	isContainer     bool
-	Key             string
 	Image           string
+	Key             string
 	FromContainerID string
 	Hostname        string
 	HostProjectDir  string
@@ -41,10 +41,11 @@ type Context struct {
 // New creates a Context instance according to where is launched the application
 // (form a container or from the host).
 func New() (*Context, error) {
-	if _, err := lookupEnv(ImageEnvVar); err != nil {
+	v, err := lookupEnv(ImageEnvVar)
+	if err != nil {
 		return makeFromHost()
 	}
-	return makeFromEnv()
+	return makeFromEnv(v)
 }
 
 // IsContainer returns true if the application is launched from a container, false otherwise.
@@ -94,23 +95,17 @@ func makeFromHost() (*Context, error) {
 	return ctx, nil
 }
 
-func makeFromEnv() (*Context, error) {
+func makeFromEnv(image string) (*Context, error) {
 	var (
-		ctx = &Context{}
+		ctx = &Context{isContainer: true, Image: image}
 		v   string
 		err error
 	)
-	ctx.isContainer = true
 	v, err = lookupEnv(KeyEnvVar)
 	if err != nil {
 		return nil, err
 	}
 	ctx.Key = v
-	v, err = lookupEnv(ImageEnvVar)
-	if err != nil {
-		return nil, err
-	}
-	ctx.Image = v
 	v, err = lookupEnv(FromContainerIDEnvVar)
 	if err != nil {
 		return nil, err

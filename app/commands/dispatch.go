@@ -12,7 +12,7 @@ import (
 func NewDispatchCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
 		Name:      "dispatch",
-		Usage:     "Dispatches an event to all registred aents which could handle it",
+		Usage:     "Dispatches an event to all aents from manifest which could handle it",
 		UsageText: "aenthill dispatch event [payload]",
 		Action: func(ctx *cli.Context) error {
 			job, err := jobs.NewDispatchJob(ctx.Args().Get(0), ctx.Args().Get(1), context, m)
