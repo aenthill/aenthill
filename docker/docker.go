@@ -10,10 +10,12 @@ import (
 	"github.com/aenthill/aenthill/manifest"
 )
 
+// Docker is our working struct.
 type Docker struct {
 	ctx *context.Context
 }
 
+// New creates a *Docker instance.
 func New(ctx *context.Context) (*Docker, error) {
 	if _, err := exec.LookPath("docker"); err != nil {
 		return nil, errors.Wrap("docker", err)
@@ -21,6 +23,7 @@ func New(ctx *context.Context) (*Docker, error) {
 	return &Docker{ctx}, nil
 }
 
+// Run calls the run command from docker client binary.
 func (d *Docker) Run(aent *manifest.Aent, key, event, payload string) error {
 	b := &builder{}
 	b.run(aent.Image, event, payload)
@@ -46,6 +49,7 @@ func (d *Docker) Run(aent *manifest.Aent, key, event, payload string) error {
 	return errors.Wrapf("docker", cmd.Run(), "%s", cmd.Args)
 }
 
+// Reply calls the exec command from docker client binary.
 func (d *Docker) Reply(event, payload string) error {
 	b := &builder{}
 	b.exec(d.ctx.FromContainerID, event, payload)
