@@ -43,14 +43,18 @@ func TestRegisterJobExecute(t *testing.T) {
 			t.Error("Execute should have thrown an error as given event is not valid")
 		}
 	})
-	t.Run("calling Execute from register job with an valid parameters", func(t *testing.T) {
+	t.Run("calling Execute from register job with valid parameters", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		key := m.AddAent("aent/foo")
 		ctx := tests.MakeTestContext(t)
 		ctx.Key = key
 		j := NewRegisterJob("aent/bar", "FOO", []string{"FOO=bar"}, []string{"FOO"}, ctx, m)
 		if err := j.Execute(); err != nil {
-			t.Errorf(`Execute should have thrown an error: got "%s"`, err.Error())
+			t.Errorf(`Execute should not have thrown an error: got "%s"`, err.Error())
+		}
+		j = NewRegisterJob("aent/baz", "BAR", nil, []string{"FOO"}, ctx, m)
+		if err := j.Execute(); err != nil {
+			t.Errorf(`Execute should not have thrown an error: got "%s"`, err.Error())
 		}
 	})
 }

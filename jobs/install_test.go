@@ -34,7 +34,11 @@ func TestInstallJobExecute(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		j := NewInstallJob([]string{"FOO=bar"}, []string{"FOO"}, tests.MakeTestContext(t), m)
 		if err := j.Execute(); err != nil {
-			t.Errorf(`Execute should have thrown an error: got "%s"`, err.Error())
+			t.Errorf(`Execute should not have thrown an error: got "%s"`, err.Error())
+		}
+		j = NewInstallJob(nil, []string{"FOO"}, tests.MakeTestContext(t), m)
+		if err := j.Execute(); err != nil {
+			t.Errorf(`Execute should not have thrown an error: got "%s"`, err.Error())
 		}
 	})
 }
