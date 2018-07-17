@@ -11,35 +11,31 @@ import (
 )
 
 type registerJob struct {
-	image    string
-	envVar   string
-	metadata []string
-	events   []string
-	ctx      *context.Context
-	manifest *manifest.Manifest
+	image         string
+	dependencyKey string
+	metadata      []string
+	events        []string
+	ctx           *context.Context
+	manifest      *manifest.Manifest
 }
 
-func NewRegisterJob(image, envVar string, metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
-	return &registerJob{image, envVar, metadata, events, ctx, m}
+func NewRegisterJob(image, dependencyKey string, metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
+	return &registerJob{image, dependencyKey, metadata, events, ctx, m}
 }
 
 func (j *registerJob) Execute() error {
-	key := j.manifest.AddAent(j.image)
+	key, err := j.manifest.AddDependency(j.ctx.Key, j.image, j.dependencyKey)
+	if err != nil {
+		return err
+	}
 	if err := j.handleEvents(key); err != nil {
 		return err
 	}
 	if err := j.handleMetadata(key); err != nil {
 		return err
 	}
-	if j.envVar != "" {
-		metadata := make(map[string]string)
-		metadata[j.envVar] = key
-		if err := j.manifest.AddMetadata(j.ctx.Key, metadata); err != nil {
-			return errors.Wrap("register job", err)
-		}
-		if err := os.Setenv(fmt.Sprintf("PHEROMONE_METADATA_%s", strings.ToUpper(j.envVar)), key); err != nil {
-			return errors.Wrap("register job", err)
-		}
+	if err := os.Setenv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", strings.ToUpper(j.dependencyKey)), key); err != nil {
+		return errors.Wrap("register job", err)
 	}
 	return errors.Wrap("register job", j.manifest.Flush())
 }

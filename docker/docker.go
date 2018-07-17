@@ -4,7 +4,6 @@ package docker
 import (
 	"fmt"
 	"os/exec"
-	"strings"
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
@@ -32,7 +31,7 @@ func (d *Docker) Run(key, image, event, payload string, metadata map[string]stri
 	b.withEnv(context.LogLevelEnvVar, d.ctx.LogLevel)
 	if metadata != nil {
 		for key, value := range metadata {
-			b.withEnv(fmt.Sprintf("PHEROMONE_METADATA_%s", strings.ToUpper(key)), value)
+			b.withEnv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value)
 		}
 	}
 	b.withMount("/var/run/docker.sock", "/var/run/docker.sock")

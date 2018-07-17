@@ -12,6 +12,7 @@ import (
 func NewRunCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
 		Name:      "run",
+		Aliases:   []string{"r"},
 		Usage:     "Starts an aent",
 		UsageText: "aenthill run image|key event [payload]",
 		Action: func(ctx *cli.Context) error {

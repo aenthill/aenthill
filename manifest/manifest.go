@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"regexp"
+	"strings"
 
 	"github.com/aenthill/aenthill/errors"
 	"github.com/spf13/afero"
@@ -40,11 +42,14 @@ type (
 
 	// Aent represents an entry from aents list.
 	Aent struct {
-		Image    string            `json:"image"`
-		Metadata map[string]string `json:"metadata,omitempty"`
-		Events   []string          `json:"events,omitempty"`
+		Image        string            `json:"image"`
+		Metadata     map[string]string `json:"metadata,omitempty"`
+		Events       []string          `json:"events,omitempty"`
+		Dependencies map[string]string `json:"dependencies,omitempty"`
 	}
 )
+
+var isAlpha = regexp.MustCompile(`^[A-Za-z0-9_]+$`).MatchString
 
 // SetPath sets the path of the manifest file.
 func (m *Manifest) SetPath(path string) {
@@ -100,7 +105,12 @@ func (m *Manifest) AddEvents(key string, events ...string) error {
 	if !ok {
 		return errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
 	}
-	aent.Events = append(aent.Events, events...)
+	for _, event := range events {
+		if !isAlpha(event) {
+			return errors.Errorf("manifest", `"%s" is not a valid event name: only [A-Za-z0-9_] characters are authorized`, event)
+		}
+		aent.Events = append(aent.Events, strings.ToUpper(event))
+	}
 	return nil
 }
 
@@ -114,8 +124,11 @@ func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
 	if aent.Metadata == nil {
 		aent.Metadata = make(map[string]string)
 	}
-	for key, value := range metadata {
-		aent.Metadata[key] = value
+	for k, value := range metadata {
+		if !isAlpha(k) {
+			return errors.Errorf("manifest", `"%s" is not a valid key for a metadata: only [A-Za-z0-9_] characters are authorized`, k)
+		}
+		aent.Metadata[strings.ToUpper(k)] = value
 	}
 	return nil
 }
@@ -128,6 +141,29 @@ func (m *Manifest) Metadata(key string) (map[string]string, error) {
 		return nil, errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
 	}
 	return aent.Metadata, nil
+}
+
+// AddDependency adds a dependency to an aent.
+// Returns the dependency generated key.
+// If the key does not exist or the dependency key does exist, throws an error.
+func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, error) {
+	dependencyKey = strings.ToUpper(dependencyKey)
+	if !isAlpha(dependencyKey) {
+		return "", errors.Errorf("manifest", `"%s" is not a valid key for a dependency: only [A-Za-z0-9_] characters are authorized`, dependencyKey)
+	}
+	aent, ok := m.data.Aents[key]
+	if !ok {
+		return "", errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	}
+	if aent.Dependencies == nil {
+		aent.Dependencies = make(map[string]string)
+	}
+	if _, ok := aent.Dependencies[dependencyKey]; ok {
+		return "", errors.Errorf("manifest", `dependency identified by key "%s" does already exist for aent identified by key "%s"`, dependencyKey, key)
+	}
+	k := m.AddAent(image)
+	aent.Dependencies[dependencyKey] = k
+	return k, nil
 }
 
 // Aent returns an aent by its key.

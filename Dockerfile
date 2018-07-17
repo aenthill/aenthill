@@ -2,9 +2,6 @@ FROM golang:1.10-stretch
 
 LABEL authors="Julien Neuhart <j.neuhart@thecodingmachine.com>"
 
-# Defines SHELL.
-ENV SHELL "/bin/sh"
-
 # Installs Docker client.
 ENV DOCKER_VERSION "18.03.1-ce"
 RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-$DOCKER_VERSION.tgz | tar xvz -C . &&\
