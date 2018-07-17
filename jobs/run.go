@@ -1,8 +1,6 @@
 package jobs
 
 import (
-	"strings"
-
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/docker"
 	"github.com/aenthill/aenthill/errors"
@@ -23,7 +21,10 @@ func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.
 	if err != nil {
 		return nil, errors.Wrap("run job", err)
 	}
-	j := &runJob{event: strings.ToUpper(event), payload: payload, docker: d}
+	if !manifest.IsAlpha(event) {
+		return nil, errors.Errorf("run job", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
+	}
+	j := &runJob{event: event, payload: payload, docker: d}
 	aent, err := m.Aent(target)
 	if err == nil {
 		j.aent = aent
@@ -35,5 +36,5 @@ func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.
 }
 
 func (j *runJob) Execute() error {
-	return errors.Wrap("run job", j.docker.Run(j.key, j.aent.Image, j.event, j.payload, j.aent.Metadata, j.aent.Dependencies))
+	return errors.Wrap("run job", j.docker.Run(j.aent, j.key, j.event, j.payload))
 }

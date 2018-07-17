@@ -7,9 +7,16 @@ import (
 )
 
 func TestNewReplyJob(t *testing.T) {
-	if _, err := NewReplyJob("FOO", "", nil); err != nil {
-		t.Errorf(`NewReplyJob should not have thrown an error: got "%s"`, err.Error())
-	}
+	t.Run("calling NewReplyJob an invalid event", func(t *testing.T) {
+		if _, err := NewReplyJob("%FOO%", "", nil); err == nil {
+			t.Error("NewReplyJob should have thrown an error as given event is not valid")
+		}
+	})
+	t.Run("calling NewReplyJob with a valid event", func(t *testing.T) {
+		if _, err := NewReplyJob("FOO", "", nil); err != nil {
+			t.Errorf(`NewReplyJob should not have thrown an error: got "%s"`, err.Error())
+		}
+	})
 }
 
 func TestReplyJobExecute(t *testing.T) {

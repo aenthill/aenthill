@@ -1,7 +1,6 @@
 package jobs
 
 import (
-	"os"
 	"strings"
 
 	"github.com/aenthill/aenthill/context"
@@ -31,7 +30,7 @@ func (j *installJob) Execute() error {
 	if err := j.handleMetadata(); err != nil {
 		return err
 	}
-	if err := os.Setenv(context.KeyEnvVar, j.ctx.Key); err != nil {
+	if err := j.ctx.PopulateEnv(j.manifest); err != nil {
 		return errors.Wrap("install job", err)
 	}
 	return errors.Wrap("install job", j.manifest.Flush())
@@ -53,8 +52,5 @@ func (j *installJob) handleMetadata() error {
 		}
 		metadata[parts[0]] = parts[1]
 	}
-	if err := j.manifest.AddMetadata(j.ctx.Key, metadata); err != nil {
-		return errors.Wrap("install job", err)
-	}
-	return errors.Wrap("install job", j.ctx.PopulateEnv(j.manifest))
+	return errors.Wrap("install job", j.manifest.AddMetadata(j.ctx.Key, metadata))
 }

@@ -26,7 +26,7 @@ func NewDispatchJob(event, payload string, ctx *context.Context, m *manifest.Man
 func (j *dispatchJob) Execute() error {
 	aents := j.manifest.Aents(j.event)
 	for key, aent := range aents {
-		if err := j.docker.Run(key, aent.Image, j.event, j.payload, aent.Metadata, aent.Dependencies); err != nil {
+		if err := j.docker.Run(aent, key, j.event, j.payload); err != nil {
 			return errors.Wrap("dispatch job", err)
 		}
 	}

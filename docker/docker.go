@@ -7,6 +7,7 @@ import (
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/manifest"
 )
 
 type Docker struct {
@@ -20,22 +21,22 @@ func New(ctx *context.Context) (*Docker, error) {
 	return &Docker{ctx}, nil
 }
 
-func (d *Docker) Run(key, image, event, payload string, metadata map[string]string, dependencies map[string]string) error {
+func (d *Docker) Run(aent *manifest.Aent, key, event, payload string) error {
 	b := &builder{}
-	b.run(image, event, payload)
+	b.run(aent.Image, event, payload)
 	b.withEnv(context.KeyEnvVar, key)
-	b.withEnv(context.ImageEnvVar, image)
+	b.withEnv(context.ImageEnvVar, aent.Image)
 	b.withEnv(context.FromContainerIDEnvVar, d.ctx.FromContainerID)
 	b.withEnv(context.HostProjectDirEnvVar, d.ctx.HostProjectDir)
 	b.withEnv(context.ContainerProjectDirEnvVar, d.ctx.ProjectDir)
 	b.withEnv(context.LogLevelEnvVar, d.ctx.LogLevel)
-	if metadata != nil {
-		for key, value := range metadata {
+	if aent.Metadata != nil {
+		for key, value := range aent.Metadata {
 			b.withEnv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value)
 		}
 	}
-	if dependencies != nil {
-		for key, value := range dependencies {
+	if aent.Dependencies != nil {
+		for key, value := range aent.Dependencies {
 			b.withEnv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", key), value)
 		}
 	}

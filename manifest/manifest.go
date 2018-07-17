@@ -48,7 +48,8 @@ type (
 	}
 )
 
-var isAlpha = regexp.MustCompile(`^[A-Z0-9_]+$`).MatchString
+// IsAlpha checks if a string matches the regex pattern ^[A-Z0-9_]+$.
+var IsAlpha = regexp.MustCompile(`^[A-Z0-9_]+$`).MatchString
 
 // SetPath sets the path of the manifest file.
 func (m *Manifest) SetPath(path string) {
@@ -105,7 +106,7 @@ func (m *Manifest) AddEvents(key string, events ...string) error {
 		return errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
 	}
 	for _, event := range events {
-		if !isAlpha(event) {
+		if !IsAlpha(event) {
 			return errors.Errorf("manifest", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
 		}
 		if !m.isAentHandlingEvent(aent, event) {
@@ -126,7 +127,7 @@ func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
 		aent.Metadata = make(map[string]string)
 	}
 	for k, value := range metadata {
-		if !isAlpha(k) {
+		if !IsAlpha(k) {
 			return errors.Errorf("manifest", `"%s" is not a valid key for a metadata: only [A-Z0-9_] characters are authorized`, k)
 		}
 		aent.Metadata[k] = value
@@ -148,7 +149,7 @@ func (m *Manifest) Metadata(key string) (map[string]string, error) {
 // Returns the dependency generated key.
 // If the key does not exist or the dependency key does exist, throws an error.
 func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, error) {
-	if !isAlpha(dependencyKey) {
+	if !IsAlpha(dependencyKey) {
 		return "", errors.Errorf("manifest", `"%s" is not a valid key for a dependency: only [A-Z0-9_] characters are authorized`, dependencyKey)
 	}
 	aent, ok := m.data.Aents[key]

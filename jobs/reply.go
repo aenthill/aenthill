@@ -1,11 +1,10 @@
 package jobs
 
 import (
-	"strings"
-
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/docker"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/manifest"
 )
 
 type replyJob struct {
@@ -20,7 +19,10 @@ func NewReplyJob(event, payload string, ctx *context.Context) (Job, error) {
 	if err != nil {
 		return nil, errors.Wrap("reply job", err)
 	}
-	return &replyJob{strings.ToUpper(event), payload, d}, nil
+	if !manifest.IsAlpha(event) {
+		return nil, errors.Errorf("reply job", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
+	}
+	return &replyJob{event, payload, d}, nil
 }
 
 func (j *replyJob) Execute() error {
