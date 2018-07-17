@@ -52,7 +52,7 @@ func (j *installJob) handleMetadata() error {
 			return errors.Errorf("install job", `execute: wrong metadata format: got "%s" want "key=value"`, data)
 		}
 		metadata[parts[0]] = parts[1]
-		if err := os.Setenv(fmt.Sprintf("PHEROMONE_DATA_%s", strings.ToUpper(parts[0])), parts[1]); err != nil {
+		if err := os.Setenv(fmt.Sprintf("PHEROMONE_METADATA_%s", strings.ToUpper(parts[0])), parts[1]); err != nil {
 			return errors.Wrap("install job", err)
 		}
 	}
