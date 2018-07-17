@@ -17,6 +17,7 @@ type runJob struct {
 	docker  *docker.Docker
 }
 
+// NewRunJob creates a new Job instance.
 func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
 	d, err := docker.New(ctx)
 	if err != nil {

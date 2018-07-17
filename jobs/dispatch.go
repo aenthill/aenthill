@@ -14,6 +14,7 @@ type dispatchJob struct {
 	manifest *manifest.Manifest
 }
 
+// NewDispatchJob creates a new Job instance.
 func NewDispatchJob(event, payload string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
 	d, err := docker.New(ctx)
 	if err != nil {

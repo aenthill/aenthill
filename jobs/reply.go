@@ -14,6 +14,7 @@ type replyJob struct {
 	docker  *docker.Docker
 }
 
+// NewReplyJob creates a new Job instance.
 func NewReplyJob(event, payload string, ctx *context.Context) (Job, error) {
 	d, err := docker.New(ctx)
 	if err != nil {

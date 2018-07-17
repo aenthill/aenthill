@@ -20,6 +20,7 @@ type upgradeJob struct {
 	project *update.Manager
 }
 
+// NewUpgradeJob creates a new Job instance.
 func NewUpgradeJob(target, version string) Job {
 	p := &update.Manager{
 		Command: "aenthill",

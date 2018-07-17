@@ -19,6 +19,7 @@ type registerJob struct {
 	manifest      *manifest.Manifest
 }
 
+// NewRegisterJob creates a new Job instance.
 func NewRegisterJob(image, dependencyKey string, metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
 	return &registerJob{image, dependencyKey, metadata, events, ctx, m}
 }

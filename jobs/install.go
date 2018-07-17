@@ -17,6 +17,7 @@ type installJob struct {
 	manifest *manifest.Manifest
 }
 
+// NewInstallJob creates a new Job instance.
 func NewInstallJob(metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
 	return &installJob{metadata, events, ctx, m}
 }

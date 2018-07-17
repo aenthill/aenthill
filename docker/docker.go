@@ -24,7 +24,7 @@ func (d *Docker) Run(key, image, event, payload string, metadata map[string]stri
 	b := &builder{}
 	b.run(image, event, payload)
 	b.withEnv(context.KeyEnvVar, key)
-	b.withEnv(context.ImageEnvVar, d.ctx.Image)
+	b.withEnv(context.ImageEnvVar, image)
 	b.withEnv(context.FromContainerIDEnvVar, d.ctx.FromContainerID)
 	b.withEnv(context.HostProjectDirEnvVar, d.ctx.HostProjectDir)
 	b.withEnv(context.ContainerProjectDirEnvVar, d.ctx.ProjectDir)
