@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"regexp"
-	"strings"
 
 	"github.com/aenthill/aenthill/errors"
 	"github.com/spf13/afero"
@@ -49,7 +48,7 @@ type (
 	}
 )
 
-var isAlpha = regexp.MustCompile(`^[A-Za-z0-9_]+$`).MatchString
+var isAlpha = regexp.MustCompile(`^[A-Z0-9_]+$`).MatchString
 
 // SetPath sets the path of the manifest file.
 func (m *Manifest) SetPath(path string) {
@@ -107,9 +106,11 @@ func (m *Manifest) AddEvents(key string, events ...string) error {
 	}
 	for _, event := range events {
 		if !isAlpha(event) {
-			return errors.Errorf("manifest", `"%s" is not a valid event name: only [A-Za-z0-9_] characters are authorized`, event)
+			return errors.Errorf("manifest", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
 		}
-		aent.Events = append(aent.Events, strings.ToUpper(event))
+		if !m.isAentHandlingEvent(aent, event) {
+			aent.Events = append(aent.Events, event)
+		}
 	}
 	return nil
 }
@@ -126,9 +127,9 @@ func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
 	}
 	for k, value := range metadata {
 		if !isAlpha(k) {
-			return errors.Errorf("manifest", `"%s" is not a valid key for a metadata: only [A-Za-z0-9_] characters are authorized`, k)
+			return errors.Errorf("manifest", `"%s" is not a valid key for a metadata: only [A-Z0-9_] characters are authorized`, k)
 		}
-		aent.Metadata[strings.ToUpper(k)] = value
+		aent.Metadata[k] = value
 	}
 	return nil
 }
@@ -147,9 +148,8 @@ func (m *Manifest) Metadata(key string) (map[string]string, error) {
 // Returns the dependency generated key.
 // If the key does not exist or the dependency key does exist, throws an error.
 func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, error) {
-	dependencyKey = strings.ToUpper(dependencyKey)
 	if !isAlpha(dependencyKey) {
-		return "", errors.Errorf("manifest", `"%s" is not a valid key for a dependency: only [A-Za-z0-9_] characters are authorized`, dependencyKey)
+		return "", errors.Errorf("manifest", `"%s" is not a valid key for a dependency: only [A-Z0-9_] characters are authorized`, dependencyKey)
 	}
 	aent, ok := m.data.Aents[key]
 	if !ok {

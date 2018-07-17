@@ -1,8 +1,6 @@
 package jobs
 
 import (
-	"fmt"
-	"os"
 	"strings"
 
 	"github.com/aenthill/aenthill/context"
@@ -35,7 +33,7 @@ func (j *registerJob) Execute() error {
 	if err := j.handleMetadata(key); err != nil {
 		return err
 	}
-	if err := os.Setenv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", strings.ToUpper(j.dependencyKey)), key); err != nil {
+	if err := j.ctx.PopulateEnv(j.manifest); err != nil {
 		return errors.Wrap("register job", err)
 	}
 	return errors.Wrap("register job", j.manifest.Flush())

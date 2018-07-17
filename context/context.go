@@ -1,7 +1,10 @@
 package context
 
 import (
+	"fmt"
 	"os"
+
+	"github.com/aenthill/aenthill/manifest"
 
 	"github.com/aenthill/aenthill/errors"
 )
@@ -29,7 +32,6 @@ type Context struct {
 	Image           string
 	FromContainerID string
 	Hostname        string
-	AentKey         string
 	HostProjectDir  string
 	ProjectDir      string
 	LogLevel        string
@@ -44,6 +46,34 @@ func New() (*Context, error) {
 
 func (ctx *Context) IsContainer() bool {
 	return ctx.isContainer
+}
+
+func (ctx *Context) PopulateEnv(m *manifest.Manifest) error {
+	if ctx.Key == "" {
+		return nil
+	}
+	if err := os.Setenv(KeyEnvVar, ctx.Key); err != nil {
+		return errors.Wrap("context", err)
+	}
+	aent, err := m.Aent(ctx.Key)
+	if err != nil {
+		return errors.Wrap("context", err)
+	}
+	if aent.Metadata != nil {
+		for key, value := range aent.Metadata {
+			if err := os.Setenv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value); err != nil {
+				return errors.Wrap("context", err)
+			}
+		}
+	}
+	if aent.Dependencies != nil {
+		for key, value := range aent.Dependencies {
+			if err := os.Setenv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", key), value); err != nil {
+				return errors.Wrap("context", err)
+			}
+		}
+	}
+	return nil
 }
 
 func makeFromHost() (*Context, error) {
