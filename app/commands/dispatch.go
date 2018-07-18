@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// NewDispatchCommand creates a cli.Command instance.
 func NewDispatchCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
 		Name:      "dispatch",

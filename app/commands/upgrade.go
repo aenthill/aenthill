@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// NewUpgradeCommand creates a cli.Command instance.
 func NewUpgradeCommand(version string) cli.Command {
 	cmd := cli.Command{
 		Name:      "upgrade",

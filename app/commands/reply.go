@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// NewReplyCommand creates a cli.Command instance.
 func NewReplyCommand(context *context.Context) cli.Command {
 	return cli.Command{
 		Name:      "reply",

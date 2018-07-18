@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// NewRegisterCommand creates a cli.Command instance.
 func NewRegisterCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	cmd := cli.Command{
 		Name:      "register",

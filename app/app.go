@@ -36,17 +36,19 @@ func New(version string, m *manifest.Manifest) (*App, error) {
 }
 
 func (app *App) registerCommands() {
-	app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 	if app.ctx.IsContainer() {
+		app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewInstallCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRegisterCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx))
 	} else {
+		app.cli.Commands = append(app.cli.Commands, commands.NewAddCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewUpgradeCommand(app.cli.Version))
 	}
 }
 
+// Run starts the application by reading CLI arguments.
 func (app *App) Run() error {
 	return errors.Wrap("app", app.cli.Run(os.Args))
 }
