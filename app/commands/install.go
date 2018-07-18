@@ -22,8 +22,8 @@ func NewInstallCommand(context *context.Context, m *manifest.Manifest) cli.Comma
 		},
 	}
 	cmd.Flags = []cli.Flag{
-		cli.StringSliceFlag{Name: "events, e", Usage: "add one handled event (cumulative)"},
 		cli.StringSliceFlag{Name: "metadata, m", Usage: "add one metadata (cumulative) - format: key=value"},
+		cli.StringSliceFlag{Name: "events, e", Usage: "add one handled event (cumulative)"},
 	}
 	return cmd
 }

@@ -37,9 +37,9 @@ func New(version string, m *manifest.Manifest) (*App, error) {
 
 func (app *App) registerCommands() {
 	if app.ctx.IsContainer() {
-		app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewInstallCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRegisterCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx))
 	} else {
