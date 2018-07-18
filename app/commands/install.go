@@ -17,7 +17,7 @@ func NewInstallCommand(context *context.Context, m *manifest.Manifest) cli.Comma
 		Usage:     "Installs or updates current aent in the manifest",
 		UsageText: "aenthill install [command options]",
 		Action: func(ctx *cli.Context) error {
-			job := jobs.NewInstallJob(ctx.StringSlice("events"), ctx.StringSlice("metadata"), context, m)
+			job := jobs.NewInstallJob(ctx.StringSlice("metadata"), ctx.StringSlice("events"), context, m)
 			return errors.Wrap("install command", job.Execute())
 		},
 	}

@@ -12,22 +12,18 @@ type registerJob struct {
 	image         string
 	dependencyKey string
 	metadata      []string
-	events        []string
 	ctx           *context.Context
 	manifest      *manifest.Manifest
 }
 
 // NewRegisterJob creates a new Job instance.
-func NewRegisterJob(image, dependencyKey string, metadata, events []string, ctx *context.Context, m *manifest.Manifest) Job {
-	return &registerJob{image, dependencyKey, metadata, events, ctx, m}
+func NewRegisterJob(image, dependencyKey string, metadata []string, ctx *context.Context, m *manifest.Manifest) Job {
+	return &registerJob{image, dependencyKey, metadata, ctx, m}
 }
 
 func (j *registerJob) Execute() error {
 	key, err := j.manifest.AddDependency(j.ctx.Key, j.image, j.dependencyKey)
 	if err != nil {
-		return err
-	}
-	if err := j.handleEvents(key); err != nil {
 		return err
 	}
 	if err := j.handleMetadata(key); err != nil {
@@ -37,10 +33,6 @@ func (j *registerJob) Execute() error {
 		return errors.Wrap("register job", err)
 	}
 	return errors.Wrap("register job", j.manifest.Flush())
-}
-
-func (j *registerJob) handleEvents(key string) error {
-	return errors.Wrap("register job", j.manifest.AddEvents(key, j.events...))
 }
 
 func (j *registerJob) handleMetadata(key string) error {
