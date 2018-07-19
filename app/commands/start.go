@@ -13,7 +13,7 @@ import (
 func NewStartCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
 		Name:      "start",
-		Aliases:   []string{"start"},
+		Aliases:   []string{"s"},
 		Usage:     "Starts an aent",
 		UsageText: "aenthill start image",
 		Action: func(ctx *cli.Context) error {
