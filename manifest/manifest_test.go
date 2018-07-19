@@ -100,6 +100,17 @@ func TestAddAent(t *testing.T) {
 	}
 }
 
+func TestRemoveAent(t *testing.T) {
+	m := New(DefaultManifestFileName, afero.NewMemMapFs())
+	key := m.AddAent("aent/foo")
+	if err := m.RemoveAent(key); err != nil {
+		t.Fatalf(`RemoveAent should not have returned an error: got "%s"`, err.Error())
+	}
+	if _, err := m.Aent(key); err == nil {
+		t.Error("RemoveAent should have removed the aent")
+	}
+}
+
 func TestAddEvents(t *testing.T) {
 	t.Run("calling AddEvents with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
@@ -126,19 +137,37 @@ func TestAddEvents(t *testing.T) {
 func TestAddMetadata(t *testing.T) {
 	t.Run("calling AddMetadata with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		metadata := make(map[string]string)
-		metadata["FOO"] = "BAR"
-		if err := m.AddMetadata("foo", metadata); err == nil {
+		if err := m.AddMetadata("foo", map[string]string{"FOO": "BAR"}); err == nil {
 			t.Error("AddMetadata should have thrown an error as given key should not exist")
 		}
 	})
 	t.Run("calling AddMetadata with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		metadata := make(map[string]string)
-		metadata["FOO"] = "BAR"
 		key := m.AddAent("aent/foo")
-		if err := m.AddMetadata(key, metadata); err != nil {
+		if err := m.AddMetadata(key, map[string]string{"FOO": "BAR"}); err != nil {
 			t.Errorf(`AddMetadata should not have thrown an error as given key should exist: got "%s"`, err.Error())
+		}
+	})
+}
+
+func TestAddMetadataFlags(t *testing.T) {
+	t.Run("calling AddMetadataFlags with empty flags", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		if err := m.AddMetadataFromFlags("foo", nil); err != nil {
+			t.Errorf(`AddMetadataFromFlags should not have thrown an error as flags are empty: got "%s"`, err.Error())
+		}
+	})
+	t.Run("calling AddMetadataFlags with invalid flags", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		if err := m.AddMetadataFromFlags("foo", []string{"FOO:BAR"}); err == nil {
+			t.Error("AddMetadataFromFlags should have thrown an error as flags are invalid")
+		}
+	})
+	t.Run("calling AddMetadataFlags with valid flags", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		key := m.AddAent("aent/foo")
+		if err := m.AddMetadataFromFlags(key, []string{"FOO=BAR"}); err != nil {
+			t.Errorf(`AddMetadataFromFlags should not have thrown an error as flags are valid: got "%s"`, err.Error())
 		}
 	})
 }
