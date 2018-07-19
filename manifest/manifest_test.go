@@ -185,7 +185,7 @@ func TestMetadata(t *testing.T) {
 		metadata["FOO"] = "BAR"
 		key := m.AddAent("aent/foo")
 		if err := m.AddMetadata(key, metadata); err != nil {
-			t.Errorf(`An unexpected error occurred while setting the metadata: got "%s"`, err.Error())
+			t.Fatalf(`An unexpected error occurred while setting the metadata: got "%s"`, err.Error())
 		}
 		if _, err := m.Metadata(key); err != nil {
 			t.Errorf(`Metadata should not have thrown an error as given key should exist: got "%s"`, err.Error())
@@ -204,7 +204,7 @@ func TestAddDependency(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		key := m.AddAent("aent/foo")
 		if _, err := m.AddDependency(key, "aent/bar", "BAR"); err != nil {
-			t.Errorf(`An unexpected error occurred while setting the dependency: got "%s"`, err.Error())
+			t.Fatalf(`An unexpected error occurred while setting the dependency: got "%s"`, err.Error())
 		}
 		if _, err := m.AddDependency(key, "aent/bar", "BAR"); err == nil {
 			t.Errorf("AddDependency should have thrown an error as given dependency key already exist")

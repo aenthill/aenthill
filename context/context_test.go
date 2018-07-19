@@ -104,7 +104,7 @@ func TestNew(t *testing.T) {
 func setenv(t *testing.T, env map[string]string) {
 	for key, value := range env {
 		if err := os.Setenv(key, value); err != nil {
-			t.Errorf(`An unexpected error occurred while setting the environment variable "%s" with value "%s": got "%s"`, key, value, err.Error())
+			t.Fatalf(`An unexpected error occurred while setting the environment variable "%s" with value "%s": got "%s"`, key, value, err.Error())
 		}
 	}
 }
@@ -112,7 +112,7 @@ func setenv(t *testing.T, env map[string]string) {
 func unsetenv(t *testing.T, env map[string]string) {
 	for key := range env {
 		if err := os.Unsetenv(key); err != nil {
-			t.Errorf(`An unexpected error occurred while unsetting the environment variable "%s" : got "%s"`, key, err.Error())
+			t.Fatalf(`An unexpected error occurred while unsetting the environment variable "%s" : got "%s"`, key, err.Error())
 		}
 	}
 }
@@ -120,7 +120,7 @@ func unsetenv(t *testing.T, env map[string]string) {
 func TestIsContainer(t *testing.T) {
 	ctx, err := New()
 	if err != nil {
-		t.Errorf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
+		t.Fatalf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
 	}
 	if ctx.IsContainer() {
 		t.Error("IsContainer should have returned false as we are not in an aent")
