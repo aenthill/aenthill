@@ -27,7 +27,6 @@ test_register()
     printf "\n\nTesting register...\n"
     aenthill register aenthill/cassandra FOO -m FOO=BAR
     printf "\nRegister done!"
-    print_pheromones
     print_manifest
 }
 
