@@ -2,11 +2,9 @@
 package context
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/aenthill/aenthill/errors"
-	"github.com/aenthill/aenthill/manifest"
 )
 
 const (
@@ -28,7 +26,6 @@ const (
 
 // Context is our working struct.
 type Context struct {
-	isContainer     bool
 	Image           string
 	Key             string
 	FromContainerID string
@@ -36,6 +33,7 @@ type Context struct {
 	HostProjectDir  string
 	ProjectDir      string
 	LogLevel        string
+	isContainer     bool
 }
 
 // New creates a Context instance according to where is launched the application
@@ -51,36 +49,6 @@ func New() (*Context, error) {
 // IsContainer returns true if the application is launched from a container, false otherwise.
 func (ctx *Context) IsContainer() bool {
 	return ctx.isContainer
-}
-
-// PopulateEnv tries to populate the PHEROMONE_KEY, PHEROMONE_METADATA_* and PHEROMONE_DEPENDENCY_*
-// environment variables.
-func (ctx *Context) PopulateEnv(m *manifest.Manifest) error {
-	if ctx.Key == "" {
-		return nil
-	}
-	if err := os.Setenv(KeyEnvVar, ctx.Key); err != nil {
-		return errors.Wrap("context", err)
-	}
-	aent, err := m.Aent(ctx.Key)
-	if err != nil {
-		return errors.Wrap("context", err)
-	}
-	if aent.Metadata != nil {
-		for key, value := range aent.Metadata {
-			if err := os.Setenv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value); err != nil {
-				return errors.Wrap("context", err)
-			}
-		}
-	}
-	if aent.Dependencies != nil {
-		for key, value := range aent.Dependencies {
-			if err := os.Setenv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", key), value); err != nil {
-				return errors.Wrap("context", err)
-			}
-		}
-	}
-	return nil
 }
 
 func makeFromHost() (*Context, error) {

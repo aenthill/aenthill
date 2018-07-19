@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"os"
 	"testing"
-
-	"github.com/aenthill/aenthill/manifest"
-
-	"github.com/spf13/afero"
 )
 
 // nolint: gocyclo
@@ -129,44 +125,4 @@ func TestIsContainer(t *testing.T) {
 	if ctx.IsContainer() {
 		t.Error("IsContainer should have returned false as we are not in an aent")
 	}
-}
-
-func TestPopulateEnv(t *testing.T) {
-	t.Run("calling PopulateEnv without key in context", func(t *testing.T) {
-		ctx, err := New()
-		if err != nil {
-			t.Errorf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
-		}
-		if err := ctx.PopulateEnv(nil); err != nil {
-			t.Errorf(`New should not have thrown an error: got "%s"`, err.Error())
-		}
-	})
-	t.Run("calling PopulateEnv with a non-existing key", func(t *testing.T) {
-		ctx, err := New()
-		if err != nil {
-			t.Errorf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
-		}
-		ctx.Key = "aent/foo"
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		if err := ctx.PopulateEnv(m); err == nil {
-			t.Error("New should have thrown an error as given key should not exist in manifest")
-		}
-	})
-	t.Run("calling PopulateEnv with an existing key", func(t *testing.T) {
-		ctx, err := New()
-		if err != nil {
-			t.Errorf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
-		}
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx.Key = m.AddAent("aent/foo")
-		if err := m.AddMetadata(ctx.Key, map[string]string{"FOO": "BAR"}); err != nil {
-			t.Errorf(`An unexpected error occurred while adding a metadata: got "%s"`, err.Error())
-		}
-		if _, err := m.AddDependency(ctx.Key, "aent/bar", "BAR"); err != nil {
-			t.Errorf(`An unexpected error occurred while adding a dependency: got "%s"`, err.Error())
-		}
-		if err := ctx.PopulateEnv(m); err != nil {
-			t.Errorf(`New should not have thrown an error: got "%s"`, err.Error())
-		}
-	})
 }

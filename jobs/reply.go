@@ -14,13 +14,13 @@ type replyJob struct {
 }
 
 // NewReplyJob creates a new Job instance.
-func NewReplyJob(event, payload string, ctx *context.Context) (Job, error) {
+func NewReplyJob(event, payload string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
+	if err := m.Validate(event, "event"); err != nil {
+		return nil, errors.Wrap("reply job", err)
+	}
 	d, err := docker.New(ctx)
 	if err != nil {
 		return nil, errors.Wrap("reply job", err)
-	}
-	if !manifest.IsAlpha(event) {
-		return nil, errors.Errorf("reply job", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
 	}
 	return &replyJob{event, payload, d}, nil
 }

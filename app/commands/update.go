@@ -9,16 +9,18 @@ import (
 	"github.com/urfave/cli"
 )
 
-// NewInstallCommand creates a cli.Command instance.
-func NewInstallCommand(context *context.Context, m *manifest.Manifest) cli.Command {
+// NewUpdateCommand creates a cli.Command instance.
+func NewUpdateCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	cmd := cli.Command{
-		Name:      "install",
-		Aliases:   []string{"update"},
-		Usage:     "Installs or updates current aent in the manifest",
-		UsageText: "aenthill install [command options]",
+		Name:      "update",
+		Usage:     "Updates current aent in the manifest",
+		UsageText: "aenthill update [command options]",
 		Action: func(ctx *cli.Context) error {
-			job := jobs.NewInstallJob(ctx.StringSlice("metadata"), ctx.StringSlice("events"), context, m)
-			return errors.Wrap("install command", job.Execute())
+			job, err := jobs.NewUpdateJob(ctx.StringSlice("metadata"), ctx.StringSlice("events"), context, m)
+			if err != nil {
+				return errors.Wrap("update command", err)
+			}
+			return errors.Wrap("update command", job.Execute())
 		},
 	}
 	cmd.Flags = []cli.Flag{

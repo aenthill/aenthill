@@ -6,8 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"regexp"
+	"strings"
 
 	"github.com/aenthill/aenthill/errors"
+
 	"github.com/spf13/afero"
 )
 
@@ -48,9 +50,6 @@ type (
 	}
 )
 
-// IsAlpha checks if a string matches the regex pattern ^[A-Z0-9_]+$.
-var IsAlpha = regexp.MustCompile(`^[A-Z0-9_]+$`).MatchString
-
 // SetPath sets the path of the manifest file.
 func (m *Manifest) SetPath(path string) {
 	m.path = path
@@ -59,12 +58,6 @@ func (m *Manifest) SetPath(path string) {
 // Path returns the path of the manifest file.
 func (m *Manifest) Path() string {
 	return m.path
-}
-
-// Exist returns true if the manifest file exists.
-func (m *Manifest) Exist() bool {
-	_, err := m.fs.Stat(m.path)
-	return err == nil
 }
 
 // Flush writes the manifest file and populates it with the manifest data.
@@ -81,11 +74,42 @@ func (m *Manifest) Flush() error {
 // Make sure your Manifest instance has a path to an existing file before
 // using this function.
 func (m *Manifest) Parse() error {
+	if err := m.exist(); err != nil {
+		return err
+	}
+	return m.parse()
+}
+
+// ParseIfExist if exist parses the manifest file and populates the manifest data
+// only if the manifest file does exist.
+func (m *Manifest) ParseIfExist() error {
+	if err := m.exist(); err != nil {
+		return nil
+	}
+	return m.parse()
+}
+
+func (m *Manifest) parse() error {
 	data, err := afero.ReadFile(m.fs, m.path)
 	if err != nil {
 		return errors.Wrap("manifest", err)
 	}
 	return errors.Wrap("manifest", json.Unmarshal(data, &m.data))
+}
+
+func (m *Manifest) exist() error {
+	_, err := m.fs.Stat(m.path)
+	return errors.Wrap("manifest", err)
+}
+
+var isAlpha = regexp.MustCompile(`^[A-Z0-9_]+$`).MatchString
+
+// Validate checks if given string is only composed of [A-Z0-9_] characters.
+func (m *Manifest) Validate(str, kind string) error {
+	if isAlpha(str) {
+		return nil
+	}
+	return errors.Errorf("manifest", `"%s" is not a valid %s: only [A-Z0-9_] characters are authorized`, str, kind)
 }
 
 // AddAent adds an aent in the manifest.
@@ -98,16 +122,26 @@ func (m *Manifest) AddAent(image string) string {
 	return key
 }
 
+// RemoveAent removes an aent from the manifest.
+// If the key does not exist, throws an error.
+func (m *Manifest) RemoveAent(key string) error {
+	if _, err := m.Aent(key); err != nil {
+		return errors.Wrap("manifest", err)
+	}
+	delete(m.data.Aents, key)
+	return nil
+}
+
 // AddEvents adds events to an aent.
 // If the key does not exist, throws an error.
 func (m *Manifest) AddEvents(key string, events ...string) error {
-	aent, ok := m.data.Aents[key]
-	if !ok {
-		return errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	aent, err := m.Aent(key)
+	if err != nil {
+		return err
 	}
 	for _, event := range events {
-		if !IsAlpha(event) {
-			return errors.Errorf("manifest", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
+		if err := m.Validate(event, "event"); err != nil {
+			return err
 		}
 		if !m.isAentHandlingEvent(aent, event) {
 			aent.Events = append(aent.Events, event)
@@ -119,28 +153,42 @@ func (m *Manifest) AddEvents(key string, events ...string) error {
 // AddMetadata adds metadata to an aent.
 // If the key does not exist, throws an error.
 func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
-	aent, ok := m.data.Aents[key]
-	if !ok {
-		return errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	aent, err := m.Aent(key)
+	if err != nil {
+		return err
 	}
 	if aent.Metadata == nil {
 		aent.Metadata = make(map[string]string)
 	}
 	for k, value := range metadata {
-		if !IsAlpha(k) {
-			return errors.Errorf("manifest", `"%s" is not a valid key for a metadata: only [A-Z0-9_] characters are authorized`, k)
-		}
 		aent.Metadata[k] = value
 	}
 	return nil
 }
 
+// AddMetadataFromFlags adds metadata from flags to an aent.
+// If the key does not exist, throws an error.
+func (m *Manifest) AddMetadataFromFlags(key string, flags []string) error {
+	if flags == nil {
+		return nil
+	}
+	metadata := make(map[string]string)
+	for _, data := range flags {
+		parts := strings.Split(data, "=")
+		if len(parts) != 2 {
+			return errors.Errorf("manifest", `wrong metadata format: got "%s" want "key=value"`, data)
+		}
+		metadata[parts[0]] = parts[1]
+	}
+	return m.AddMetadata(key, metadata)
+}
+
 // Metadata returns the metadata of an aent.
 // If the key does not exist, throws an error.
 func (m *Manifest) Metadata(key string) (map[string]string, error) {
-	aent, ok := m.data.Aents[key]
-	if !ok {
-		return nil, errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	aent, err := m.Aent(key)
+	if err != nil {
+		return nil, err
 	}
 	return aent.Metadata, nil
 }
@@ -149,12 +197,9 @@ func (m *Manifest) Metadata(key string) (map[string]string, error) {
 // Returns the dependency generated key.
 // If the key does not exist or the dependency key does exist, throws an error.
 func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, error) {
-	if !IsAlpha(dependencyKey) {
-		return "", errors.Errorf("manifest", `"%s" is not a valid key for a dependency: only [A-Z0-9_] characters are authorized`, dependencyKey)
-	}
-	aent, ok := m.data.Aents[key]
-	if !ok {
-		return "", errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	aent, err := m.Aent(key)
+	if err != nil {
+		return "", err
 	}
 	if aent.Dependencies == nil {
 		aent.Dependencies = make(map[string]string)
@@ -170,9 +215,9 @@ func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, erro
 // Dependencies returns the dependencies of an aent.
 // If the key does not exist, throws an error.
 func (m *Manifest) Dependencies(key string) (map[string]string, error) {
-	aent, ok := m.data.Aents[key]
-	if !ok {
-		return nil, errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+	aent, err := m.Aent(key)
+	if err != nil {
+		return nil, err
 	}
 	return aent.Dependencies, nil
 }

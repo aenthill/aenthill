@@ -12,7 +12,7 @@ import (
 func MakeTestContext(t *testing.T) *context.Context {
 	ctx, err := context.New()
 	if err != nil {
-		t.Errorf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
+		t.Fatalf(`An unexpected error occurred while creating the context: got "%s"`, err.Error())
 	}
 	ctx.HostProjectDir = os.Getenv("HOST_PROJECT_DIR")
 	return ctx

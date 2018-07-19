@@ -36,24 +36,6 @@ func TestPath(t *testing.T) {
 	}
 }
 
-func TestExist(t *testing.T) {
-	t.Run("calling Exist with a non-existing file", func(t *testing.T) {
-		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		if m.Exist() {
-			t.Error("Exist should not have returned true as file should not exist")
-		}
-	})
-	t.Run("calling Exist with an existing file", func(t *testing.T) {
-		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		if err := m.Flush(); err != nil {
-			t.Errorf(`An unexpected error occurred while flushing the manifest: got "%s"`, err.Error())
-		}
-		if !m.Exist() {
-			t.Errorf("Exist should have returned true as file should exist")
-		}
-	})
-}
-
 func TestFlush(t *testing.T) {
 	t.Run("calling Flush with an invalid file path", func(t *testing.T) {
 		m := New("", afero.NewOsFs())
@@ -86,6 +68,27 @@ func TestParse(t *testing.T) {
 		m := New("../tests/aenthill.json", afero.NewOsFs())
 		if err := m.Parse(); err != nil {
 			t.Errorf(`Parse should not have thrown an error as file should be valid: got "%s"`, err.Error())
+		}
+	})
+}
+
+func TestParseIfExist(t *testing.T) {
+	t.Run("calling ParseIfExist with a non-existing file", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		if err := m.ParseIfExist(); err != nil {
+			t.Errorf(`ParseIfExist should not have thrown an error as file should not exist: got "%s"`, err.Error())
+		}
+	})
+	t.Run("calling ParseIfExist with a broken file", func(t *testing.T) {
+		m := New("../tests/aenthill-broken.json", afero.NewOsFs())
+		if err := m.ParseIfExist(); err == nil {
+			t.Error("ParseIfExist should have thrown an error as file should be broken")
+		}
+	})
+	t.Run("calling ParseIfExist with a valid file", func(t *testing.T) {
+		m := New("../tests/aenthill.json", afero.NewOsFs())
+		if err := m.ParseIfExist(); err != nil {
+			t.Errorf(`ParseIfExist should not have thrown an error as file should be valid: got "%s"`, err.Error())
 		}
 	})
 }
@@ -129,15 +132,6 @@ func TestAddMetadata(t *testing.T) {
 			t.Error("AddMetadata should have thrown an error as given key should not exist")
 		}
 	})
-	t.Run("calling AddMetadata with an invalid metadata key", func(t *testing.T) {
-		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		metadata := make(map[string]string)
-		metadata["%FOO%"] = "BAR"
-		key := m.AddAent("aent/foo")
-		if err := m.AddMetadata(key, metadata); err == nil {
-			t.Error("AddMetadata should have thrown an error as given metadata key is not valid")
-		}
-	})
 	t.Run("calling AddMetadata with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		metadata := make(map[string]string)
@@ -175,13 +169,6 @@ func TestAddDependency(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if _, err := m.AddDependency("foo", "aent/bar", "BAR"); err == nil {
 			t.Error("AddDependency should have thrown an error as given key should not exist")
-		}
-	})
-	t.Run("calling AddDependency with an invalid dependency key", func(t *testing.T) {
-		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := m.AddDependency(key, "aent/bar", "%BAR%"); err == nil {
-			t.Error("AddDependency should have thrown an error as given dependency key is not valid")
 		}
 	})
 	t.Run("calling AddDependency with an existing dependency", func(t *testing.T) {
@@ -239,7 +226,7 @@ func TestAents(t *testing.T) {
 	t.Run("calling Aents without an event", func(t *testing.T) {
 		m := New("../tests/aenthill.json", afero.NewOsFs())
 		if err := m.Parse(); err != nil {
-			t.Errorf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
+			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
 		len := len(m.Aents(""))
 		if len != 3 {
@@ -249,7 +236,7 @@ func TestAents(t *testing.T) {
 	t.Run("calling Aents with a non-existing event", func(t *testing.T) {
 		m := New("../tests/aenthill.json", afero.NewOsFs())
 		if err := m.Parse(); err != nil {
-			t.Errorf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
+			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
 		len := len(m.Aents("BAZ"))
 		if len != 2 {
@@ -259,7 +246,7 @@ func TestAents(t *testing.T) {
 	t.Run("calling Aents with an existing event", func(t *testing.T) {
 		m := New("../tests/aenthill.json", afero.NewOsFs())
 		if err := m.Parse(); err != nil {
-			t.Errorf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
+			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
 		len := len(m.Aents("FOO"))
 		if len != 3 {

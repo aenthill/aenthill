@@ -11,17 +11,18 @@ import (
 
 // NewAddCommand creates a cli.Command instance.
 func NewAddCommand(context *context.Context, m *manifest.Manifest) cli.Command {
-	return cli.Command{
+	cmd := cli.Command{
 		Name:      "add",
 		Aliases:   []string{"a"},
-		Usage:     "Starts an aent",
+		Usage:     "Adds an aent in the manifest",
 		UsageText: "aenthill add image",
 		Action: func(ctx *cli.Context) error {
-			job, err := jobs.NewRunJob(ctx.Args().Get(0), "ADD", "", context, m)
+			job, err := jobs.NewAddJob(ctx.Args().Get(0), context, m)
 			if err != nil {
 				return errors.Wrap("add command", err)
 			}
 			return errors.Wrap("add command", job.Execute())
 		},
 	}
+	return cmd
 }

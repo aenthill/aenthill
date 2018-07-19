@@ -8,7 +8,7 @@ import (
 )
 
 type runJob struct {
-	aent    *manifest.Aent
+	image   string
 	key     string
 	event   string
 	payload string
@@ -17,24 +17,27 @@ type runJob struct {
 
 // NewRunJob creates a new Job instance.
 func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
+	if err := m.Validate(event, "event"); err != nil {
+		return nil, errors.Wrap("run job", err)
+	}
+	if err := m.ParseIfExist(); err != nil {
+		return nil, errors.Wrap("run job", err)
+	}
 	d, err := docker.New(ctx)
 	if err != nil {
 		return nil, errors.Wrap("run job", err)
 	}
-	if !manifest.IsAlpha(event) {
-		return nil, errors.Errorf("run job", `"%s" is not a valid event name: only [A-Z0-9_] characters are authorized`, event)
-	}
-	j := &runJob{event: event, payload: payload, docker: d}
-	aent, err := m.Aent(target)
-	if err == nil {
-		j.aent = aent
-		j.key = target
-		return j, nil
-	}
-	j.aent = &manifest.Aent{Image: target}
+	image, key := func(target string, m *manifest.Manifest) (string, string) {
+		aent, err := m.Aent(target)
+		if err == nil {
+			return aent.Image, target
+		}
+		return target, ""
+	}(target, m)
+	j := &runJob{image, key, event, payload, d}
 	return j, nil
 }
 
 func (j *runJob) Execute() error {
-	return errors.Wrap("run job", j.docker.Run(j.aent, j.key, j.event, j.payload))
+	return errors.Wrap("run job", j.docker.Run(j.image, j.key, j.event, j.payload))
 }

@@ -2,12 +2,10 @@
 package docker
 
 import (
-	"fmt"
 	"os/exec"
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
-	"github.com/aenthill/aenthill/manifest"
 )
 
 // Docker is our working struct.
@@ -24,25 +22,15 @@ func New(ctx *context.Context) (*Docker, error) {
 }
 
 // Run calls the run command from docker client binary.
-func (d *Docker) Run(aent *manifest.Aent, key, event, payload string) error {
+func (d *Docker) Run(image, key, event, payload string) error {
 	b := &builder{}
-	b.run(aent.Image, event, payload)
+	b.run(image, event, payload)
 	b.withEnv(context.KeyEnvVar, key)
-	b.withEnv(context.ImageEnvVar, aent.Image)
+	b.withEnv(context.ImageEnvVar, image)
 	b.withEnv(context.FromContainerIDEnvVar, d.ctx.FromContainerID)
 	b.withEnv(context.HostProjectDirEnvVar, d.ctx.HostProjectDir)
 	b.withEnv(context.ContainerProjectDirEnvVar, d.ctx.ProjectDir)
 	b.withEnv(context.LogLevelEnvVar, d.ctx.LogLevel)
-	if aent.Metadata != nil {
-		for key, value := range aent.Metadata {
-			b.withEnv(fmt.Sprintf("PHEROMONE_METADATA_%s", key), value)
-		}
-	}
-	if aent.Dependencies != nil {
-		for key, value := range aent.Dependencies {
-			b.withEnv(fmt.Sprintf("PHEROMONE_DEPENDENCY_%s", key), value)
-		}
-	}
 	b.withMount("/var/run/docker.sock", "/var/run/docker.sock")
 	b.withMount(d.ctx.HostProjectDir, d.ctx.ProjectDir)
 	cmd := b.build()
