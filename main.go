@@ -12,10 +12,10 @@ Aenthill documentation is hosted at https://aenthill.github.io/.
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/aenthill/aenthill/app"
+	"github.com/aenthill/aenthill/log"
 	"github.com/aenthill/aenthill/manifest"
 
 	"github.com/spf13/afero"
@@ -32,11 +32,11 @@ func main() {
 	m := manifest.New(manifest.DefaultManifestFileName, afero.NewOsFs())
 	a, err := app.New(version, m)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		os.Exit(1)
 	}
 	if err := a.Run(); err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		os.Exit(1)
 	}
 }

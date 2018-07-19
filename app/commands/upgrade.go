@@ -13,7 +13,7 @@ func NewUpgradeCommand(version string) cli.Command {
 		Name:      "upgrade",
 		Aliases:   []string{"u"},
 		Usage:     "Upgrades Aenthill",
-		UsageText: "aenthill upgrade [command options]",
+		UsageText: "aenthill [global options] upgrade [command options]",
 		Action: func(ctx *cli.Context) error {
 			job := jobs.NewUpgradeJob(ctx.String("target"), version)
 			return errors.Wrap("upgrade command", job.Execute())

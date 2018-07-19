@@ -2,12 +2,15 @@ package jobs
 
 import (
 	"github.com/aenthill/aenthill/context"
+	"github.com/aenthill/aenthill/docker"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/log"
 	"github.com/aenthill/aenthill/manifest"
 )
 
 type addJob struct {
 	image    string
+	docker   *docker.Docker
 	ctx      *context.Context
 	manifest *manifest.Manifest
 }
@@ -17,7 +20,11 @@ func NewAddJob(image string, ctx *context.Context, m *manifest.Manifest) (Job, e
 	if err := m.ParseIfExist(); err != nil {
 		return nil, errors.Wrap("add job", err)
 	}
-	return &addJob{image, ctx, m}, nil
+	d, err := docker.New(ctx)
+	if err != nil {
+		return nil, errors.Wrap("add job", err)
+	}
+	return &addJob{image, d, ctx, m}, nil
 }
 
 func (j *addJob) Execute() error {
@@ -29,12 +36,16 @@ func (j *addJob) Execute() error {
 }
 
 func (j *addJob) sendEvent(key string) error {
-	runJob, err := NewRunJob(key, "ADD", "", j.ctx, j.manifest)
-	if err != nil {
-		return err
-	}
-	if err := runJob.Execute(); err == nil {
+	runErr := j.docker.Run(j.image, key, "ADD", "")
+	if runErr == nil {
 		return nil
 	}
-	return j.manifest.RemoveAent(key)
+	log.Warnf(`event "%s" failed, removing "%s" identified as "%s" from manifest`, "ADD", j.image, key)
+	if err := j.manifest.RemoveAent(key); err != nil {
+		return err
+	}
+	if err := j.manifest.Flush(); err != nil {
+		return err
+	}
+	return runErr
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/log"
 )
 
 // Docker is our working struct.
@@ -34,6 +35,11 @@ func (d *Docker) Run(image, key, event, payload string) error {
 	b.withMount("/var/run/docker.sock", "/var/run/docker.sock")
 	b.withMount(d.ctx.HostProjectDir, d.ctx.ProjectDir)
 	cmd := b.build()
+	if d.ctx.IsContainer() {
+		log.Infof(`"%s" (container ID = "%s") is sending event "%s" with payload "%s" to "%s" (manifest key = "%s")`, d.ctx.Image, d.ctx.Hostname, event, payload, image, key)
+	} else {
+		log.Infof(`sending event "%s" with payload "%s" to "%s" (manifest key = "%s")`, event, payload, image, key)
+	}
 	return errors.Wrapf("docker", cmd.Run(), "%s", cmd.Args)
 }
 
@@ -42,5 +48,6 @@ func (d *Docker) Reply(event, payload string) error {
 	b := &builder{}
 	b.exec(d.ctx.FromContainerID, event, payload)
 	cmd := b.build()
+	log.Infof(`"%s" (container ID = "%s") is replying to "%s" with event "%s" and payload "%s"`, d.ctx.Image, d.ctx.Hostname, d.ctx.FromContainerID, event, payload)
 	return errors.Wrapf("docker", cmd.Run(), "%s", cmd.Args)
 }

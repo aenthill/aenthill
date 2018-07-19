@@ -1,8 +1,11 @@
 package jobs
 
 import (
+	"strings"
+
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/log"
 	"github.com/aenthill/aenthill/manifest"
 )
 
@@ -25,6 +28,9 @@ func NewUpdateJob(metadata, events []string, ctx *context.Context, m *manifest.M
 }
 
 func (j *updateJob) Execute() error {
+	log.Infof(`updating "%s" identified as "%s" in manifest`, j.ctx.Image, j.ctx.Key)
+	log.Debugf(`events = "%s"`, strings.Join(j.events, ", "))
+	log.Debugf(`metadata = "%s"`, strings.Join(j.metadata, ", "))
 	if err := j.manifest.AddEvents(j.ctx.Key, j.events...); err != nil {
 		return errors.Wrap("update job", err)
 	}

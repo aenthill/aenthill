@@ -14,7 +14,7 @@ func NewRegisterCommand(context *context.Context, m *manifest.Manifest) cli.Comm
 	cmd := cli.Command{
 		Name:      "register",
 		Usage:     "Add a dependency to current aent in the manifest",
-		UsageText: "aenthill register image key [command options]",
+		UsageText: "aenthill [global options] register image key [command options]",
 		Action: func(ctx *cli.Context) error {
 			job, err := jobs.NewRegisterJob(ctx.Args().Get(0), ctx.Args().Get(1), ctx.StringSlice("metadata"), context, m)
 			if err != nil {

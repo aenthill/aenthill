@@ -12,6 +12,7 @@ import (
 	"github.com/aenthill/aenthill/app/commands"
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/log"
 	"github.com/aenthill/aenthill/manifest"
 
 	"github.com/urfave/cli"
@@ -30,13 +31,37 @@ func New(version string, m *manifest.Manifest) (*App, error) {
 	if err != nil {
 		return nil, errors.Wrap("app", err)
 	}
+
 	app := &App{cli: cli.NewApp(), ctx: ctx, manifest: m}
+	app.setup(version)
+	return app, nil
+}
+
+func (app *App) setup(version string) {
 	app.cli.Name, app.cli.Usage, app.cli.Version = "aenthill", "May the swarm be with you!", version
-	app.registerCommands()
+	log.SetLevel(app.ctx.LogLevel)
 	if app.ctx.IsContainer() {
 		app.manifest.SetPath(fmt.Sprintf("%s/%s", app.ctx.ProjectDir, manifest.DefaultManifestFileName))
 	}
-	return app, nil
+	app.registerFlags()
+	app.registerCommands()
+}
+
+func (app *App) registerFlags() {
+	cli.VersionFlag = cli.BoolFlag{Name: "version", Usage: "print the version"}
+	app.cli.Flags = []cli.Flag{
+		cli.BoolFlag{Name: "verbose, v", Usage: "print verbose output to the console"},
+		cli.BoolFlag{Name: "debug, d", Usage: "print debug output to the console"},
+	}
+	app.cli.Before = func(ctx *cli.Context) error {
+		if ctx.GlobalBool("verbose") {
+			log.SetLevel("INFO")
+		}
+		if ctx.GlobalBool("debug") {
+			log.SetLevel("DEBUG")
+		}
+		return nil
+	}
 }
 
 func (app *App) registerCommands() {

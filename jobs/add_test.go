@@ -31,8 +31,8 @@ func TestAddJobExecute(t *testing.T) {
 		if err != nil {
 			t.Fatalf(`An unexpected error occurred while creating an install job: got "%s"`, err.Error())
 		}
-		if err := j.Execute(); err != nil {
-			t.Errorf(`Execute should not have thrown an error: got "%s"`, err.Error())
+		if err := j.Execute(); err == nil {
+			t.Error("Execute should have thrown an error as given image should not exist")
 		}
 	})
 	t.Run("calling Execute from add job with an existing image", func(t *testing.T) {

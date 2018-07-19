@@ -3,6 +3,7 @@ package jobs
 import (
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
+	"github.com/aenthill/aenthill/log"
 	"github.com/aenthill/aenthill/manifest"
 )
 
@@ -23,6 +24,7 @@ func NewRegisterJob(image, dependencyKey string, metadata []string, ctx *context
 }
 
 func (j *registerJob) Execute() error {
+	log.Infof(`adding "%s" with key "%s" as dependency of "%s" identified as "%s" in manifest`, j.image, j.dependencyKey, j.ctx.Image, j.ctx.Key)
 	key, err := j.manifest.AddDependency(j.ctx.Key, j.image, j.dependencyKey)
 	if err != nil {
 		return errors.Wrap("register job", err)

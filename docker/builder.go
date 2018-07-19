@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/aenthill/aenthill/log"
 	isatty "github.com/mattn/go-isatty"
 )
 
@@ -65,6 +66,7 @@ func (b *builder) build() *exec.Cmd {
 	args = append(args, b.target, "aent", b.event, sanitize(b.payload))
 	cmd := exec.Command("docker", args...)
 	cmd.Stdout, cmd.Stderr, cmd.Stdin = os.Stdout, os.Stderr, os.Stdin
+	log.Debugf(`built command = "%s"`, strings.Join(cmd.Args, " "))
 	return cmd
 }
 
