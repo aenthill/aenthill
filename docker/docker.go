@@ -28,7 +28,7 @@ func (d *Docker) Run(image, ID, event, payload string) error {
 	b.run(image, event, payload)
 	b.withEnv(context.IDEnvVar, ID)
 	b.withEnv(context.ImageEnvVar, image)
-	b.withEnv(context.FromContainerIDEnvVar, d.ctx.FromContainerID)
+	b.withEnv(context.FromContainerIDEnvVar, d.ctx.Hostname)
 	b.withEnv(context.HostProjectDirEnvVar, d.ctx.HostProjectDir)
 	b.withEnv(context.ContainerProjectDirEnvVar, d.ctx.ProjectDir)
 	b.withEnv(context.LogLevelEnvVar, d.ctx.LogLevel)
