@@ -55,9 +55,11 @@ func (app *App) registerFlags() {
 	}
 	app.cli.Before = func(ctx *cli.Context) error {
 		if ctx.GlobalBool("verbose") {
+			app.ctx.LogLevel = "INFO"
 			log.SetLevel("INFO")
 		}
 		if ctx.GlobalBool("debug") {
+			app.ctx.LogLevel = "DEBUG"
 			log.SetLevel("DEBUG")
 		}
 		return nil
