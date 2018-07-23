@@ -63,13 +63,9 @@ func (b *builder) build() *exec.Cmd {
 	for source, target := range b.mount {
 		args = append(args, "--mount", fmt.Sprintf("type=bind,source=%s,target=%s", source, target))
 	}
-	args = append(args, b.target, "aent", b.event, sanitize(b.payload))
+	args = append(args, b.target, "aent", b.event, b.payload)
 	cmd := exec.Command("docker", args...)
 	cmd.Stdout, cmd.Stderr, cmd.Stdin = os.Stdout, os.Stderr, os.Stdin
 	log.Debugf(`built command = "%s"`, strings.Join(cmd.Args, " "))
 	return cmd
-}
-
-func sanitize(payload string) string {
-	return fmt.Sprintf(`"%s"`, strings.Replace(payload, `"`, `\"`, -1))
 }
