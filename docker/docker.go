@@ -23,10 +23,10 @@ func New(ctx *context.Context) (*Docker, error) {
 }
 
 // Run calls the run command from docker client binary.
-func (d *Docker) Run(image, key, event, payload string) error {
+func (d *Docker) Run(image, ID, event, payload string) error {
 	b := &builder{}
 	b.run(image, event, payload)
-	b.withEnv(context.KeyEnvVar, key)
+	b.withEnv(context.IDEnvVar, ID)
 	b.withEnv(context.ImageEnvVar, image)
 	b.withEnv(context.FromContainerIDEnvVar, d.ctx.FromContainerID)
 	b.withEnv(context.HostProjectDirEnvVar, d.ctx.HostProjectDir)
@@ -36,9 +36,9 @@ func (d *Docker) Run(image, key, event, payload string) error {
 	b.withMount(d.ctx.HostProjectDir, d.ctx.ProjectDir)
 	cmd := b.build()
 	if d.ctx.IsContainer() {
-		log.Infof(`"%s" (container ID = "%s") is sending event "%s" with payload "%s" to "%s" (manifest key = "%s")`, d.ctx.Image, d.ctx.Hostname, event, payload, image, key)
+		log.Infof(`"%s" (container ID = "%s") is sending event "%s" with payload "%s" to "%s" (manifest ID = "%s")`, d.ctx.Image, d.ctx.Hostname, event, payload, image, ID)
 	} else {
-		log.Infof(`sending event "%s" with payload "%s" to "%s" (manifest key = "%s")`, event, payload, image, key)
+		log.Infof(`sending event "%s" with payload "%s" to "%s" (manifest ID = "%s")`, event, payload, image, ID)
 	}
 	return errors.Wrapf("docker", cmd.Run(), "%s", cmd.Args)
 }

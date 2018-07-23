@@ -48,7 +48,7 @@ func TestDispatchJobExecute(t *testing.T) {
 	t.Run("calling Execute from dispatch job with an existing image in manifest", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aenthill/cassandra")
+		ctx.ID = m.AddAent("aenthill/cassandra")
 		m.AddAent("aenthill/cassandra")
 		if err := m.Flush(); err != nil {
 			t.Fatalf(`An unexpected error occurred while flushing the manifest: got "%s"`, err.Error())

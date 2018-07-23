@@ -32,17 +32,17 @@ func NewDispatchJob(event, payload string, ctx *context.Context, m *manifest.Man
 
 func (j *dispatchJob) Execute() error {
 	aents := j.manifest.Aents(j.event)
-	for key, aent := range aents {
-		if err := j.sendEvent(aent.Image, key); err != nil {
+	for ID, aent := range aents {
+		if err := j.sendEvent(aent.Image, ID); err != nil {
 			return errors.Wrap("dispatch job", err)
 		}
 	}
 	return nil
 }
 
-func (j *dispatchJob) sendEvent(image, key string) error {
-	if key == j.ctx.Key {
+func (j *dispatchJob) sendEvent(image, ID string) error {
+	if ID == j.ctx.ID {
 		return nil
 	}
-	return j.docker.Run(image, key, j.event, j.payload)
+	return j.docker.Run(image, ID, j.event, j.payload)
 }

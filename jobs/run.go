@@ -9,7 +9,7 @@ import (
 
 type runJob struct {
 	image   string
-	key     string
+	ID      string
 	event   string
 	payload string
 	docker  *docker.Docker
@@ -27,17 +27,17 @@ func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.
 	if err != nil {
 		return nil, errors.Wrap("run job", err)
 	}
-	image, key := func(target string, m *manifest.Manifest) (string, string) {
+	image, ID := func(target string, m *manifest.Manifest) (string, string) {
 		aent, err := m.Aent(target)
 		if err == nil {
 			return aent.Image, target
 		}
 		return target, ""
 	}(target, m)
-	j := &runJob{image, key, event, payload, d}
+	j := &runJob{image, ID, event, payload, d}
 	return j, nil
 }
 
 func (j *runJob) Execute() error {
-	return errors.Wrap("run job", j.docker.Run(j.image, j.key, j.event, j.payload))
+	return errors.Wrap("run job", j.docker.Run(j.image, j.ID, j.event, j.payload))
 }

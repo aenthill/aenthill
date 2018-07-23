@@ -25,7 +25,7 @@ func TestNewRegisterJob(t *testing.T) {
 }
 
 func TestRegisterJobExecute(t *testing.T) {
-	t.Run("calling Execute from register job with no key in context", func(t *testing.T) {
+	t.Run("calling Execute from register job with no ID in context", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		if err := m.Flush(); err != nil {
 			t.Fatalf(`An unexpected error occurred while flushing the manifest: got "%s"`, err.Error())
@@ -36,7 +36,7 @@ func TestRegisterJobExecute(t *testing.T) {
 			t.Fatalf(`An unexpected error occurred while creating a register job: got "%s"`, err.Error())
 		}
 		if err := j.Execute(); err == nil {
-			t.Error("Execute should have thrown an error as there is no key in context")
+			t.Error("Execute should have thrown an error as there is no ID in context")
 		}
 	})
 	t.Run("calling Execute from register job with an invalid metadata", func(t *testing.T) {
@@ -45,7 +45,7 @@ func TestRegisterJobExecute(t *testing.T) {
 			t.Fatalf(`An unexpected error occurred while flushing the manifest: got "%s"`, err.Error())
 		}
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aent/foo")
+		ctx.ID = m.AddAent("aent/foo")
 		j, err := NewRegisterJob("aent/bar", "BAR", []string{"FOO:bar"}, ctx, m)
 		if err != nil {
 			t.Fatalf(`An unexpected error occurred while creating a register job: got "%s"`, err.Error())
@@ -60,7 +60,7 @@ func TestRegisterJobExecute(t *testing.T) {
 			t.Fatalf(`An unexpected error occurred while flushing the manifest: got "%s"`, err.Error())
 		}
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aent/foo")
+		ctx.ID = m.AddAent("aent/foo")
 		j, err := NewRegisterJob("aent/bar", "BAR", []string{"FOO=bar"}, ctx, m)
 		if err != nil {
 			t.Fatalf(`An unexpected error occurred while creating a register job: got "%s"`, err.Error())

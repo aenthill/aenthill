@@ -26,7 +26,7 @@ func TestNewUpdateJob(t *testing.T) {
 	t.Run("calling NewUpdateJob with valid parameters", func(t *testing.T) {
 		m := manifest.New("../tests/aenthill.json", afero.NewOsFs())
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = "FOO"
+		ctx.ID = "FOO"
 		if _, err := NewUpdateJob(nil, nil, ctx, m); err != nil {
 			t.Errorf(`NewUpdateJob should not have thrown an error: got "%s"`, err.Error())
 		}
@@ -38,7 +38,7 @@ func TestUpdateJobExecute(t *testing.T) {
 	t.Run("calling Execute from update job with an invalid metadata", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aent/foo")
+		ctx.ID = m.AddAent("aent/foo")
 		if err := m.Flush(); err != nil {
 			t.Fatalf(`An unexpected error occurred while flushing manifest: got "%s"`, err.Error())
 		}
@@ -53,7 +53,7 @@ func TestUpdateJobExecute(t *testing.T) {
 	t.Run("calling Execute from update job with an invalid event", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aent/foo")
+		ctx.ID = m.AddAent("aent/foo")
 		if err := m.Flush(); err != nil {
 			t.Fatalf(`An unexpected error occurred while flushing manifest: got "%s"`, err.Error())
 		}
@@ -68,7 +68,7 @@ func TestUpdateJobExecute(t *testing.T) {
 	t.Run("calling Execute from update job with valid parameters", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		ctx := tests.MakeTestContext(t)
-		ctx.Key = m.AddAent("aent/foo")
+		ctx.ID = m.AddAent("aent/foo")
 		if err := m.Flush(); err != nil {
 			t.Fatalf(`An unexpected error occurred while flushing manifest: got "%s"`, err.Error())
 		}

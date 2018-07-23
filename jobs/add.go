@@ -28,20 +28,20 @@ func NewAddJob(image string, ctx *context.Context, m *manifest.Manifest) (Job, e
 }
 
 func (j *addJob) Execute() error {
-	key := j.manifest.AddAent(j.image)
+	ID := j.manifest.AddAent(j.image)
 	if err := j.manifest.Flush(); err != nil {
 		return errors.Wrap("add job", err)
 	}
-	return errors.Wrap("add job", j.sendEvent(key))
+	return errors.Wrap("add job", j.sendEvent(ID))
 }
 
-func (j *addJob) sendEvent(key string) error {
-	runErr := j.docker.Run(j.image, key, "ADD", "")
+func (j *addJob) sendEvent(ID string) error {
+	runErr := j.docker.Run(j.image, ID, "ADD", "")
 	if runErr == nil {
 		return nil
 	}
-	log.Warnf(`event "%s" failed, removing "%s" identified as "%s" from manifest`, "ADD", j.image, key)
-	if err := j.manifest.RemoveAent(key); err != nil {
+	log.Warnf(`event "%s" failed, removing "%s" identified as "%s" from manifest`, "ADD", j.image, ID)
+	if err := j.manifest.RemoveAent(ID); err != nil {
 		return err
 	}
 	if err := j.manifest.Flush(); err != nil {

@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	// KeyEnvVar is the name of the environment variable which contains the current aent key from the manifest if the aent is a registred instance.
-	KeyEnvVar = "PHEROMONE_KEY"
+	// IDEnvVar is the name of the environment variable which contains the current aent ID from the manifest if the aent is a registred instance.
+	IDEnvVar = "PHEROMONE_ID"
 	// ImageEnvVar is the name of the environment variable which contains the current aent image name.
 	ImageEnvVar = "PHEROMONE_IMAGE_NAME"
 	// FromContainerIDEnvVar is the name of the environment variable which contains the sender container ID which has started the recipient image.
@@ -27,7 +27,7 @@ const (
 // Context is our working struct.
 type Context struct {
 	Image           string
-	Key             string
+	ID              string
 	FromContainerID string
 	Hostname        string
 	HostProjectDir  string
@@ -69,11 +69,11 @@ func makeFromEnv(image string) (*Context, error) {
 		v   string
 		err error
 	)
-	v, err = lookupEnv(KeyEnvVar)
+	v, err = lookupEnv(IDEnvVar)
 	if err != nil {
 		return nil, err
 	}
-	ctx.Key = v
+	ctx.ID = v
 	v, err = lookupEnv(FromContainerIDEnvVar)
 	if err != nil {
 		return nil, err
@@ -107,7 +107,7 @@ func lookupEnv(key string) (string, error) {
 	if !ok {
 		return "", errors.Errorf("context", `env key "%s" does not exist`, key)
 	}
-	if key != FromContainerIDEnvVar && key != KeyEnvVar && v == "" {
+	if key != FromContainerIDEnvVar && key != IDEnvVar && v == "" {
 		return "", errors.Errorf("context", `env key "%s" has an empty value`, key)
 	}
 	return v, nil

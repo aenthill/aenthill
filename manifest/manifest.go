@@ -113,29 +113,29 @@ func (m *Manifest) Validate(str, kind string) error {
 }
 
 // AddAent adds an aent in the manifest.
-// Returns the generated key.
+// Returns the generated ID.
 func (m *Manifest) AddAent(image string) string {
 	randBytes := make([]byte, 16)
 	rand.Read(randBytes)
-	key := hex.EncodeToString(randBytes)
-	m.data.Aents[key] = &Aent{Image: image}
-	return key
+	ID := hex.EncodeToString(randBytes)
+	m.data.Aents[ID] = &Aent{Image: image}
+	return ID
 }
 
 // RemoveAent removes an aent from the manifest.
-// If the key does not exist, throws an error.
-func (m *Manifest) RemoveAent(key string) error {
-	if _, err := m.Aent(key); err != nil {
+// If the ID does not exist, throws an error.
+func (m *Manifest) RemoveAent(ID string) error {
+	if _, err := m.Aent(ID); err != nil {
 		return errors.Wrap("manifest", err)
 	}
-	delete(m.data.Aents, key)
+	delete(m.data.Aents, ID)
 	return nil
 }
 
 // AddEvents adds events to an aent.
-// If the key does not exist, throws an error.
-func (m *Manifest) AddEvents(key string, events ...string) error {
-	aent, err := m.Aent(key)
+// If the ID does not exist, throws an error.
+func (m *Manifest) AddEvents(ID string, events ...string) error {
+	aent, err := m.Aent(ID)
 	if err != nil {
 		return err
 	}
@@ -151,9 +151,9 @@ func (m *Manifest) AddEvents(key string, events ...string) error {
 }
 
 // AddMetadata adds metadata to an aent.
-// If the key does not exist, throws an error.
-func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
-	aent, err := m.Aent(key)
+// If the ID does not exist, throws an error.
+func (m *Manifest) AddMetadata(ID string, metadata map[string]string) error {
+	aent, err := m.Aent(ID)
 	if err != nil {
 		return err
 	}
@@ -167,8 +167,8 @@ func (m *Manifest) AddMetadata(key string, metadata map[string]string) error {
 }
 
 // AddMetadataFromFlags adds metadata from flags to an aent.
-// If the key does not exist, throws an error.
-func (m *Manifest) AddMetadataFromFlags(key string, flags []string) error {
+// If the ID does not exist, throws an error.
+func (m *Manifest) AddMetadataFromFlags(ID string, flags []string) error {
 	if flags == nil {
 		return nil
 	}
@@ -180,13 +180,13 @@ func (m *Manifest) AddMetadataFromFlags(key string, flags []string) error {
 		}
 		metadata[parts[0]] = parts[1]
 	}
-	return m.AddMetadata(key, metadata)
+	return m.AddMetadata(ID, metadata)
 }
 
 // Metadata returns the metadata of an aent.
-// If the key does not exist, throws an error.
-func (m *Manifest) Metadata(key string) (map[string]string, error) {
-	aent, err := m.Aent(key)
+// If the ID does not exist, throws an error.
+func (m *Manifest) Metadata(ID string) (map[string]string, error) {
+	aent, err := m.Aent(ID)
 	if err != nil {
 		return nil, err
 	}
@@ -194,21 +194,21 @@ func (m *Manifest) Metadata(key string) (map[string]string, error) {
 }
 
 // AddDependency adds a dependency to an aent.
-// Returns the dependency generated key.
-// If the key does not exist or the dependency key does exist, throws an error.
-func (m *Manifest) AddDependency(key, image, dependencyKey string) (string, error) {
-	aent, err := m.Aent(key)
+// Returns the dependency generated ID.
+// If the ID does not exist or the dependency key does exist, throws an error.
+func (m *Manifest) AddDependency(ID, image, key string) (string, error) {
+	aent, err := m.Aent(ID)
 	if err != nil {
 		return "", err
 	}
 	if aent.Dependencies == nil {
 		aent.Dependencies = make(map[string]string)
 	}
-	if _, ok := aent.Dependencies[dependencyKey]; ok {
-		return "", errors.Errorf("manifest", `dependency identified by key "%s" does already exist for aent identified by key "%s"`, dependencyKey, key)
+	if _, ok := aent.Dependencies[key]; ok {
+		return "", errors.Errorf("manifest", `dependency identified by key "%s" does already exist for aent identified by ID "%s"`, key, ID)
 	}
 	k := m.AddAent(image)
-	aent.Dependencies[dependencyKey] = k
+	aent.Dependencies[key] = k
 	return k, nil
 }
 
@@ -222,12 +222,12 @@ func (m *Manifest) Dependencies(key string) (map[string]string, error) {
 	return aent.Dependencies, nil
 }
 
-// Aent returns an aent by its key.
-// If the key does not exist, throws an error.
-func (m *Manifest) Aent(key string) (*Aent, error) {
-	aent, ok := m.data.Aents[key]
+// Aent returns an aent by its ID.
+// If the ID does not exist, throws an error.
+func (m *Manifest) Aent(ID string) (*Aent, error) {
+	aent, ok := m.data.Aents[ID]
 	if !ok {
-		return nil, errors.Errorf("manifest", `aent identified by key "%s" does not exist`, key)
+		return nil, errors.Errorf("manifest", `aent identified by ID "%s" does not exist`, ID)
 	}
 	return aent, nil
 }
@@ -239,9 +239,9 @@ func (m *Manifest) Aents(event string) map[string]*Aent {
 		return m.data.Aents
 	}
 	aents := make(map[string]*Aent)
-	for key, aent := range m.data.Aents {
+	for ID, aent := range m.data.Aents {
 		if len(aent.Events) == 0 || m.isAentHandlingEvent(aent, event) {
-			aents[key] = aent
+			aents[ID] = aent
 		}
 	}
 	return aents

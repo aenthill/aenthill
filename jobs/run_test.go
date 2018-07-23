@@ -22,10 +22,10 @@ func TestNewRunJob(t *testing.T) {
 			t.Error("NewRunJob should have thrown an error as given manifest is broken")
 		}
 	})
-	t.Run("calling NewRunJob with a key", func(t *testing.T) {
+	t.Run("calling NewRunJob with an ID", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := NewRunJob(key, "FOO", "", nil, m); err != nil {
+		ID := m.AddAent("aent/foo")
+		if _, err := NewRunJob(ID, "FOO", "", nil, m); err != nil {
 			t.Errorf(`NewReplyJob should not have thrown an error: got "%s"`, err.Error())
 		}
 	})

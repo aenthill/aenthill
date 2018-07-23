@@ -95,18 +95,18 @@ func TestParseIfExist(t *testing.T) {
 
 func TestAddAent(t *testing.T) {
 	m := New(DefaultManifestFileName, afero.NewMemMapFs())
-	if key := m.AddAent("aent/foo"); key == "" {
-		t.Error("AddAent should not have returned an empty key")
+	if ID := m.AddAent("aent/foo"); ID == "" {
+		t.Error("AddAent should not have returned an empty ID")
 	}
 }
 
 func TestRemoveAent(t *testing.T) {
 	m := New(DefaultManifestFileName, afero.NewMemMapFs())
-	key := m.AddAent("aent/foo")
-	if err := m.RemoveAent(key); err != nil {
+	ID := m.AddAent("aent/foo")
+	if err := m.RemoveAent(ID); err != nil {
 		t.Fatalf(`RemoveAent should not have returned an error: got "%s"`, err.Error())
 	}
-	if _, err := m.Aent(key); err == nil {
+	if _, err := m.Aent(ID); err == nil {
 		t.Error("RemoveAent should have removed the aent")
 	}
 }
@@ -115,21 +115,21 @@ func TestAddEvents(t *testing.T) {
 	t.Run("calling AddEvents with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if err := m.AddEvents("foo", "FOO"); err == nil {
-			t.Error("AddEvents should have thrown an error as given key should not exist")
+			t.Error("AddEvents should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling AddEvents with an invalid event", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if err := m.AddEvents(key, "%FOO%"); err == nil {
+		ID := m.AddAent("aent/foo")
+		if err := m.AddEvents(ID, "%FOO%"); err == nil {
 			t.Error("AddEvents should have thrown an error as given event is not valid")
 		}
 	})
 	t.Run("calling AddEvents with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if err := m.AddEvents(key, "FOO"); err != nil {
-			t.Errorf(`AddEvents should not have thrown an error as given key should exist: got "%s"`, err.Error())
+		ID := m.AddAent("aent/foo")
+		if err := m.AddEvents(ID, "FOO"); err != nil {
+			t.Errorf(`AddEvents should not have thrown an error as given ID should exist: got "%s"`, err.Error())
 		}
 	})
 }
@@ -138,14 +138,14 @@ func TestAddMetadata(t *testing.T) {
 	t.Run("calling AddMetadata with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if err := m.AddMetadata("foo", map[string]string{"FOO": "BAR"}); err == nil {
-			t.Error("AddMetadata should have thrown an error as given key should not exist")
+			t.Error("AddMetadata should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling AddMetadata with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if err := m.AddMetadata(key, map[string]string{"FOO": "BAR"}); err != nil {
-			t.Errorf(`AddMetadata should not have thrown an error as given key should exist: got "%s"`, err.Error())
+		ID := m.AddAent("aent/foo")
+		if err := m.AddMetadata(ID, map[string]string{"FOO": "BAR"}); err != nil {
+			t.Errorf(`AddMetadata should not have thrown an error as given ID should exist: got "%s"`, err.Error())
 		}
 	})
 }
@@ -165,8 +165,8 @@ func TestAddMetadataFlags(t *testing.T) {
 	})
 	t.Run("calling AddMetadataFlags with valid flags", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if err := m.AddMetadataFromFlags(key, []string{"FOO=BAR"}); err != nil {
+		ID := m.AddAent("aent/foo")
+		if err := m.AddMetadataFromFlags(ID, []string{"FOO=BAR"}); err != nil {
 			t.Errorf(`AddMetadataFromFlags should not have thrown an error as flags are valid: got "%s"`, err.Error())
 		}
 	})
@@ -176,19 +176,19 @@ func TestMetadata(t *testing.T) {
 	t.Run("calling Metadata with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if _, err := m.Metadata("foo"); err == nil {
-			t.Error("Metadata should have thrown an error as given key should not exist")
+			t.Error("Metadata should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling Metadata with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		metadata := make(map[string]string)
 		metadata["FOO"] = "BAR"
-		key := m.AddAent("aent/foo")
-		if err := m.AddMetadata(key, metadata); err != nil {
+		ID := m.AddAent("aent/foo")
+		if err := m.AddMetadata(ID, metadata); err != nil {
 			t.Fatalf(`An unexpected error occurred while setting the metadata: got "%s"`, err.Error())
 		}
-		if _, err := m.Metadata(key); err != nil {
-			t.Errorf(`Metadata should not have thrown an error as given key should exist: got "%s"`, err.Error())
+		if _, err := m.Metadata(ID); err != nil {
+			t.Errorf(`Metadata should not have thrown an error as given ID should exist: got "%s"`, err.Error())
 		}
 	})
 }
@@ -197,23 +197,23 @@ func TestAddDependency(t *testing.T) {
 	t.Run("calling AddDependency with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if _, err := m.AddDependency("foo", "aent/bar", "BAR"); err == nil {
-			t.Error("AddDependency should have thrown an error as given key should not exist")
+			t.Error("AddDependency should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling AddDependency with an existing dependency", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := m.AddDependency(key, "aent/bar", "BAR"); err != nil {
+		ID := m.AddAent("aent/foo")
+		if _, err := m.AddDependency(ID, "aent/bar", "BAR"); err != nil {
 			t.Fatalf(`An unexpected error occurred while setting the dependency: got "%s"`, err.Error())
 		}
-		if _, err := m.AddDependency(key, "aent/bar", "BAR"); err == nil {
-			t.Errorf("AddDependency should have thrown an error as given dependency key already exist")
+		if _, err := m.AddDependency(ID, "aent/bar", "BAR"); err == nil {
+			t.Errorf("AddDependency should have thrown an error as given dependency ID already exist")
 		}
 	})
 	t.Run("calling AddDependency with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := m.AddDependency(key, "aent/bar", "BAR"); err != nil {
+		ID := m.AddAent("aent/foo")
+		if _, err := m.AddDependency(ID, "aent/bar", "BAR"); err != nil {
 			t.Errorf(`AddDependency should not have thrown an error: got "%s"`, err.Error())
 		}
 	})
@@ -223,30 +223,30 @@ func TestDependencies(t *testing.T) {
 	t.Run("calling Dependencies with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if _, err := m.Dependencies("foo"); err == nil {
-			t.Error("Dependencies should have thrown an error as given key should not exist")
+			t.Error("Dependencies should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling Dependencies with an existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := m.Dependencies(key); err != nil {
-			t.Errorf(`Dependencies should not have thrown an error as given key should exist: got "%s"`, err.Error())
+		ID := m.AddAent("aent/foo")
+		if _, err := m.Dependencies(ID); err != nil {
+			t.Errorf(`Dependencies should not have thrown an error as given ID should exist: got "%s"`, err.Error())
 		}
 	})
 }
 
 func TestAent(t *testing.T) {
-	t.Run("calling Aent with a non-existing key", func(t *testing.T) {
+	t.Run("calling Aent with a non-existing ID", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		if _, err := m.Aent("foo"); err == nil {
-			t.Error("Aent should have thrown an error as given key should not exist")
+			t.Error("Aent should have thrown an error as given ID should not exist")
 		}
 	})
-	t.Run("calling Aent with an existing key", func(t *testing.T) {
+	t.Run("calling Aent with an existing ID", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		key := m.AddAent("aent/foo")
-		if _, err := m.Aent(key); err != nil {
-			t.Error("Aent should nt have thrown an error as given key should exist")
+		ID := m.AddAent("aent/foo")
+		if _, err := m.Aent(ID); err != nil {
+			t.Error("Aent should nt have thrown an error as given ID should exist")
 		}
 	})
 }
