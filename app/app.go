@@ -56,11 +56,11 @@ func (app *App) registerFlags() {
 	app.cli.Before = func(ctx *cli.Context) error {
 		if ctx.GlobalBool("verbose") {
 			app.ctx.LogLevel = "INFO"
-			log.SetLevel("INFO")
+			log.SetLevel(app.ctx.LogLevel)
 		}
 		if ctx.GlobalBool("debug") {
 			app.ctx.LogLevel = "DEBUG"
-			log.SetLevel("DEBUG")
+			log.SetLevel(app.ctx.LogLevel)
 		}
 		return nil
 	}
@@ -70,6 +70,8 @@ func (app *App) registerCommands() {
 	if app.ctx.IsContainer() {
 		app.cli.Commands = append(app.cli.Commands, commands.NewUpdateCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRegisterCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewMetadataCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewDependencyCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx, app.manifest))

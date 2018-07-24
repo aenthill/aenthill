@@ -213,9 +213,9 @@ func (m *Manifest) AddDependency(ID, image, key string) (string, error) {
 }
 
 // Dependencies returns the dependencies of an aent.
-// If the key does not exist, throws an error.
-func (m *Manifest) Dependencies(key string) (map[string]string, error) {
-	aent, err := m.Aent(key)
+// If the ID does not exist, throws an error.
+func (m *Manifest) Dependencies(ID string) (map[string]string, error) {
+	aent, err := m.Aent(ID)
 	if err != nil {
 		return nil, err
 	}

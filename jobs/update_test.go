@@ -16,11 +16,11 @@ func TestNewUpdateJob(t *testing.T) {
 			t.Error("NewUpdateJob should have thrown an error as given manifest does not exist")
 		}
 	})
-	t.Run("calling NewUpdateJob with empty key in context", func(t *testing.T) {
+	t.Run("calling NewUpdateJob with empty ID in context", func(t *testing.T) {
 		m := manifest.New("../tests/aenthill.json", afero.NewOsFs())
 		ctx := tests.MakeTestContext(t)
 		if _, err := NewUpdateJob(nil, nil, ctx, m); err == nil {
-			t.Error("NewUpdateJob should have thrown an error as context has no key")
+			t.Error("NewUpdateJob should have thrown an error as context has no ID")
 		}
 	})
 	t.Run("calling NewUpdateJob with valid parameters", func(t *testing.T) {
