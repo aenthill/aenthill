@@ -2,10 +2,13 @@ package jobs
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
 	"github.com/aenthill/aenthill/manifest"
+
+	isatty "github.com/mattn/go-isatty"
 )
 
 type metadataJob struct {
@@ -30,24 +33,14 @@ func (j *metadataJob) Execute() error {
 	if err != nil {
 		return errors.Wrap("metadata job", err)
 	}
-	if j.key == "" {
-		j.printAll(metadata)
-		return nil
-	}
-	return j.print(metadata)
-}
-
-func (j *metadataJob) printAll(metadata map[string]string) {
-	for key, value := range metadata {
-		fmt.Println(fmt.Sprintf("%s=%s", key, value))
-	}
-}
-
-func (j *metadataJob) print(metadata map[string]string) error {
 	value, ok := metadata[j.key]
 	if !ok {
 		return errors.Errorf("metadata job", `"%s" does not exist in metadata of aent "%s"`, j.key, j.ctx.ID)
 	}
-	fmt.Println(value)
+	if isatty.IsTerminal(os.Stdin.Fd()) {
+		fmt.Println(value)
+	} else {
+		fmt.Print(value)
+	}
 	return nil
 }

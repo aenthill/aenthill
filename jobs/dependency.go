@@ -2,10 +2,13 @@ package jobs
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/aenthill/aenthill/context"
 	"github.com/aenthill/aenthill/errors"
 	"github.com/aenthill/aenthill/manifest"
+
+	isatty "github.com/mattn/go-isatty"
 )
 
 type dependencyJob struct {
@@ -30,24 +33,14 @@ func (j *dependencyJob) Execute() error {
 	if err != nil {
 		return errors.Wrap("dependency job", err)
 	}
-	if j.key == "" {
-		j.printAll(dependencies)
-		return nil
-	}
-	return j.print(dependencies)
-}
-
-func (j *dependencyJob) printAll(dependencies map[string]string) {
-	for key, ID := range dependencies {
-		fmt.Println(fmt.Sprintf("%s=%s", key, ID))
-	}
-}
-
-func (j *dependencyJob) print(dependencies map[string]string) error {
-	ID, ok := dependencies[j.key]
+	value, ok := dependencies[j.key]
 	if !ok {
 		return errors.Errorf("dependency job", `"%s" does not exist in dependencies of aent "%s"`, j.key, j.ctx.ID)
 	}
-	fmt.Println(ID)
+	if isatty.IsTerminal(os.Stdin.Fd()) {
+		fmt.Println(value)
+	} else {
+		fmt.Print(value)
+	}
 	return nil
 }

@@ -13,8 +13,8 @@ import (
 func NewMetadataCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	cmd := cli.Command{
 		Name:      "metadata",
-		Usage:     "Prints one or all metadata of current aent",
-		UsageText: "aenthill [global options] metadata [key]",
+		Usage:     "Prints an entry of metadata of current aent",
+		UsageText: "aenthill [global options] metadata key",
 		Action: func(ctx *cli.Context) error {
 			job, err := jobs.NewMetadataJob(ctx.Args().Get(0), context, m)
 			if err != nil {

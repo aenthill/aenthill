@@ -66,24 +66,6 @@ func TestMetadataJobExecute(t *testing.T) {
 			t.Error("Execute should have thrown an error with an invalid key")
 		}
 	})
-	t.Run("calling Execute from metadata job with an empty key", func(t *testing.T) {
-		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ctx := tests.MakeTestContext(t)
-		ctx.ID = m.AddAent("aent/foo")
-		if err := m.AddMetadata(ctx.ID, map[string]string{"BAR": "foo"}); err != nil {
-			t.Fatalf(`An unexpected error occurred while adding a metadata: got "%s"`, err.Error())
-		}
-		if err := m.Flush(); err != nil {
-			t.Fatalf(`An unexpected error occurred while flushing manifest: got "%s"`, err.Error())
-		}
-		j, err := NewMetadataJob("", ctx, m)
-		if err != nil {
-			t.Fatalf(`An unexpected error occurred while creating a demetadatapendency job: got "%s"`, err.Error())
-		}
-		if err := j.Execute(); err != nil {
-			t.Errorf(`Execute should not have thrown an error with an empty key: got "%s"`, err.Error())
-		}
-	})
 	t.Run("calling Execute from metadata job with a valid key", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
 		ctx := tests.MakeTestContext(t)
