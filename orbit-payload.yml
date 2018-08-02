@@ -1,4 +1,4 @@
 payload:
 
   - key: Version
-    value: snapshot
+    value: 1.0.0
