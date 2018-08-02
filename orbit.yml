@@ -3,7 +3,7 @@ tasks:
   - use: release
     short: Creates and public a new release
     run:
-        - scripts/release.sh
+      - scripts/release.sh
   
   - use: fmt
     short: Runs go fmt ./...

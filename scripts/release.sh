@@ -4,14 +4,14 @@ set -e
 
 NEXT_TAG=`git describe --tags --abbrev=0 | awk -F. '{$NF+=1; OFS="."; print $0}'`
 
-read -p "Tag [${NEXT_TAG}]" tag
+read -p "Tag [$NEXT_TAG]" TAG
 
-if [[ -z "${tag}" ]]; then
- tag="${NEXT_TAG}"
+if [[ -z "$tag" ]]; then
+ TAG="$NEXT_TAG"
 fi
 
-git tag -a ${tag} -m "${tag}"
-git push origin ${tag}
+git tag -a $TAG -m "$TAG"
+git push origin $TAG
 
 goreleaser --snapshot --rm-dist
 

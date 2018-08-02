@@ -10,13 +10,13 @@ print_pheromones()
 
 print_manifest()
 {
-    MANIFEST_PATH="${PHEROMONE_CONTAINER_PROJECT_DIR}/aenthill.json"
+    MANIFEST_PATH="$PHEROMONE_CONTAINER_PROJECT_DIR/aenthill.json"
     printf "\n\n-- MANIFEST --\n\n"
-    printf "Manifest should be located at ${MANIFEST_PATH}\n"
+    printf "Manifest should be located at $MANIFEST_PATH\n"
     printf "Does it exist? "
-    if [ -f ${MANIFEST_PATH} ]; then
+    if [ -f $MANIFEST_PATH ]; then
         printf "YES\n\n"
-        cat ${MANIFEST_PATH}
+        cat $MANIFEST_PATH
     else
         printf "NO"
     fi
@@ -33,11 +33,11 @@ test_register()
 EVENT="$1"
 PAYLOAD="$2"
 
-printf "Received event ${EVENT} with payload ${PAYLOAD}"
+printf "Received event $EVENT with payload $PAYLOAD"
 print_pheromones
 print_manifest
 
-if [ ${EVENT} = "TEST_REGISTER" ]; then
+if [ $EVENT = "TEST_REGISTER" ]; then
     test_register
 fi
 
