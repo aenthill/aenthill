@@ -16,6 +16,9 @@ func NewDispatchCommand(context *context.Context, m *manifest.Manifest) cli.Comm
 		Usage:     "Dispatches an event to all aents from manifest which could handle it",
 		UsageText: "aenthill [global options] dispatch event [payload]",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 1, 2); err != nil {
+				return errors.Wrap("dispatch command", err)
+			}
 			job, err := jobs.NewDispatchJob(ctx.Args().Get(0), ctx.Args().Get(1), context, m)
 			if err != nil {
 				return errors.Wrap("dispatch command", err)

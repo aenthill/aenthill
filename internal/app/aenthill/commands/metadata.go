@@ -16,6 +16,9 @@ func NewMetadataCommand(context *context.Context, m *manifest.Manifest) cli.Comm
 		Usage:     "Prints an entry of metadata of current aent",
 		UsageText: "aenthill [global options] metadata key",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 1, 1); err != nil {
+				return errors.Wrap("metadata command", err)
+			}
 			job, err := jobs.NewMetadataJob(ctx.Args().Get(0), context, m)
 			if err != nil {
 				errors.Wrap("metadata command", err)

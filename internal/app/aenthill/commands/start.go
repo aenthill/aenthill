@@ -17,6 +17,9 @@ func NewStartCommand(context *context.Context, m *manifest.Manifest) cli.Command
 		Usage:     "Starts an aent",
 		UsageText: "aenthill [global options] start image",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 1, 1); err != nil {
+				return errors.Wrap("register command", err)
+			}
 			job, err := jobs.NewRunJob(ctx.Args().Get(0), "START", "", context, m)
 			if err != nil {
 				return errors.Wrap("start command", err)

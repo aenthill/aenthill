@@ -4,6 +4,11 @@ tasks:
     short: Creates and public a new release
     run:
       - scripts/release.sh
+
+  - use: build
+    short: Creates a binary
+    run:
+      - go build -o aenthill cmd/aenthill/main.go
   
   - use: fmt
     short: Runs go fmt ./...

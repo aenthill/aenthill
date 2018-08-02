@@ -17,6 +17,9 @@ func NewAddCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 		Usage:     "Adds an aent in the manifest",
 		UsageText: "aenthill [global options] add image",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 1, 1); err != nil {
+				return errors.Wrap("add command", err)
+			}
 			job, err := jobs.NewAddJob(ctx.Args().Get(0), context, m)
 			if err != nil {
 				return errors.Wrap("add command", err)

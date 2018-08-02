@@ -4,7 +4,7 @@ in order to fulfill a task in the current host directory.
 
 Each of those Docker containers (called aent) is not necessarily aware of its peers.
 It is however able to receive and communicate events to them.
-In other words, an aent is not necessarily smart but
+In other words, an aent is not perforce smart but
 it shares a part of the task to handle like an ant within its colony.
 
 Aenthill documentation is hosted at https://aenthill.github.io/.

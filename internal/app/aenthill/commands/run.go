@@ -16,6 +16,9 @@ func NewRunCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 		Usage:     "Starts an aent",
 		UsageText: "aenthill [global options] run image|ID event [payload]",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 2, 3); err != nil {
+				return errors.Wrap("run command", err)
+			}
 			job, err := jobs.NewRunJob(ctx.Args().Get(0), ctx.Args().Get(1), ctx.Args().Get(2), context, m)
 			if err != nil {
 				return errors.Wrap("run command", err)

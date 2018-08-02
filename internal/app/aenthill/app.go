@@ -1,7 +1,8 @@
 /*
 Package app is a wrapper around urfave/cli package.
 
-Its main goal is to initialize the application context and validate it.
+Its main goal is to initialize the application context and validate it
+before running a command.
 */
 package app
 

@@ -16,6 +16,9 @@ func NewUpdateCommand(context *context.Context, m *manifest.Manifest) cli.Comman
 		Usage:     "Updates current aent in the manifest",
 		UsageText: "aenthill [global options] update [command options]",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 0, 0); err != nil {
+				return errors.Wrap("update command", err)
+			}
 			job, err := jobs.NewUpdateJob(ctx.StringSlice("metadata"), ctx.StringSlice("events"), context, m)
 			if err != nil {
 				return errors.Wrap("update command", err)

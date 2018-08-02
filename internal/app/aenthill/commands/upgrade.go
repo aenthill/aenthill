@@ -15,6 +15,9 @@ func NewUpgradeCommand(version string) cli.Command {
 		Usage:     "Upgrades Aenthill",
 		UsageText: "aenthill [global options] upgrade [command options]",
 		Action: func(ctx *cli.Context) error {
+			if err := validateArgsLength(ctx, 0, 0); err != nil {
+				return errors.Wrap("upgrade command", err)
+			}
 			job := jobs.NewUpgradeJob(ctx.String("target"), version)
 			return errors.Wrap("upgrade command", job.Execute())
 		},
