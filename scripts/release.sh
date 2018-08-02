@@ -13,6 +13,6 @@ fi
 git tag -a $TAG -m "$TAG"
 git push origin $TAG
 
-goreleaser --snapshot --rm-dist
+goreleaser --rm-dist
 
 exit 0
