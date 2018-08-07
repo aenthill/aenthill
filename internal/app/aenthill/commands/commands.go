@@ -16,7 +16,7 @@ func validateArgsLength(ctx *cli.Context, min int, max int) error {
 		return nil
 	}
 	if nargs < min {
-		return fmt.Errorf(`command requires at leat "%d" argument(s): got "%d"`, min, nargs)
+		return fmt.Errorf(`command requires at least "%d" argument(s): got "%d"`, min, nargs)
 	}
 	if nargs > max {
 		return fmt.Errorf(`command requires a maximum of "%d" argument(s): got "%d"`, max, nargs)
