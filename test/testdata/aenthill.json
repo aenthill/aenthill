@@ -11,7 +11,10 @@
             "events": [
                 "FOO",
                 "BAR"
-            ]
+            ],
+            "metadata": {
+                "FOO": "BAZ"
+            }
         }   
     } 
 }

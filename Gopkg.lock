@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:a5f7a7056a39cabcae587ad7044b2bc3bb5161eaefd58fe8f2948eefd53fca21"
+  name = "github.com/antonmedv/expr"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "28e290347c2e56850ed7362edb96f9a9a587688a"
+  version = "v1.0.3"
+
+[[projects]]
   digest = "1:40261f597e43f31aaf9f8658b85c082773217943056f1be137635e769c0798c9"
   name = "github.com/apex/log"
   packages = ["."]
@@ -209,6 +217,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/antonmedv/expr",
     "github.com/fatih/color",
     "github.com/mattn/go-isatty",
     "github.com/spf13/afero",

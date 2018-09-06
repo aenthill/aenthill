@@ -11,7 +11,7 @@ import (
 
 // NewMetadataCommand creates a cli.Command instance.
 func NewMetadataCommand(context *context.Context, m *manifest.Manifest) cli.Command {
-	cmd := cli.Command{
+	return cli.Command{
 		Name:      "metadata",
 		Usage:     "Prints an entry of metadata of current aent",
 		UsageText: "aenthill [global options] metadata key",
@@ -26,5 +26,4 @@ func NewMetadataCommand(context *context.Context, m *manifest.Manifest) cli.Comm
 			return errors.Wrap("metadata command", job.Execute())
 		},
 	}
-	return cmd
 }

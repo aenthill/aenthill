@@ -10,6 +10,7 @@ import (
 
 	"github.com/aenthill/aenthill/internal/pkg/errors"
 
+	"github.com/antonmedv/expr"
 	"github.com/spf13/afero"
 )
 
@@ -143,7 +144,7 @@ func (m *Manifest) AddEvents(ID string, events ...string) error {
 		if err := m.Validate(event, "event"); err != nil {
 			return err
 		}
-		if !m.isAentHandlingEvent(aent, event) {
+		if !isAentHandlingEvent(aent, event) {
 			aent.Events = append(aent.Events, event)
 		}
 	}
@@ -253,20 +254,41 @@ func (m *Manifest) Aent(ID string) (*Aent, error) {
 
 // Aents returns a map of aents which handle the given event.
 // If no event, returns all aents.
-func (m *Manifest) Aents(event string) map[string]*Aent {
+func (m *Manifest) Aents(event, filters string) (map[string]*Aent, error) {
 	if event == "" {
-		return m.data.Aents
+		return filterAents(m.data.Aents, filters)
 	}
 	aents := make(map[string]*Aent)
 	for ID, aent := range m.data.Aents {
-		if len(aent.Events) == 0 || m.isAentHandlingEvent(aent, event) {
+		if len(aent.Events) == 0 || isAentHandlingEvent(aent, event) {
 			aents[ID] = aent
 		}
 	}
-	return aents
+	return filterAents(aents, filters)
 }
 
-func (m *Manifest) isAentHandlingEvent(aent *Aent, event string) bool {
+func filterAents(aents map[string]*Aent, filters string) (map[string]*Aent, error) {
+	if filters == "" {
+		return aents, nil
+	}
+	ast, err := expr.Parse(filters)
+	if err != nil {
+		return nil, errors.Wrap("manifest", err)
+	}
+	filtered := make(map[string]*Aent)
+	for ID, aent := range aents {
+		ok, err := expr.Run(ast, aent)
+		if err != nil {
+			return nil, errors.Wrap("manifest", err)
+		}
+		if ok.(bool) {
+			filtered[ID] = aent
+		}
+	}
+	return filtered, nil
+}
+
+func isAentHandlingEvent(aent *Aent, event string) bool {
 	for _, handled := range aent.Events {
 		if handled == event {
 			return true

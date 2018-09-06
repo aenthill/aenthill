@@ -10,13 +10,14 @@ import (
 type dispatchJob struct {
 	event    string
 	payload  string
+	filters  string
 	docker   *docker.Docker
 	ctx      *context.Context
 	manifest *manifest.Manifest
 }
 
 // NewDispatchJob creates a new Job instance.
-func NewDispatchJob(event, payload string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
+func NewDispatchJob(event, payload, filters string, ctx *context.Context, m *manifest.Manifest) (Job, error) {
 	if err := m.Validate(event, "event"); err != nil {
 		return nil, errors.Wrap("dispatch job", err)
 	}
@@ -27,11 +28,14 @@ func NewDispatchJob(event, payload string, ctx *context.Context, m *manifest.Man
 	if err != nil {
 		return nil, errors.Wrap("dispatch job", err)
 	}
-	return &dispatchJob{event, payload, d, ctx, m}, nil
+	return &dispatchJob{event, payload, filters, d, ctx, m}, nil
 }
 
 func (j *dispatchJob) Execute() error {
-	aents := j.manifest.Aents(j.event)
+	aents, err := j.manifest.Aents(j.event, j.filters)
+	if err != nil {
+		return errors.Wrap("dispatch job", err)
+	}
 	for ID, aent := range aents {
 		if err := j.sendEvent(aent.Image, ID); err != nil {
 			return errors.Wrap("dispatch job", err)

@@ -11,7 +11,7 @@ import (
 
 // NewAddCommand creates a cli.Command instance.
 func NewAddCommand(context *context.Context, m *manifest.Manifest) cli.Command {
-	cmd := cli.Command{
+	return cli.Command{
 		Name:      "add",
 		Aliases:   []string{"a"},
 		Usage:     "Adds an aent in the manifest",
@@ -27,5 +27,4 @@ func NewAddCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 			return errors.Wrap("add command", job.Execute())
 		},
 	}
-	return cmd
 }

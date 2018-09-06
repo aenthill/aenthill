@@ -274,18 +274,23 @@ func TestAent(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		ID := m.AddAent("aent/foo")
 		if _, err := m.Aent(ID); err != nil {
-			t.Error("Aent should nt have thrown an error as given ID should exist")
+			t.Errorf(`Aent should not have thrown an error as given ID should exist: got "%s"`, err.Error())
 		}
 	})
 }
 
+// nolint: gocyclo
 func TestAents(t *testing.T) {
 	t.Run("calling Aents without an event", func(t *testing.T) {
 		m := New(test.ValidManifestAbsPath(t), afero.NewOsFs())
 		if err := m.Parse(); err != nil {
 			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
-		len := len(m.Aents(""))
+		aents, err := m.Aents("", "")
+		if err != nil {
+			t.Fatalf(`An unexpected error occurred while retrieving aents: got "%s"`, err.Error())
+		}
+		len := len(aents)
 		if len != 3 {
 			t.Errorf(`Aents returned a map with a wrong length: got "%d" want "%d"`, len, 3)
 		}
@@ -295,7 +300,11 @@ func TestAents(t *testing.T) {
 		if err := m.Parse(); err != nil {
 			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
-		len := len(m.Aents("BAZ"))
+		aents, err := m.Aents("BAZ", "")
+		if err != nil {
+			t.Fatalf(`An unexpected error occurred while retrieving aents: got "%s"`, err.Error())
+		}
+		len := len(aents)
 		if len != 2 {
 			t.Errorf(`Aents returned a map with a wrong length: got "%d" want "%d"`, len, 2)
 		}
@@ -305,9 +314,36 @@ func TestAents(t *testing.T) {
 		if err := m.Parse(); err != nil {
 			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
 		}
-		len := len(m.Aents("FOO"))
+		aents, err := m.Aents("FOO", "")
+		if err != nil {
+			t.Fatalf(`An unexpected error occurred while retrieving aents: got "%s"`, err.Error())
+		}
+		len := len(aents)
 		if len != 3 {
 			t.Errorf(`Aents returned a map with a wrong length: got "%d" want "%d"`, len, 3)
+		}
+	})
+	t.Run("calling Aents with a wrong filters expression", func(t *testing.T) {
+		m := New(test.ValidManifestAbsPath(t), afero.NewOsFs())
+		if err := m.Parse(); err != nil {
+			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
+		}
+		if _, err := m.Aents("", "foo == bar"); err == nil {
+			t.Error("Aents should have returned an error as filters expression is incorrect")
+		}
+	})
+	t.Run("calling Aents with a correct filters expression", func(t *testing.T) {
+		m := New(test.ValidManifestAbsPath(t), afero.NewOsFs())
+		if err := m.Parse(); err != nil {
+			t.Fatalf(`An unexpected error occurred while trying to parse the given manifest: got "%s"`, err.Error())
+		}
+		aents, err := m.Aents("", `"FOO" in Metadata`)
+		if err != nil {
+			t.Errorf(`Aents should not have thrown an error as given expression should be correct: got "%s"`, err.Error())
+		}
+		len := len(aents)
+		if len != 1 {
+			t.Errorf(`Aents returned a map with a wrong length: got "%d" want "%d"`, len, 1)
 		}
 	})
 }
