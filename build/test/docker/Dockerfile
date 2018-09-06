@@ -1,4 +1,4 @@
-FROM golang:1.10-alpine3.7 AS builder
+FROM golang:1.11-alpine3.7 AS builder
 
 # Defines our working directory.
 WORKDIR /go/src/github.com/aenthill/aenthill

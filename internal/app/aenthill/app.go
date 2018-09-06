@@ -71,7 +71,6 @@ func (app *App) registerCommands() {
 		app.cli.Commands = append(app.cli.Commands, commands.NewUpdateCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRegisterCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewMetadataCommand(app.ctx, app.manifest))
-		app.cli.Commands = append(app.cli.Commands, commands.NewDependencyCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewRunCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx, app.manifest))

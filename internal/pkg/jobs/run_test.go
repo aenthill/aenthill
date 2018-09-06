@@ -22,17 +22,21 @@ func TestNewRunJob(t *testing.T) {
 			t.Error("NewRunJob should have thrown an error as given manifest is broken")
 		}
 	})
-	t.Run("calling NewRunJob with an ID", func(t *testing.T) {
+	t.Run("calling NewRunJob with a key", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		ID := m.AddAent("aent/foo")
-		if _, err := NewRunJob(ID, "FOO", "", nil, m); err != nil {
-			t.Errorf(`NewReplyJob should not have thrown an error: got "%s"`, err.Error())
+		ctx := test.Context(t)
+		ctx.ID = m.AddAent("aent/foo")
+		if _, err := m.AddDependency(ctx.ID, "aent/foo", "FOO"); err != nil {
+			t.Fatalf(`An unexpected error occurred while trying to add a dependency: got "%s"`, err.Error())
+		}
+		if _, err := NewRunJob("FOO", "BAR", "", ctx, m); err != nil {
+			t.Errorf(`NewRunJob should not have thrown an error: got "%s"`, err.Error())
 		}
 	})
 	t.Run("calling NewRunJob with an image", func(t *testing.T) {
 		m := manifest.New(manifest.DefaultManifestFileName, afero.NewMemMapFs())
-		if _, err := NewRunJob("aent/foo", "FOO", "", nil, m); err != nil {
-			t.Errorf(`NewReplyJob should not have thrown an error: got "%s"`, err.Error())
+		if _, err := NewRunJob("aent/foo", "FOO", "", test.Context(t), m); err != nil {
+			t.Errorf(`NewRunJob should not have thrown an error: got "%s"`, err.Error())
 		}
 	})
 }

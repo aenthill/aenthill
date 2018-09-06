@@ -193,7 +193,7 @@ func (m *Manifest) Metadata(ID string) (map[string]string, error) {
 	return aent.Metadata, nil
 }
 
-// AddDependency adds a dependency to an aent.
+// AddDependency adds a dependency to an aent identified by ID.
 // Returns the dependency generated ID.
 // If the ID does not exist or the dependency key does exist, throws an error.
 func (m *Manifest) AddDependency(ID, image, key string) (string, error) {
@@ -220,6 +220,25 @@ func (m *Manifest) Dependencies(ID string) (map[string]string, error) {
 		return nil, err
 	}
 	return aent.Dependencies, nil
+}
+
+// Dependency returns the dependency of an aent identified by ID.
+// If the ID does not exist or the key does not exist, throws an error.
+func (m *Manifest) Dependency(ID, key string) (*Aent, error) {
+	dependencies, err := m.Dependencies(ID)
+	if err != nil {
+		return nil, err
+	}
+	for k, dependencyID := range dependencies {
+		if key == k {
+			aent, err := m.Aent(dependencyID)
+			if err != nil {
+				return nil, err
+			}
+			return aent, nil
+		}
+	}
+	return nil, errors.Errorf("manifest", `dependency identified by key "%s" does not exist for aent identified by ID "%s"`, key, ID)
 }
 
 // Aent returns an aent by its ID.

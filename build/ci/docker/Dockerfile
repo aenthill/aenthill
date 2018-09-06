@@ -1,4 +1,4 @@
-FROM golang:1.10-stretch
+FROM golang:1.11-stretch
 
 # Installs Docker client.
 ENV DOCKER_VERSION "18.03.1-ce"

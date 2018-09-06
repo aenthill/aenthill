@@ -14,7 +14,7 @@ func NewRunCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
 		Name:      "run",
 		Usage:     "Starts an aent",
-		UsageText: "aenthill [global options] run image|ID event [payload]",
+		UsageText: "aenthill [global options] run image|dependency event [payload]",
 		Action: func(ctx *cli.Context) error {
 			if err := validateArgsLength(ctx, 2, 3); err != nil {
 				return errors.Wrap("run command", err)
