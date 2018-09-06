@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[prune]
+  go-tests = true
+  unused-packages = true
+
 [[constraint]]
   name = "github.com/mattn/go-isatty"
   version = "0.0.3"
@@ -47,10 +51,6 @@
 [[constraint]]
   name = "github.com/fatih/color"
   version = "1.7.0"
-
-[prune]
-  go-tests = true
-  unused-packages = true
 
 [[constraint]]
   name = "github.com/antonmedv/expr"
