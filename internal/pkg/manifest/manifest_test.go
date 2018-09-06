@@ -103,14 +103,22 @@ func TestAddAent(t *testing.T) {
 }
 
 func TestRemoveAent(t *testing.T) {
-	m := New(DefaultManifestFileName, afero.NewMemMapFs())
-	ID := m.AddAent("aent/foo")
-	if err := m.RemoveAent(ID); err != nil {
-		t.Fatalf(`RemoveAent should not have returned an error: got "%s"`, err.Error())
-	}
-	if _, err := m.Aent(ID); err == nil {
-		t.Error("RemoveAent should have removed the aent")
-	}
+	t.Run("calling RemoveAent with a non-existing aent", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		if err := m.RemoveAent("FOO"); err == nil {
+			t.Error("RemoveAent should have thrown an error as given aent does not exist")
+		}
+	})
+	t.Run("calling RemoveAent with an existing aent", func(t *testing.T) {
+		m := New(DefaultManifestFileName, afero.NewMemMapFs())
+		ID := m.AddAent("aent/foo")
+		if err := m.RemoveAent(ID); err != nil {
+			t.Fatalf(`RemoveAent should not have returned an error: got "%s"`, err.Error())
+		}
+		if _, err := m.Aent(ID); err == nil {
+			t.Error("RemoveAent should have removed the aent")
+		}
+	})
 }
 
 func TestAddEvents(t *testing.T) {
