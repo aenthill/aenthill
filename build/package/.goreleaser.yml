@@ -20,6 +20,8 @@ archive:
   format_overrides:
     - goos: windows
       format: zip
+release:
+  prerelease: true
 brew:
   name: aenthill
   github:
