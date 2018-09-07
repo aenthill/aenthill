@@ -5,8 +5,13 @@ tasks:
     run:
       - scripts/release.sh
 
+  - use: deploy-docs
+    short: Builds and deploys the documentation
+    run:
+      - scripts/deploy_docs.sh
+
   - use: build
-    short: Creates a binary
+    short: Creates a binary for tests
     run:
       - go build -o test_aenthill cmd/aenthill/main.go
   
