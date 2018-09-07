@@ -6,41 +6,26 @@ kind: "use"
 
 # Installation
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis.
+Aenthill is distributed in a binary form and the only requirement is to have Docker installed and running on your host (always use the latest version).
 
-## FOO
+## Linux/MacOS
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis. Curabitur aliquet pulvinar ultrices. [Etiam](https://google.fr) at posuere leo. Proin ultrices ex et dapibus feugiat link example aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue.
+The quickest way to get Aenthill is to run the following command:
 
 ```bash
-$ aenthill foo bar
+$ curl -sf https://raw.githubusercontent.com/aenthill/aenthill/master/install.sh | BINDIR=/usr/local/bin sh
 ```
 
-```yaml
-title: "Getting started"
-weight: 2
-kind: "use"
+It will installs Aenthill in the `/usr/local/bin` directory. You may change the installation path by updating the `BINDIR` value.
+
+You may also install a specific version with:
+
+```bash
+$ curl -sf https://raw.githubusercontent.com/aenthill/aenthill/master/install.sh | BINDIR=/usr/local/bin sh -s version
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis. 
+All available versions are listed in the [releases pages](https://github.com/aenthill/aenthill/releases)
 
-Curabitur aliquet pulvinar ultrices. [Etiam](https://google.fr) at posuere leo. Proin ultrices ex et dapibus feugiat link example aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue.
+## Windows
 
-
-# Chapter 2
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis. 
-
-Curabitur aliquet pulvinar ultrices. [Etiam](https://google.fr) at posuere leo. Proin ultrices ex et dapibus feugiat link example aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue.
-
-# Chapter 3
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis.
- 
-Curabitur aliquet pulvinar ultrices. [Etiam](https://google.fr) at posuere leo. Proin ultrices ex et dapibus feugiat link example aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue.
-
-# Chapter 4
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec imperdiet turpis.
- 
-Curabitur aliquet pulvinar ultrices. [Etiam](https://google.fr) at posuere leo. Proin ultrices ex et dapibus feugiat link example aenean purus leo, faucibus at elit vel, aliquet scelerisque dui. Etiam quis elit euismod, imperdiet augue sit amet, imperdiet odio. Aenean sem erat, hendrerit eu gravida id, dignissim ut ante. Nam consequat porttitor libero euismod congue.
+# Commands

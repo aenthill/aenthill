@@ -10,6 +10,11 @@ tasks:
     run:
       - scripts/deploy_docs.sh
 
+  - use: hugo
+    short: Starts a webserver with hot reload for the documentation
+    run:
+      - cd docs && hugo server -v
+
   - use: build
     short: Creates a binary for tests
     run:

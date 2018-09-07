@@ -1,3 +1,8 @@
 baseURL = "https://aenthill.github.io/"
 languageCode = "en-us"
 title = "Aenthill"
+
+[params]
+    githubURL = "https://github.com/aenthill/aenthill"
+    twitterURL = "https://google.com"
+    blogURL = "https://thecodingmachine.io"
