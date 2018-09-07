@@ -1,36 +1,24 @@
 #!/bin/bash
 
-echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
+echo -e "\033[0;32mDeploying documentation updates to GitHub...\033[0m"
 
-# Go To Docs folder.
 cd docs
+hugo
 
-# Build the project.
-hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
-
-# Go To Public folder.
 cd public
-# Add changes to git.
 git add .
 
-# Commit changes.
 msg="rebuilding site `date`"
 if [ $# -eq 1 ]
   then msg="$1"
 fi
-git commit -m "$msg"
 
-# Push source and build repos.
+git commit -m "$msg"
 git push origin master
 
-# Come Back up to the Project Root
 cd ../..
 
-# Add changes to main git.
+git submodule update --recursive --remote
 git add docs/public
-
-# Commit changes.
 git commit -m "$msg"
-
-# Push source and build repos.
 git push origin master

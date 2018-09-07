@@ -15,14 +15,13 @@ git push origin $TAG
 
 goreleaser --rm-dist
 
+git submodule update --recursive --remote
 git add build/package/homebrew-tap build/package/scoop-bucket
 
 msg="publishing artifacts `date`"
 if [ $# -eq 1 ]
   then msg="$1"
 fi
+
 git commit -m "$msg"
-
 git push origin master
-
-git submodule update --recursive --remote
