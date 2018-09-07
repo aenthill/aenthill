@@ -20,3 +20,14 @@ archive:
   format_overrides:
     - goos: windows
       format: zip
+brew:
+  name: aenthill
+  github:
+    owner: aenthill
+    name: homebrew-tap
+  commit_author:
+    name: gulien
+    email: j.neuhart@thecodingmachine.com
+  folder: Formulae
+  homepage: https://aenthill.github.io/
+  description: "A command-line tool that helps bootstraping your Docker projects easily"

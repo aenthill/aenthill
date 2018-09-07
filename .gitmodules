@@ -2,3 +2,7 @@
 	path = docs/public
 	url = https://github.com/aenthill/aenthill.github.io.git
 	branch = master
+[submodule "build/package/homebrew-tap"]
+	path = build/package/homebrew-tap
+	url = https://github.com/aenthill/homebrew-tap.git
+	branch = master
