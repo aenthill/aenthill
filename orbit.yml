@@ -5,6 +5,12 @@ tasks:
     run:
       - scripts/release.sh
 
+  - use: delete-release
+    short: Creates and publish a new release
+    private: true
+    run:
+      - scripts/delete_release.sh
+
   - use: deploy-docs
     short: Builds and deploys the documentation
     run:
