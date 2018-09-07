@@ -6,3 +6,7 @@
 	path = build/package/homebrew-tap
 	url = https://github.com/aenthill/homebrew-tap.git
 	branch = master
+[submodule "build/package/scoop-bucket"]
+	path = build/package/scoop-bucket
+	url = https://github.com/aenthill/scoop-bucket.git
+	branch = master

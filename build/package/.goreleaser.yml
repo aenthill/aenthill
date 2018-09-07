@@ -31,3 +31,13 @@ brew:
   folder: Formulae
   homepage: https://aenthill.github.io/
   description: "A command-line tool that helps bootstraping your Docker projects easily"
+scoop:
+  bucket:
+    owner: aenthill
+    name: scoop-bucket
+  commit_author:
+    name: gulien
+    email: j.neuhart@thecodingmachine.com
+  homepage: https://aenthill.github.io/
+  description: "A command-line tool that helps bootstraping your Docker projects easily"
+  license: MIT
