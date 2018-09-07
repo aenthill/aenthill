@@ -1,3 +1,7 @@
 {{ define "main" }}
-    {{- partial "docs/page.html" . -}}
+    {{ if or (eq "use" .Params.kind) (eq "extend" .Params.Kind) }}
+        {{- partial "docs/page.html" . -}}
+    {{ else }}
+        {{ .Content }}
+    {{ end }}
 {{ end }}
