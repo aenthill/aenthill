@@ -31,6 +31,8 @@ brew:
   folder: Formulae
   homepage: https://aenthill.github.io/
   description: "command-line tool that helps bootstraping your Docker projects easily"
+  test: |
+    system "#{bin}/aenthill --version"
 scoop:
   bucket:
     owner: aenthill
