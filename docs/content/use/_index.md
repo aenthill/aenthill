@@ -56,8 +56,4 @@ We provide three kinds of aents:
 - CI/CD (GitLab)
 - Services (PHP, MySQL, Node.js etc.)
 
-## Orchestrators
-
-## CI/CD
-
-## Services
+TODO explain briefly how they work together
