@@ -1,0 +1,26 @@
+<header class="header">
+    <nav role="navigation" class="navbar navbar-expand-lg fixed-top">
+        <a href="/" class="navbar-brand"><img src="/img/theaentmachine.svg" width="70" height="50" alt="TheAentMachine"></a>
+        <button type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><span></span><span></span><span></span></button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                {{ range .Site.Menus.main }}
+                    <li class="nav-item">
+                        <a class="nav-link {{ if eq $.Params.kind .Identifier }}active{{ end }}" href="{{ .URL }}"> {{ .Name }}</a>
+                    </li>
+                {{ end }}
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/theaentmachine/theaentmachine"><i class="fab fa-github"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fab fa-twitter"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary navbar-btn btn-shadow btn-gradient" href="/use/getting-started">Download</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>

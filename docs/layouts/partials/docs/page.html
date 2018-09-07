@@ -1,0 +1,22 @@
+<div class="container mt-3">
+    <div class="row">
+        {{ $page := .Page }}
+        <div class="col-12 col-md-3 col-xl-2">
+            <div class="sticky-top aside">
+                <nav role="navigation" class="nav flex-colum">
+                    {{ range (where .Site.Pages "Section" .Params.kind) }}
+                    <a class="nav-link {{ if eq $page.Title .Title }}active{{ end }}" href="{{ .Permalink }}">{{ .Title }}</a>
+                    {{ end }}
+                </nav>
+            </div>
+        </div>
+
+        <article class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
+            {{ .Content }}
+        </article>
+
+        <div class="d-none d-xl-block col-xl-2">
+            <nav id="toc" data-toggle="toc" class="sticky-top aside"></nav>
+        </div>
+    </div>
+</div>

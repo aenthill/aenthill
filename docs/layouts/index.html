@@ -1,0 +1,65 @@
+{{ define "main" }}
+<section class="hero hero-home bg-gray">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 order-md-1 text-center text-md-left pr-md-5">
+                <h1>TheAentMachine</h1>
+                <p class="hero-text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour</p>
+                <p class="hero-text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour</p>
+                <div class="CTA"><a href="/use" class="btn btn-primary btn-shadow btn-gradient link-scroll">Discover More</a><a href="/use/getting-started" class="btn btn-outline-primary">Download</a></div>
+            </div>
+            <div class="col-4 mx-auto col-md-4 order-md-2"><img src="/img/theaentmachine.svg" class="img-fluid mb-3 mb-md-0" width="250"></div>
+        </div>
+    </div>
+</section>
+
+<section class="in-action">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="h3 mb-5">TheAentMachine in action!</h2>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"><a href="https://asciinema.org/a/199614" target="_blank"><img src="https://asciinema.org/a/199614.png" class="img-fluid rounded"></a></div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"><a href="https://asciinema.org/a/199614" target="_blank"><img src="https://asciinema.org/a/199614.png" class="img-fluid rounded"></a></div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab"><a href="https://asciinema.org/a/199614" target="_blank"><img src="https://asciinema.org/a/199614.png" class="img-fluid rounded"></a></div>
+                </div>
+            </div>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="col nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true"><span class="number">1</span>First, associate an environment with an an <strong>orchestrator</strong></a>
+                    <a class="col ml-3 mr-3 nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><span class="number">2</span>Then, define a <strong>CI/CD provider</strong></a>
+                    <a class="col nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><span class="number">3</span>Finally, add your <strong>service</strong>!</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="features bg-gray">
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="text col-lg-7 order-2 order-lg-1">
+                <h4>Use</h4>
+                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. </p><a href="/use" class="btn btn-primary btn-shadow btn-gradient">View More</a>
+            </div>
+            <div class="image col-lg-4 offset-lg-1 order-1 order-lg-2"><img src="img/use.png" alt="Use" class="img-fluid" width="300"></div>
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="image col-lg-4"><img src="img/extend.png" alt="Extend" class="img-fluid" width="300"></div>
+            <div class="text col-lg-7 offset-lg-1">
+                <h4>Extend</h4>
+                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. </p><a href="/extend" class="btn btn-primary btn-shadow btn-gradient">View More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about-us" class="about-us">
+    <div class="container">
+        <h2>About us</h2>
+        <div class="row">
+            <p class="lead col-lg-10">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. or randomised words which don't look even slightly believable. </p>
+        </div><a href="#" class="btn btn-primary btn-shadow btn-gradient">Discover More</a>
+    </div>
+</section>
+{{ end }}

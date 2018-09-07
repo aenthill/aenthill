@@ -1,0 +1,4 @@
+[submodule "docs/public"]
+	path = docs/public
+	url = https://github.com/aenthill/aenthill.github.io.git
+	branch = master
