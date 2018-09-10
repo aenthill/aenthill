@@ -44,16 +44,11 @@ good understanding of Kubernetes.
 
 Aenthill on the other end is targetted at web developers that are not expert 
 DevOps. It helps them starting a web-application and encompass the whole toolset
-needed (from docker-compose to image building, CI/CD, etc...).
+needed (from docker-compose to image building, CI/CD, etc.).
 
 # TheAentMachine
 
-[TheAentMachine](https://github.com/theaentmachine/) is a *colony* of aents which are able to work which each other.
+In Aenthill, a *colony* is a set of aents which are able to work together by sharing a common API.
 
-We provide three kinds of aents:
-
-- Orchestrators (e.g. Docker, Kubernetes)
-- CI/CD (GitLab)
-- Services (PHP, MySQL, Node.js etc.)
-
-TODO explain briefly how they work together
+[TheAentMachine](https://github.com/theaentmachine/) is the colony provided by the creators of Aenthill
+for bootstraping your Docker projects.
