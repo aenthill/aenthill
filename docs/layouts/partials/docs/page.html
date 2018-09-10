@@ -3,7 +3,7 @@
         {{ $page := .Page }}
         <div class="col-12 col-md-3 col-xl-2 mb-3 mt-3 ml-0 mr-0 pl-0 pr-0 pl-lg-2 pl-xl-5">
             <div class="sticky-top aside">
-                <nav role="navigation" class="nav flex-column">
+                <nav role="navigation" class="nav flex-md-column">
                     {{ range (where .Site.Pages "Section" .Params.kind) }}
                     <a class="nav-link {{ if eq $page.Title .Title }}active{{ end }}" href="{{ .Permalink }}">{{ .Title }}</a>
                     {{ end }}
