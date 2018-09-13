@@ -75,7 +75,7 @@ func (app *App) registerCommands() {
 		app.cli.Commands = append(app.cli.Commands, commands.NewDispatchCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewReplyCommand(app.ctx, app.manifest))
 	} else {
-		app.cli.Commands = append(app.cli.Commands, commands.NewStartCommand(app.ctx, app.manifest))
+		app.cli.Commands = append(app.cli.Commands, commands.NewInitCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewAddCommand(app.ctx, app.manifest))
 		app.cli.Commands = append(app.cli.Commands, commands.NewUpgradeCommand(app.cli.Version))
 	}
