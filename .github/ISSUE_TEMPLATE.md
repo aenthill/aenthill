@@ -27,6 +27,6 @@ Please search on the [issue tracker](../../../issues) before creating one.
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* Version used:
+* Version used (`aentill --version`):
 * Operating System and version:
 * Colony: <!--- TheAentMachine? -->

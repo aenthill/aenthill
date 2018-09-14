@@ -12,7 +12,7 @@ menu:
 
 # Aenthill
 
-Aenthill is a command-line tool that helps bootstraping your [Docker](https://www.docker.com/) projects easily.
+Aenthill is a command-line tool that helps bootstraping a [Docker](https://www.docker.com/) project for your web application easily.
 
 Using Aenthill, in a few minutes, you can have:
 
@@ -43,7 +43,7 @@ helping clients deploy your application. Writing a Helm deployment requires a
 good understanding of Kubernetes.
 
 Aenthill on the other end is targetted at web developers that are not expert 
-DevOps. It helps them starting a web-application and encompass the whole toolset
+DevOps. It helps them starting a web application and encompass the whole toolset
 needed (from docker-compose to image building, CI/CD, etc.).
 
 # TheAentMachine
@@ -51,4 +51,4 @@ needed (from docker-compose to image building, CI/CD, etc.).
 In Aenthill, a *colony* is a set of aents which are able to work together by sharing a common API.
 
 [TheAentMachine](https://github.com/theaentmachine/) is the colony provided by the creators of Aenthill
-for bootstraping your Docker projects.
+for bootstraping a Docker project for your web application.

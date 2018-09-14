@@ -1,13 +1,13 @@
 # Contributing
 
-Thank you for considering contributing to the [Aenthill](https://github.com/aenthill) ecosystem. 
+Thank you for considering contributing to the [Aenthill](https://aenthill.github.io/) ecosystem. 
 
 ## Contributing code
 
 ### From code source
 
 1. Fork this repository
-2. Clone it to your local Go environment (requires *Go* >= 1.10)
+2. Clone it to your local Go environment (requires *Go* >= 1.11)
 3. Install the latest [Orbit](https://github.com/gulien/orbit) release
 4. Install and run the lastest Docker release
 
