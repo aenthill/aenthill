@@ -2,7 +2,7 @@
     <img src="docs/static/img/theaentmachine.svg" alt="Aenthill" width="200" height="200">
 </p>
 <h3 align="center">Aenthill</h3>
-<p align="center">A command-line tool that helps bootstraping a Docker project for your web application easily.</p>
+<p align="center">A command-line tool that helps bootstrapping a Docker project for your web application easily.</p>
 <p align="center">
     <a href="https://travis-ci.org/aenthill/aenthill">
         <img src="https://travis-ci.org/aenthill/aenthill.svg?branch=master" alt="Travis CI">
