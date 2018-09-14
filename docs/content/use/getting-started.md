@@ -21,7 +21,7 @@ You may find the latest release on the [releases pages](https://github.com/aenth
 The quickest way to get Aenthill is to run the following command:
 
 ```bash
-$ curl -sf https://github.com/aenthill/aenthill/blob/master/build/package/install.sh | BINDIR=/usr/local/bin sh
+$ curl -sf https://raw.githubusercontent.com/aenthill/aenthill/master/build/package/install.sh | BINDIR=/usr/local/bin sh
 ```
 
 It will installs Aenthill in the `/usr/local/bin` directory. You may change the installation path by updating the `BINDIR` value.
