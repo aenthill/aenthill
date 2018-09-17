@@ -248,14 +248,14 @@ func TestDependencies(t *testing.T) {
 func TestDependency(t *testing.T) {
 	t.Run("calling Dependency with a non-existing aent", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
-		if _, err := m.Dependency("FOO", ""); err == nil {
+		if _, _, err := m.Dependency("FOO", ""); err == nil {
 			t.Error("Dependency should have thrown an error as given ID should not exist")
 		}
 	})
 	t.Run("calling Dependency with a non-existing dependency key", func(t *testing.T) {
 		m := New(DefaultManifestFileName, afero.NewMemMapFs())
 		ID := m.AddAent("aent/foo")
-		if _, err := m.Dependency(ID, "FOO"); err == nil {
+		if _, _, err := m.Dependency(ID, "FOO"); err == nil {
 			t.Error("Dependency should have thrown an error as given key should not exist")
 		}
 	})
@@ -265,7 +265,7 @@ func TestDependency(t *testing.T) {
 		if _, err := m.AddDependency(ID, "aent/foo", "FOO"); err != nil {
 			t.Fatalf(`An unexpected error occurred while trying to add a dependency: got "%s"`, err.Error())
 		}
-		if _, err := m.Dependency(ID, "FOO"); err != nil {
+		if _, _, err := m.Dependency(ID, "FOO"); err != nil {
 			t.Errorf(`Dependency should not have thrown an error as given ID and key should exist: got "%s"`, err.Error())
 		}
 	})

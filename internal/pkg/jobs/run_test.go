@@ -29,8 +29,16 @@ func TestNewRunJob(t *testing.T) {
 		if _, err := m.AddDependency(ctx.ID, "aent/foo", "FOO"); err != nil {
 			t.Fatalf(`An unexpected error occurred while trying to add a dependency: got "%s"`, err.Error())
 		}
-		if _, err := NewRunJob("FOO", "BAR", "", ctx, m); err != nil {
+		job, err := NewRunJob("FOO", "BAR", "", ctx, m)
+		if err != nil {
 			t.Errorf(`NewRunJob should not have thrown an error: got "%s"`, err.Error())
+		}
+		j, ok := job.(*runJob)
+		if !ok {
+			t.Fatal("Casting a Job to runJob should not have failed")
+		}
+		if j.image != "aent/foo" {
+			t.Errorf(`NewRunJob has a wrong image: got "%s" want "%s"`, j.image, "aent/foo")
 		}
 	})
 	t.Run("calling NewRunJob with an image", func(t *testing.T) {

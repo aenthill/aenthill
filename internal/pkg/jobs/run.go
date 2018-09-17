@@ -28,9 +28,9 @@ func NewRunJob(target, event, payload string, ctx *context.Context, m *manifest.
 		return nil, errors.Wrap("run job", err)
 	}
 	image, ID := func(ID, target string, m *manifest.Manifest) (string, string) {
-		aent, err := m.Dependency(ID, target)
+		aent, dependencyID, err := m.Dependency(ID, target)
 		if err == nil {
-			return aent.Image, target
+			return aent.Image, dependencyID
 		}
 		return target, ""
 	}(ctx.ID, target, m)

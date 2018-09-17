@@ -225,21 +225,21 @@ func (m *Manifest) Dependencies(ID string) (map[string]string, error) {
 
 // Dependency returns the dependency of an aent identified by ID.
 // If the ID does not exist or the key does not exist, throws an error.
-func (m *Manifest) Dependency(ID, key string) (*Aent, error) {
+func (m *Manifest) Dependency(ID, key string) (*Aent, string, error) {
 	dependencies, err := m.Dependencies(ID)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	for k, dependencyID := range dependencies {
 		if key == k {
 			aent, err := m.Aent(dependencyID)
 			if err != nil {
-				return nil, err
+				return nil, "", err
 			}
-			return aent, nil
+			return aent, dependencyID, nil
 		}
 	}
-	return nil, errors.Errorf("manifest", `dependency identified by key "%s" does not exist for aent identified by ID "%s"`, key, ID)
+	return nil, "", errors.Errorf("manifest", `dependency identified by key "%s" does not exist for aent identified by ID "%s"`, key, ID)
 }
 
 // Aent returns an aent by its ID.
