@@ -9,8 +9,6 @@ import (
 	"github.com/urfave/cli"
 )
 
-const defaultInitImage = "theaentmachine/aent-bootstrap"
-
 // NewInitCommand creates a cli.Command instance.
 func NewInitCommand(context *context.Context, m *manifest.Manifest) cli.Command {
 	return cli.Command{
@@ -22,7 +20,7 @@ func NewInitCommand(context *context.Context, m *manifest.Manifest) cli.Command 
 			if err := validateArgsLength(ctx, 0, 0); err != nil {
 				return errors.Wrap("init command", err)
 			}
-			job, err := jobs.NewAddJob(defaultInitImage, context, m)
+			job, err := jobs.NewInitJob(context, m)
 			if err != nil {
 				return errors.Wrap("init command", err)
 			}
