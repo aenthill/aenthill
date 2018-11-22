@@ -3,6 +3,10 @@ package context
 
 import (
 	"os"
+	"runtime"
+	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/aenthill/aenthill/internal/pkg/errors"
 )
@@ -58,6 +62,13 @@ func makeFromHost() (*Context, error) {
 	projectDir, err := os.Getwd()
 	if err != nil {
 		return nil, errors.Wrap("context", err)
+	}
+	if runtime.GOOS == "windows" {
+		// replacing paths like "C:/foo" to "//c/foo".
+		replacer := strings.NewReplacer("\\", "/", ":", "")
+		projectDir = replacer.Replace(projectDir)
+		r, n := utf8.DecodeRuneInString(projectDir)
+		projectDir = string(unicode.ToLower(r)) + projectDir[n:]
 	}
 	ctx.HostProjectDir, ctx.ProjectDir = projectDir, "/aenthill"
 	return ctx, nil
