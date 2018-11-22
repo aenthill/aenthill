@@ -68,7 +68,7 @@ func makeFromHost() (*Context, error) {
 		replacer := strings.NewReplacer("\\", "/", ":", "")
 		projectDir = replacer.Replace(projectDir)
 		r, n := utf8.DecodeRuneInString(projectDir)
-		projectDir = string(unicode.ToLower(r)) + projectDir[n:]
+		projectDir = "//" + string(unicode.ToLower(r)) + projectDir[n:]
 	}
 	ctx.HostProjectDir, ctx.ProjectDir = projectDir, "/aenthill"
 	return ctx, nil
