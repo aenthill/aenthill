@@ -1,0 +1,58 @@
+# github.com/antonmedv/expr v1.0.3
+github.com/antonmedv/expr
+# github.com/apex/log v1.0.0
+github.com/apex/log
+# github.com/c4milo/unpackit v0.0.0-20170704181138-4ed373e9ef1c
+github.com/c4milo/unpackit
+# github.com/dsnet/compress v0.0.0-20171208185109-cc9eb1d7ad76
+github.com/dsnet/compress/bzip2
+github.com/dsnet/compress/bzip2/internal/sais
+github.com/dsnet/compress/internal
+github.com/dsnet/compress/internal/errors
+github.com/dsnet/compress/internal/prefix
+github.com/dsnet/compress
+# github.com/fatih/color v1.7.0
+github.com/fatih/color
+# github.com/google/go-github v15.0.0+incompatible
+github.com/google/go-github/github
+# github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135
+github.com/google/go-querystring/query
+# github.com/gosuri/uilive v0.0.0-20170323041506-ac356e6e42cd
+github.com/gosuri/uilive
+# github.com/gosuri/uiprogress v0.0.0-20170224063937-d0567a9d84a1
+github.com/gosuri/uiprogress
+github.com/gosuri/uiprogress/util/strutil
+# github.com/klauspost/compress v1.4.0
+github.com/klauspost/compress/flate
+# github.com/klauspost/cpuid v0.0.0-20170728055534-ae7887de9fa5
+github.com/klauspost/cpuid
+# github.com/klauspost/crc32 v0.0.0-20161016154125-cb6bfca970f6
+github.com/klauspost/crc32
+# github.com/klauspost/pgzip v0.0.0-20170402124221-0bf5dcad4ada
+github.com/klauspost/pgzip
+# github.com/mattn/go-colorable v0.0.9
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.4
+github.com/mattn/go-isatty
+# github.com/pkg/errors v0.8.0
+github.com/pkg/errors
+# github.com/spf13/afero v1.1.1
+github.com/spf13/afero
+github.com/spf13/afero/mem
+# github.com/thegomachine/github-store v0.0.0-20180717094215-5b475e149a1b
+github.com/thegomachine/github-store
+# github.com/tj/go-update v2.2.1+incompatible
+github.com/tj/go-update
+github.com/tj/go-update/progress
+# github.com/ulikunitz/xz v0.5.4
+github.com/ulikunitz/xz
+github.com/ulikunitz/xz/internal/xlog
+github.com/ulikunitz/xz/lzma
+github.com/ulikunitz/xz/internal/hash
+# github.com/urfave/cli v1.20.0
+github.com/urfave/cli
+# golang.org/x/sys v0.0.0-20180905080454-ebe1bf3edb33
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.0
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
